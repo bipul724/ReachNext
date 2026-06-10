@@ -7,6 +7,7 @@ export type CommunicationStatus =
   | "opened"
   | "read"
   | "clicked"
+  | "converted"
   | "failed";
 
 export interface SendMessagePayload {

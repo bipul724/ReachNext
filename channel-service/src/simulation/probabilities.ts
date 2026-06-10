@@ -47,6 +47,13 @@ export const CHANNEL_FLOWS: Record<
           }
           return null;
 
+        case "clicked":
+          // 25% chance of conversion (purchase)
+          if (rand < 0.25) {
+            return { status: "converted", delayMs: 2000 + Math.random() * 8000 }; // 2s - 10s
+          }
+          return null;
+
         default:
           return null;
       }
@@ -84,6 +91,13 @@ export const CHANNEL_FLOWS: Record<
           // 12% click rate for SMS links
           if (rand < 0.12) {
             return { status: "clicked", delayMs: 2000 + Math.random() * 8000 }; // 2s - 10s
+          }
+          return null;
+
+        case "clicked":
+          // 25% chance of conversion (purchase)
+          if (rand < 0.25) {
+            return { status: "converted", delayMs: 2000 + Math.random() * 8000 }; // 2s - 10s
           }
           return null;
 
