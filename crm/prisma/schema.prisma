@@ -65,6 +65,7 @@ model Campaign {
   totalRecipients Int       @default(0)
   stats           Json      @default("{}")
   createdBy       String    @default("user")
+  agentThoughts   Json?
   sentAt          DateTime?
   completedAt     DateTime?
   createdAt       DateTime  @default(now())

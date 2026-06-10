@@ -41,3 +41,11 @@ export interface SendMessagePayload {
   channel: Channel;
   callbackUrl: string;
 }
+
+export interface AgentThought {
+  step: string;
+  agent: string;
+  reasoning: string;
+  timestamp: string;
+}
+
