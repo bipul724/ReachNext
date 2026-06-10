@@ -22,6 +22,7 @@ export const COMMUNICATION_STATUS = {
   OPENED: "opened",
   READ: "read",
   CLICKED: "clicked",
+  CONVERTED: "converted",
   FAILED: "failed",
 } as const;
 

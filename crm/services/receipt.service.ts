@@ -1,5 +1,6 @@
 import { prisma } from "../lib/prisma";
 import { CampaignService } from "./campaign.service";
+import { OrderService } from "./order.service";
 import { CommunicationStatus } from "../types";
 
 // State hierarchy order to handle out-of-order callbacks
@@ -10,7 +11,8 @@ const STATUS_PRIORITY: Record<CommunicationStatus, number> = {
   read: 4, // SMS read
   opened: 4, // Email opened
   clicked: 5, // Clicked links
-  failed: 6, // Failed (terminal)
+  converted: 6, // Conversion
+  failed: 7, // Failed (terminal)
 };
 
 export const ReceiptService = {
@@ -72,6 +74,12 @@ export const ReceiptService = {
       // Mark as opened or read if not already done, just in case
       if (!comm.openedAt && comm.channel === "email") updateData.openedAt = callbackDate;
       if (!comm.readAt && comm.channel === "sms") updateData.readAt = callbackDate;
+    } else if (status === "converted") {
+      updateData.convertedAt = callbackDate;
+      // Also mark as clicked/opened if not already done
+      if (!comm.clickedAt) updateData.clickedAt = callbackDate;
+      if (!comm.openedAt && comm.channel === "email") updateData.openedAt = callbackDate;
+      if (!comm.readAt && comm.channel === "sms") updateData.readAt = callbackDate;
     } else if (status === "failed") {
       updateData.failedAt = callbackDate;
     }
@@ -104,10 +112,28 @@ export const ReceiptService = {
       `[ReceiptService] Updated communication "${communicationId}" status: "${currentStatus}" -> "${status}".`
     );
 
-    // 5. Trigger Campaign statistics sync in the background
-    // (We run it non-blocking to respond to the webhook rapidly)
-    CampaignService.syncStats(comm.campaignId).catch((err) => {
-      console.error(`[ReceiptService] Error syncing stats for campaign "${comm.campaignId}":`, err);
+    // If converted, automatically create an order in the database for the customer, attributed to this campaign
+    if (status === "converted") {
+      const amount = Math.floor(Math.random() * (2500 - 500 + 1)) + 500;
+      try {
+        await OrderService.create({
+          customerId: comm.customerId,
+          orderDate: callbackDate,
+          totalAmount: amount,
+          items: [
+            { name: "Specialty Coffee Blend", qty: 1, price: amount, category: "Coffee" },
+          ],
+          storeLocation: "online",
+        });
+        console.log(`[ReceiptService] Generated auto-order (₹${amount}) for customer "${comm.customerId}" attributed to campaign "${comm.campaignId}".`);
+      } catch (orderError) {
+        console.error(`[ReceiptService] Failed to generate auto-order for customer "${comm.customerId}":`, orderError);
+      }
+    }
+
+    // 5. Trigger Campaign statistics sync in the background (debounced)
+    CampaignService.queueSyncStats(comm.campaignId).catch((err) => {
+      console.error(`[ReceiptService] Error queuing stats sync for campaign "${comm.campaignId}":`, err);
     });
 
     return true;
