@@ -13,6 +13,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const validStatuses = ["queued", "sent", "delivered", "opened", "read", "clicked", "converted", "failed"];
+    if (!validStatuses.includes(status)) {
+      return NextResponse.json(
+        { error: `Invalid status "${status}". Must be one of: ${validStatuses.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
     const processed = await ReceiptService.processCallback(body);
 
     return NextResponse.json({
