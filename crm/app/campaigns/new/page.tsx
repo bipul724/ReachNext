@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import AgentThoughtsTimeline from "../../../components/agent-thoughts-timeline";
 import { Badge } from "../../../components/ui/badge";
 import {
   Sparkles,
@@ -305,6 +306,20 @@ export default function NewCampaign() {
                   <span className="font-bold text-orange-800 dark:text-orange-300 block">Copywriting Explainer:</span>
                   <p className="text-orange-700 dark:text-orange-400">{workspace.explainContent}</p>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Agent thoughts timeline */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base font-bold flex items-center gap-1.5">
+                  <Sparkles className="h-4.5 w-4.5 text-primary" />
+                  Agent Execution & Thinking Timeline
+                </CardTitle>
+                <CardDescription>Chronological reasoning path of coordinating agents</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AgentThoughtsTimeline thoughts={workspace.agentThoughts} />
               </CardContent>
             </Card>
           </div>

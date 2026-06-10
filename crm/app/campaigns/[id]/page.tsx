@@ -19,6 +19,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
+import AgentThoughtsTimeline from "../../../components/agent-thoughts-timeline";
 
 function calculateSuccessScore(stats: any): number {
   const sent = stats.sent || 0;
@@ -377,6 +378,20 @@ export default function CampaignDetails({ params }: PageProps) {
           </CardContent>
         </Card>
       </div>
+
+      {/* Agent thoughts timeline */}
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="text-base font-bold flex items-center gap-1.5">
+            <Sparkles className="h-4.5 w-4.5 text-primary" />
+            Agent Execution & Thinking Timeline
+          </CardTitle>
+          <CardDescription>Chronological reasoning path of coordinating agents recorded during campaign generation</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AgentThoughtsTimeline thoughts={campaign.agentThoughts} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
