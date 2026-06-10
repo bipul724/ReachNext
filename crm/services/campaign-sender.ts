@@ -2,6 +2,7 @@ import { prisma } from "../lib/prisma";
 import { SegmentEngine } from "./segment-engine";
 import { CampaignService } from "./campaign.service";
 import { SendMessagePayload } from "../types";
+import { generateBatchMessages } from "../ai/content";
 
 const CHANNEL_SERVICE_URL = process.env.CHANNEL_SERVICE_URL || "http://localhost:3001";
 const CRM_WEBHOOK_URL = process.env.CRM_WEBHOOK_URL || "http://localhost:3000/api/webhooks/receipt";
@@ -51,11 +52,23 @@ export const CampaignSender = {
       }
 
       // 3. Generate personalized messages and prepare communications list
+      console.log(`[CampaignSender] Running batch personalization for ${customers.length} customers...`);
+      const batchResult = await generateBatchMessages(
+        customers.map(c => ({
+          id: c.id,
+          name: c.name,
+          city: c.city,
+          totalSpent: c.totalSpent,
+          totalOrders: c.totalOrders
+        })),
+        campaign.messageTemplate,
+        (campaign.stats as any)?.offer || "15% OFF",
+        campaign.channel as any
+      );
+
       const communicationsData = customers.map((customer) => {
-        const personalisedMessage = this.personalize(
-          campaign.messageTemplate,
-          customer
-        );
+        const personalisedMessage = batchResult.find(r => r.customerId === customer.id)?.message || 
+          this.personalize(campaign.messageTemplate, customer);
 
         return {
           campaignId: campaign.id,

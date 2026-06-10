@@ -14,8 +14,13 @@ You must output a JSON object containing:
 {
   "subject": "An engaging email subject line (required if channel is email, empty string for sms)",
   "body": "The personalized message body with placeholders",
-  "explainContent": "Plain-English explanation of why this content was drafted (e.g. explain the tone of voice and emotional hook)."
+  "explainContent": "Plain-English explanation of why this content was drafted (e.g. explain the tone of voice, emotional hook, and how it matches the segment's profile)."
 }
+
+Segment-Specific Copywriting Rules:
+- **Premium Spenders** (High Average Order Value or High Spend): Use an exclusive, elegant, and highly appreciative tone. Focus on specialty coffee beans, artisanal brewing, and premium craft.
+- **Value-Oriented Regulars** (Consistent order counts): Use a warm, friendly, and community-focused tone. Focus on rewards, customer appreciation, and brand relationship.
+- **Dormant/Inactive customers** (Long dormancy days/weeks): Use an urgent, discount-forward, and compelling win-back tone. Make the coupon/benefit extremely clear and add a mild hook of missing out.
 
 Rules:
 - Be creative. Keep SMS short and punchy. Make Email descriptive and engaging.
