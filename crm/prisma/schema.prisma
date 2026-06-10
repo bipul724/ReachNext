@@ -1,13 +1,101 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model Customer {
+  id          String    @id @default(uuid())
+  name        String
+  email       String    @unique
+  phone       String?
+  city        String?
+  tags        String[]  @default([])
+  totalOrders Int       @default(0)
+  totalSpent  Float     @default(0)
+  lastOrderAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  orders         Order[]
+  communications Communication[]
+
+  @@map("customers")
+}
+
+model Order {
+  id                   String   @id @default(uuid())
+  customerId           String
+  orderDate            DateTime
+  totalAmount          Float
+  items                Json
+  storeLocation        String   @default("online")
+  attributedCampaignId String?
+  createdAt            DateTime @default(now())
+
+  customer          Customer  @relation(fields: [customerId], references: [id])
+  attributedCampaign Campaign? @relation("AttributedOrders", fields: [attributedCampaignId], references: [id])
+
+  @@map("orders")
+}
+
+model Segment {
+  id                   String   @id @default(uuid())
+  name                 String
+  description          String?
+  rules                Json
+  naturalLanguageQuery String?
+  customerCount        Int      @default(0)
+  createdBy            String   @default("user")
+  createdAt            DateTime @default(now())
+
+  campaigns Campaign[]
+
+  @@map("segments")
+}
+
+model Campaign {
+  id              String    @id @default(uuid())
+  name            String
+  segmentId       String
+  channel         String
+  messageTemplate String
+  status          String    @default("draft")
+  totalRecipients Int       @default(0)
+  stats           Json      @default("{}")
+  createdBy       String    @default("user")
+  sentAt          DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+
+  segment          Segment          @relation(fields: [segmentId], references: [id])
+  communications   Communication[]
+  attributedOrders Order[]          @relation("AttributedOrders")
+
+  @@map("campaigns")
+}
+
+model Communication {
+  id                  String    @id @default(uuid())
+  campaignId          String
+  customerId          String
+  channel             String
+  personalisedMessage String
+  status              String    @default("queued")
+  statusHistory       Json      @default("[]")
+  sentAt              DateTime?
+  deliveredAt         DateTime?
+  openedAt            DateTime?
+  readAt              DateTime?
+  clickedAt           DateTime?
+  failedAt            DateTime?
+  createdAt           DateTime  @default(now())
+
+  campaign Campaign @relation(fields: [campaignId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@index([campaignId])
+  @@index([customerId])
+  @@map("communications")
 }
