@@ -177,20 +177,8 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
       potentialRevenue = customerCount * calculatedAov;
 
       // Opportunity Agent Reasoning (AI explanation of the calculated opportunity)
-      console.log("💰 Running Opportunity Agent for reasoning...");
-      try {
-        const opportunityPrompt = `
-You are the Opportunity Agent for Brew CampaignOS.
-Explain why this audience segment represents a marketing opportunity of ₹${potentialRevenue.toLocaleString("en-IN", { maximumFractionDigits: 0 })} across ${customerCount} customers with an Average Order Value of ₹${calculatedAov.toFixed(0)}.
-Keep it to 2-3 sentences max. Focus on business potential (e.g., subscription retention, cash flow, or customer lifetime value).
-Marketing Goal: "${goal}"
-`;
-        const oppText = await safeGenerate(opportunityPrompt);
-        opportunityReasoning = oppText;
-      } catch (e) {
-        console.error("Error running Opportunity Agent:", e);
-        opportunityReasoning = `Found ${customerCount} matching customers with an AOV of ₹${calculatedAov.toFixed(0)}, representing a recovery opportunity of ₹${potentialRevenue.toLocaleString("en-IN", { maximumFractionDigits: 0 })}.`;
-      }
+      console.log("💰 Generating opportunity explanation programmatically...");
+      opportunityReasoning = `Found ${customerCount} matching customers with an Average Order Value of ₹${calculatedAov.toFixed(0)}, representing a recovery opportunity of ₹${potentialRevenue.toLocaleString("en-IN", { maximumFractionDigits: 0 })}.`;
 
       agentThoughts.push({
         step: "opportunity_sizing",

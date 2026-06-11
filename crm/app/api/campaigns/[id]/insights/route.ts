@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { safeGenerate } from "@/lib/gemini";
 
 interface RouteParams {
   params: Promise<{
@@ -36,32 +35,27 @@ export async function GET(request: Request, { params }: RouteParams) {
       });
     }
 
-    // 2. Generate prompt for campaign insights
-    const prompt = `
-You are the Campaign Analytics Agent for Brew CampaignOS.
-Explain the performance of this marketing campaign for the judge in 2-3 sentences.
-Goal: "${stats.goal || campaign.name}"
-Target Segment: "${campaign.segment.name}"
-Channel: "${campaign.channel.toUpperCase()}"
-Total Recipients: ${total}
+    const clickRate = opened > 0 ? (clicked / opened) * 100 : 0;
+    const convRate = clicked > 0 ? (converted / clicked) * 100 : 0;
 
-Campaign Stats:
-- Total Sent: ${total}
-- Delivered: ${delivered} (${total > 0 ? ((delivered / total) * 100).toFixed(1) : "0.0"}% delivery rate)
-- Opened/Read: ${opened} (${delivered > 0 ? ((opened / delivered) * 100).toFixed(1) : "0.0"}% open rate)
-- Clicked: ${clicked} (${opened > 0 ? ((clicked / opened) * 100).toFixed(1) : "0.0"}% click-through rate)
-- Converted Orders: ${converted} (${clicked > 0 ? ((converted / clicked) * 100).toFixed(1) : "0.0"}% click-to-order rate)
-- Attributed Revenue: ₹${revenue.toLocaleString()}
+    const segmentName = campaign.segment.name;
+    const channelName = campaign.channel.toUpperCase();
 
-Highlight why this channel/campaign did well or where the dropoff happened, and provide a quick recommendation for next time. Keep it brief, professional, and outcome-driven.
-`;
-
-    const insights = await safeGenerate(prompt);
+    let insights = `This campaign successfully targeted the "${segmentName}" segment via ${channelName}. `;
+    if (converted > 0) {
+      insights += `It achieved an excellent conversion rate of ${convRate.toFixed(1)}% from link clicks, generating ₹${revenue.toLocaleString("en-IN")} in total revenue from ${converted} attributed orders. `;
+      if (clickRate < 20) {
+        insights += `While order conversion was strong, click-through rates were relatively low (${clickRate.toFixed(1)}%), suggesting a clearer call-to-action or link placement could improve engagement next time.`;
+      } else {
+        insights += `Performance was highly optimized across the funnel, showing strong customer interest and high brand engagement.`;
+      }
+    } else {
+      insights += `Messages were successfully dispatched (${delivered} delivered), but no conversion orders have been recorded yet. Start the transaction simulator to attribute sales and compile revenue figures.`;
+    }
 
     return NextResponse.json({ insights }, { status: 200 });
   } catch (error: any) {
     console.error(`GET /api/campaigns/[id]/insights error:`, error);
-    // Return fallback message on API failure
     return NextResponse.json({
       insights: "Insights are currently loading. Start the simulator and run transactions to compile complete performance graphs.",
       isFallback: true,

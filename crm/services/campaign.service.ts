@@ -74,25 +74,28 @@ export const CampaignService = {
       _count: { id: true },
     });
 
+    // Helper map to find counts by current status
+    const counts: Record<string, number> = {};
+    for (const group of statusGroups) {
+      counts[group.status] = group._count.id;
+    }
+
+    const getCount = (statuses: string[]) => {
+      return statuses.reduce((sum, s) => sum + (counts[s] || 0), 0);
+    };
+
+    // Cumulative stats for the conversion funnel stages:
     const stats: CampaignStats = {
-      queued: 0,
-      sent: 0,
-      delivered: 0,
-      opened: 0,
-      read: 0,
-      clicked: 0,
-      failed: 0,
+      queued: counts["queued"] || 0,
+      sent: getCount(["sent", "delivered", "opened", "read", "clicked", "converted"]),
+      delivered: getCount(["delivered", "opened", "read", "clicked", "converted"]),
+      opened: getCount(["opened", "read", "clicked", "converted"]),
+      read: getCount(["opened", "read", "clicked", "converted"]),
+      clicked: getCount(["clicked", "converted"]),
+      failed: counts["failed"] || 0,
       convertedOrders: 0,
       conversionRevenue: 0,
     };
-
-    // Populate stats from database groups
-    for (const group of statusGroups) {
-      const status = group.status as keyof CampaignStats;
-      if (status in stats) {
-        (stats as any)[status] = group._count.id;
-      }
-    }
 
     // 2. Aggregate attributed order details
     const orderAgg = await prisma.order.aggregate({

@@ -43,7 +43,7 @@ export default function NewCampaign() {
   const [loadingStep, setLoadingStep] = useState(0);
   const loadingSteps = [
     "Segmentation Agent: Translating campaign goal into database query filters...",
-    "Opportunity Agent: Aggregating shopper metrics and matching audience size...",
+    "Opportunity Sizing: Aggregating shopper metrics and matching audience size...",
     "Strategy Agent: Selecting optimal communication channel, offer, and timing...",
     "Content Agent: Personalizing copywriting templates and message hooks...",
   ];
