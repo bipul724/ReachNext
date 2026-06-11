@@ -45,11 +45,8 @@ export function Sidebar() {
             <Coffee className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-bold tracking-tight text-foreground">
-              Brew & Co.
-            </span>
-            <span className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
-              CampaignOS
+            <span className="text-sm font-extrabold tracking-wider text-foreground uppercase">
+              CRM
             </span>
           </div>
         </Link>

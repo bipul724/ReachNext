@@ -76,7 +76,7 @@ export default function Dashboard() {
             Launch campaign drafts using plain English objectives
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Let the CampaignOS multi-agent brain size target segments, suggest timing & channels, and draft personalized coffee promos in seconds.
+            Let the CRM multi-agent brain size target segments, suggest timing & channels, and draft personalized coffee promos in seconds.
           </p>
           <Link href="/campaigns/new">
             <Button className="mt-2 font-semibold">

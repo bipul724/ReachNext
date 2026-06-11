@@ -133,7 +133,7 @@ export default function NewCampaign() {
               Campaign Autopilot Workspace
             </CardTitle>
             <CardDescription>
-              Input your marketing goal in plain English. The CampaignOS agent pipeline will construct the segment filters, sizing, channel strategy, and promos automatically.
+              Input your marketing goal in plain English. The CRM agent pipeline will construct the segment filters, sizing, channel strategy, and promos automatically.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -184,7 +184,7 @@ export default function NewCampaign() {
           </div>
           <div className="max-w-md mx-auto space-y-2">
             <h3 className="font-bold text-lg text-foreground">Coordinating AI Agents</h3>
-            <p className="text-xs text-muted-foreground">The CampaignOS orchestrator is building your campaign draft.</p>
+            <p className="text-xs text-muted-foreground">The CRM orchestrator is building your campaign draft.</p>
           </div>
           <div className="max-w-lg mx-auto text-left border border-border rounded-lg p-4 bg-muted/20 text-xs space-y-3">
             {loadingSteps.map((step, idx) => {

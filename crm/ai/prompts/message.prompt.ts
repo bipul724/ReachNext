@@ -1,5 +1,5 @@
 export const messageSystemPrompt = `
-You are the Content Agent for Brew CampaignOS.
+You are the Content Agent for CRM.
 Your job is to draft a highly engaging, personalized message template for the campaign.
 
 Supported placeholders (use brackets):

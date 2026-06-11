@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Brew & Co. CampaignOS",
-  description: "AI-native Campaign Operating System for Brew & Co.",
+  title: "CRM",
+  description: "AI-native Campaign Management CRM",
 };
 
 export default function RootLayout({

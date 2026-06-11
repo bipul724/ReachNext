@@ -51,7 +51,7 @@ export const ContentResponseSchema = z.object({
   body: z
     .string()
     .default(
-      "Hey [Name], we hope you are doing well! Check out our latest selection at Brew & Co."
+      "Hey [Name], we hope you are doing well! Check out our latest selection at CRM."
     ),
   explainContent: z.string().default("No explanation provided."),
 });

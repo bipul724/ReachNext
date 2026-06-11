@@ -101,7 +101,7 @@ export const AgentOrchestrator = {
 - Recency / Dormancy: ${minDormancyDays} to ${maxDormancyDays} days since last purchase`;
 
         const correctionPrompt = `
-You are the Segmentation Agent for Brew CampaignOS.
+You are the Segmentation Agent for CRM.
 Your previous segment rules matched 0 customers. 
 
 Previous Segment Name: "${segmentation.segmentName}"
@@ -237,7 +237,7 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
     console.log("✍️ Running Content Agent...");
     let content = {
       subject: "",
-      body: "Hey [Name], we hope you are doing well! Check out our latest selection at Brew & Co.",
+      body: "Hey [Name], we hope you are doing well! Check out our latest selection at CRM.",
       explainContent: "No custom copy chosen.",
     };
 
