@@ -1,6 +1,7 @@
 export const CHANNELS = {
   EMAIL: "email",
   SMS: "sms",
+  WHATSAPP: "whatsapp",
 } as const;
 
 export type Channel = typeof CHANNELS[keyof typeof CHANNELS];

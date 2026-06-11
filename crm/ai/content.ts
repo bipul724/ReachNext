@@ -9,7 +9,7 @@ export type { ContentAgentResponse };
 export async function runContentAgent(
   goal: string,
   segmentName: string,
-  channel: "email" | "sms",
+  channel: "email" | "sms" | "whatsapp",
   offer: string,
   metrics?: {
     customerCount: number;
@@ -37,7 +37,7 @@ export async function generateBatchMessages(
   customers: { id: string; name: string; city: string | null; totalSpent: number; totalOrders: number }[],
   template: string,
   offer: string,
-  channel: "email" | "sms"
+  channel: "email" | "sms" | "whatsapp"
 ): Promise<{ customerId: string; message: string }[]> {
   console.log(`✍️ Running high-speed local batch personalization for ${customers.length} customers.`);
   const results: { customerId: string; message: string }[] = [];

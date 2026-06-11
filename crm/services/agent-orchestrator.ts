@@ -19,7 +19,7 @@ export interface CampaignWorkspacePayload {
   potentialRevenue: number;
   opportunityReasoning: string;
   explainAudience: string;
-  channel: "email" | "sms";
+  channel: "email" | "sms" | "whatsapp";
   offer: string;
   timing: string;
   explainChannel: string;
@@ -202,7 +202,7 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
     // 3. Run Strategy Agent
     console.log("🎯 Running Strategy Agent...");
     let strategy = {
-      channel: "email" as "email" | "sms",
+      channel: "email" as "email" | "sms" | "whatsapp",
       offer: "None",
       timing: "Immediately",
       explainChannel: "No channel chosen due to sizing failure.",

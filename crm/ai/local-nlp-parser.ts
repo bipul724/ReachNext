@@ -8,7 +8,7 @@ export interface LocalParsedResult {
   };
   explainAudience: string;
   
-  channel: "email" | "sms";
+  channel: "email" | "sms" | "whatsapp";
   offer: string;
   timing: string;
   explainChannel: string;
@@ -112,8 +112,10 @@ export function localParseGoal(goal: string): LocalParsedResult {
   const explainAudience = `Filtered the database for customers ${explanations.join(", and ")} based on your goal "${cleanGoal}".`;
 
   // 5. Strategy Recommendation
-  let channel: "email" | "sms" = "email";
-  if (/\bsms\b/i.test(cleanGoal) || /\btext\b/i.test(cleanGoal)) {
+  let channel: "email" | "sms" | "whatsapp" = "email";
+  if (/\bwhatsapp\b/i.test(cleanGoal) || /\bwhats app\b/i.test(cleanGoal)) {
+    channel = "whatsapp";
+  } else if (/\bsms\b/i.test(cleanGoal) || /\btext\b/i.test(cleanGoal)) {
     channel = "sms";
   } else if (/\bemail\b/i.test(cleanGoal) || /\bmail\b/i.test(cleanGoal)) {
     channel = "email";
@@ -132,7 +134,9 @@ export function localParseGoal(goal: string): LocalParsedResult {
 
   const timing = dormancyDays >= 60 ? "Send immediately" : "Send during afternoon peak (1 PM - 3 PM)";
   
-  const explainChannel = channel === "sms" 
+  const explainChannel = channel === "whatsapp"
+    ? "WhatsApp is recommended for its high engagement rate and conversational user preference."
+    : channel === "sms"
     ? "SMS has a 98% open rate, which is ideal for re-engaging highly dormant customers."
     : "Email is selected to provide a detailed, premium visual update of our latest menu.";
     

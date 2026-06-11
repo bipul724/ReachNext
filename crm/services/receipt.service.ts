@@ -73,13 +73,13 @@ export const ReceiptService = {
       updateData.clickedAt = callbackDate;
       // Mark as opened or read if not already done, just in case
       if (!comm.openedAt && comm.channel === "email") updateData.openedAt = callbackDate;
-      if (!comm.readAt && comm.channel === "sms") updateData.readAt = callbackDate;
+      if (!comm.readAt && (comm.channel === "sms" || comm.channel === "whatsapp")) updateData.readAt = callbackDate;
     } else if (status === "converted") {
       updateData.convertedAt = callbackDate;
       // Also mark as clicked/opened if not already done
       if (!comm.clickedAt) updateData.clickedAt = callbackDate;
       if (!comm.openedAt && comm.channel === "email") updateData.openedAt = callbackDate;
-      if (!comm.readAt && comm.channel === "sms") updateData.readAt = callbackDate;
+      if (!comm.readAt && (comm.channel === "sms" || comm.channel === "whatsapp")) updateData.readAt = callbackDate;
     } else if (status === "failed") {
       updateData.failedAt = callbackDate;
     }

@@ -36,7 +36,7 @@ export const SegmentationResponseSchema = z.object({
 
 export const StrategyResponseSchema = z.object({
   channel: z
-    .enum(["email", "sms"])
+    .enum(["email", "sms", "whatsapp"])
     .default("email")
     .catch("email"),
   offer: z.string().default("None"),

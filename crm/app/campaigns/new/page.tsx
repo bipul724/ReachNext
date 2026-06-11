@@ -15,6 +15,7 @@ import {
   TrendingUp,
   Mail,
   MessageSquare,
+  MessageCircle,
   Clock,
   Gift,
   Play,
@@ -334,8 +335,18 @@ export default function NewCampaign() {
               <CardContent className="space-y-4 text-xs">
                 {/* Channel choice */}
                 <div className="flex items-start gap-3 border-b border-border/40 pb-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400">
-                    {workspace.channel === "email" ? <Mail className="h-4.5 w-4.5" /> : <MessageSquare className="h-4.5 w-4.5" />}
+                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                    workspace.channel === "whatsapp"
+                      ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400"
+                      : "bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400"
+                  }`}>
+                    {workspace.channel === "email" ? (
+                      <Mail className="h-4.5 w-4.5" />
+                    ) : workspace.channel === "whatsapp" ? (
+                      <MessageCircle className="h-4.5 w-4.5" />
+                    ) : (
+                      <MessageSquare className="h-4.5 w-4.5" />
+                    )}
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">Channel Selected</span>
