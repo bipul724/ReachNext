@@ -15,9 +15,9 @@ export const handleSend = (req: Request, res: Response): void => {
     return;
   }
 
-  if (channel !== "email" && channel !== "sms") {
+  if (channel !== "email" && channel !== "sms" && channel !== "whatsapp") {
     res.status(400).json({
-      error: `Invalid channel "${channel}". Supported channels are "email" and "sms".`,
+      error: `Invalid channel "${channel}". Supported channels are "email", "sms", and "whatsapp".`,
     });
     return;
   }

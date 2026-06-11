@@ -106,4 +106,52 @@ export const CHANNEL_FLOWS: Record<
       }
     },
   },
+  whatsapp: {
+    getNextStates: (currentStatus: CommunicationStatus): SimulationState | null => {
+      const rand = Math.random();
+
+      switch (currentStatus) {
+        case "queued":
+          // 99% chance of sent, 1% direct fail
+          if (rand < 0.99) {
+            return { status: "sent", delayMs: 100 + Math.random() * 400 }; // 100ms - 500ms
+          } else {
+            return { status: "failed", delayMs: 50 };
+          }
+
+        case "sent":
+          // 96% chance of delivered, 4% carrier error/failed
+          if (rand < 0.96) {
+            return { status: "delivered", delayMs: 500 + Math.random() * 1500 }; // 500ms - 2s
+          } else {
+            return { status: "failed", delayMs: 300 + Math.random() * 500 };
+          }
+
+        case "delivered":
+          // 92% chance of read (extremely high open rate on WhatsApp)
+          if (rand < 0.92) {
+            return { status: "read", delayMs: 1500 + Math.random() * 5000 }; // 1.5s - 6.5s
+          }
+          return null;
+
+        case "read":
+          // 22% click rate for interactive buttons/links
+          if (rand < 0.22) {
+            return { status: "clicked", delayMs: 2000 + Math.random() * 8000 }; // 2s - 10s
+          }
+          return null;
+
+        case "clicked":
+          // 30% conversion rate (high intent click conversion)
+          if (rand < 0.30) {
+            return { status: "converted", delayMs: 2000 + Math.random() * 8000 }; // 2s - 10s
+          }
+          return null;
+
+        default:
+          return null;
+      }
+    },
+  },
 };
+

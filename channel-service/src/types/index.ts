@@ -1,4 +1,4 @@
-export type Channel = "email" | "sms";
+export type Channel = "email" | "sms" | "whatsapp";
 
 export type CommunicationStatus =
   | "queued"
