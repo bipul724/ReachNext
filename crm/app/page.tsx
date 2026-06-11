@@ -65,108 +65,109 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      {/* Autopilot CTA banner */}
-      <div className="relative overflow-hidden rounded-xl border border-primary/10 bg-radial-[circle_at_right] from-primary/10 via-muted/40 to-muted/20 p-6 md:p-8">
-        <div className="max-w-xl space-y-4">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-            <Sparkles className="h-3.5 w-3.5" />
-            AI-Native Marketing
+      {/* Autopilot CTA banner - Premium Glassmorphism */}
+      <div className="relative overflow-hidden rounded-2xl glass-card p-8 md:p-10 border-primary/20 shadow-2xl">
+        <div className="absolute inset-0 premium-gradient opacity-100" />
+        <div className="relative z-10 max-w-xl space-y-5">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold text-accent border border-accent/30">
+            <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+            AI-Native Marketing Engine
           </div>
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">
-            Launch campaign drafts using plain English objectives
+          <h2 className="text-3xl font-bold tracking-tight text-balance text-foreground">
+            Launch campaigns with plain English objectives
           </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Let the CampaignOS multi-agent brain size target segments, suggest timing & channels, and draft personalized coffee promos in seconds.
+          <p className="text-sm text-muted-foreground leading-relaxed font-medium">
+            The CampaignOS multi-agent brain sizes target segments, suggests optimal channels and timing, and drafts personalized messages in seconds.
           </p>
           <Link href="/campaigns/new">
-            <Button className="mt-2 font-semibold">
-              Create Campaign Autopilot
-              <ArrowUpRight className="h-4 w-4 ml-1" />
+            <Button className="mt-3 font-bold text-base h-11 gap-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              Create Autopilot Campaign
+              <ArrowUpRight className="h-5 w-5" />
             </Button>
           </Link>
         </div>
-        <div className="absolute right-8 bottom-0 top-0 hidden w-64 items-center justify-center opacity-30 md:flex">
-          <Coffee className="h-40 w-40 text-primary" />
+        <div className="absolute right-0 bottom-0 top-0 hidden w-80 items-center justify-center opacity-15 md:flex pointer-events-none">
+          <Coffee className="h-48 w-48 text-primary blur-sm" />
         </div>
       </div>
 
-      {/* Stats Cards grid */}
+      {/* Stats Cards grid - Premium styling */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* Revenue */}
-        <Card className="hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+        <Card className="glass-card card-hover border-accent/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
               Total Revenue
             </CardTitle>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-orange-700 dark:bg-orange-950/20 dark:text-orange-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20 text-accent backdrop-blur-sm border border-accent/30">
               <TrendingUp className="h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-extrabold text-foreground">
               {formatCurrency(summary.totalRevenue)}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">
-              From {summary.totalOrders} attributed orders
+            <p className="text-[10px] text-muted-foreground mt-2 font-medium">
+              ₹ from {summary.totalOrders} orders
             </p>
           </CardContent>
         </Card>
 
         {/* Customers */}
-        <Card className="hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+        <Card className="glass-card card-hover border-primary/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
               Target Shoppers
             </CardTitle>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary backdrop-blur-sm border border-primary/30">
               <Users className="h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-extrabold text-foreground">
               {summary.totalCustomers.toLocaleString()}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">
-              Active subscriber profiles in DB
+            <p className="text-[10px] text-muted-foreground mt-2 font-medium">
+              Active profiles in database
             </p>
           </CardContent>
         </Card>
 
         {/* Campaigns */}
-        <Card className="hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+        <Card className="glass-card card-hover border-emerald-500/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
               Campaigns
             </CardTitle>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 backdrop-blur-sm border border-emerald-500/30">
               <Send className="h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-extrabold text-foreground">
               {summary.totalCampaigns}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">
-              Draft & launched campaigns
+            <p className="text-[10px] text-muted-foreground mt-2 font-medium">
+              Draft & active campaigns
             </p>
           </CardContent>
         </Card>
 
         {/* Sales Conversions */}
-        <Card className="hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-              Sales Conversions
+        <Card className="glass-card card-hover border-purple-500/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+              Sales Orders
             </CardTitle>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-50 text-purple-700 dark:bg-purple-950/20 dark:text-purple-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20 text-purple-600 dark:text-purple-400 backdrop-blur-sm border border-purple-500/30">
               <ShoppingBag className="h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-extrabold text-foreground">
               {summary.totalOrders.toLocaleString()}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">
+            <p className="text-[10px] text-muted-foreground mt-2 font-medium">
               Storewide purchases recorded
             </p>
           </CardContent>
@@ -176,10 +177,10 @@ export default function Dashboard() {
       {/* Chart & Highlights layout */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Sales by Store location Bar Chart */}
-        <Card className="md:col-span-2">
+        <Card className="glass-card md:col-span-2 border-primary/20">
           <CardHeader>
-            <CardTitle className="text-base font-bold">Sales by Cafe Location</CardTitle>
-            <CardDescription>Attributed store revenue across locations</CardDescription>
+            <CardTitle className="text-lg font-bold text-foreground">Sales by Cafe Location</CardTitle>
+            <CardDescription className="text-muted-foreground">Revenue performance across store locations</CardDescription>
           </CardHeader>
           <CardContent className="h-80">
             <ResponsiveContainer width="100%" height="100%">
@@ -221,10 +222,13 @@ export default function Dashboard() {
         </Card>
 
         {/* AI Performance Quick stats */}
-        <Card>
+        <Card className="glass-card border-accent/20">
           <CardHeader>
-            <CardTitle className="text-base font-bold">AI Autopilot Performance</CardTitle>
-            <CardDescription>Key success ratios across launched channels</CardDescription>
+            <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-accent" />
+              AI Autopilot Performance
+            </CardTitle>
+            <CardDescription>Key success metrics across channels</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
@@ -271,15 +275,15 @@ export default function Dashboard() {
       {/* Grid of Tables */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Recent Campaigns */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+        <Card className="glass-card border-primary/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
             <div>
-              <CardTitle className="text-base font-bold">Recent Campaigns</CardTitle>
-              <CardDescription>Latest campaign drafts and executions</CardDescription>
+              <CardTitle className="text-lg font-bold text-foreground">Recent Campaigns</CardTitle>
+              <CardDescription>Latest executions and drafts</CardDescription>
             </div>
             <Link href="/campaigns">
-              <Button variant="ghost" size="sm" className="text-xs">
-                View All
+              <Button variant="ghost" size="sm" className="text-xs font-semibold text-primary hover:bg-primary/10">
+                View All →
               </Button>
             </Link>
           </CardHeader>
@@ -318,15 +322,15 @@ export default function Dashboard() {
         </Card>
 
         {/* Recent Orders */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+        <Card className="glass-card border-emerald-500/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
             <div>
-              <CardTitle className="text-base font-bold">Recent Store Orders</CardTitle>
-              <CardDescription>Latest coffee transactions synced in DB</CardDescription>
+              <CardTitle className="text-lg font-bold text-foreground">Recent Store Orders</CardTitle>
+              <CardDescription>Latest transactions in database</CardDescription>
             </div>
             <Link href="/customers">
-              <Button variant="ghost" size="sm" className="text-xs">
-                View Customers
+              <Button variant="ghost" size="sm" className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10">
+                View All →
               </Button>
             </Link>
           </CardHeader>

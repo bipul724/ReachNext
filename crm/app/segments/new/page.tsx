@@ -194,14 +194,16 @@ export default function NewSegment() {
         {/* Sidebar details */}
         <div className="space-y-6 md:col-span-2">
           {/* Card 1: AI Prompt generator */}
-          <Card className="border-primary/10 bg-radial-[circle_at_right] from-primary/5 via-transparent to-transparent">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-bold flex items-center gap-1.5">
-                <Sparkles className="h-4.5 w-4.5 text-primary" />
-                Describe your audience goal
+          <Card className="glass-card border-primary/20 premium-gradient">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-bold flex items-center gap-2.5 text-foreground">
+                <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center border border-primary/30 backdrop-blur-sm">
+                  <Sparkles className="h-4.5 w-4.5 text-primary" />
+                </div>
+                Describe your Audience Goal
               </CardTitle>
-              <CardDescription>
-                AI will compile filters, name the segment, and write a summary.
+              <CardDescription className="font-medium">
+                AI will compile filters, generate segment name & description.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -229,11 +231,11 @@ export default function NewSegment() {
           </Card>
 
           {/* Card 2: Rules builder */}
-          <Card>
+          <Card className="glass-card border-primary/20">
             <CardHeader>
-              <CardTitle className="text-base font-bold">Segment Criteria</CardTitle>
+              <CardTitle className="text-lg font-bold text-foreground">Segment Criteria</CardTitle>
               <CardDescription>
-                Customize and edit filter constraints for customer targeting.
+                Customize filter rules for audience targeting.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -322,13 +324,13 @@ export default function NewSegment() {
 
         {/* Live preview section */}
         <div className="space-y-6">
-          <Card className="h-fit sticky top-24">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-bold flex items-center justify-between">
+          <Card className="glass-card h-fit sticky top-24 border-accent/20">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-bold flex items-center justify-between text-foreground">
                 <span>Audience Preview</span>
-                {isPreviewLoading && <Loader2 className="h-4 w-4 animate-spin text-primary" />}
+                {isPreviewLoading && <Loader2 className="h-4 w-4 animate-spin text-accent" />}
               </CardTitle>
-              <CardDescription>Real-time database query results</CardDescription>
+              <CardDescription>Real-time matching profiles</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="rounded-lg bg-muted/40 p-4 border border-border/60 text-center">

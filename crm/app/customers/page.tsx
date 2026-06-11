@@ -210,16 +210,16 @@ export default function Customers() {
       </div>
 
       {/* Main Database Table card */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-bold flex items-center justify-between">
+      <Card className="glass-card border-primary/20">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg font-bold flex items-center justify-between text-foreground">
             <span>Shoppers Directory</span>
-            <span className="text-xs text-muted-foreground font-medium">
-              Showing {data.items.length} of {data.total} profiles
+            <span className="text-xs text-muted-foreground font-semibold bg-muted/40 px-3 py-1.5 rounded-full border border-muted">
+              {data.items.length} of {data.total}
             </span>
           </CardTitle>
           <CardDescription>
-            Database of customer subscribers, total spends, and locations.
+            Customer profiles with engagement & transaction history.
           </CardDescription>
         </CardHeader>
         <CardContent>

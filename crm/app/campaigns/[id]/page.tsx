@@ -142,76 +142,84 @@ export default function CampaignDetails({ params }: PageProps) {
         </p>
       </div>
 
-      {/* KPI Cards Grid */}
+      {/* KPI Cards Grid - Premium styling */}
       <div className="grid gap-4 md:grid-cols-4">
         {/* Attributed Revenue */}
-        <Card className="hover:shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between pb-1.5 pt-4">
+        <Card className="glass-card card-hover border-emerald-500/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5">
             <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
               Attributed Revenue
             </CardTitle>
-            <TrendingUp className="h-4 w-4 text-emerald-500" />
+            <div className="h-8 w-8 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 backdrop-blur-sm">
+              <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            </div>
           </CardHeader>
           <CardContent className="pb-4">
-            <div className="text-xl font-extrabold text-foreground">
+            <div className="text-2xl font-extrabold text-foreground">
               ₹{revenue.toLocaleString()}
             </div>
-            <p className="text-[9px] text-muted-foreground mt-0.5">
-              Collected from {converted} sales orders
+            <p className="text-[9px] text-muted-foreground mt-1 font-medium">
+              from {converted} orders
             </p>
           </CardContent>
         </Card>
 
         {/* Conversions */}
-        <Card className="hover:shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between pb-1.5 pt-4">
+        <Card className="glass-card card-hover border-primary/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5">
             <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
               Sales Orders
             </CardTitle>
-            <ShoppingBag className="h-4 w-4 text-primary" />
+            <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center border border-primary/30 backdrop-blur-sm">
+              <ShoppingBag className="h-4 w-4 text-primary" />
+            </div>
           </CardHeader>
           <CardContent className="pb-4">
-            <div className="text-xl font-extrabold text-foreground">
+            <div className="text-2xl font-extrabold text-foreground">
               {converted} / {sent}
             </div>
-            <p className="text-[9px] text-muted-foreground mt-0.5">
-              Conversions out of dispatched messages
+            <p className="text-[9px] text-muted-foreground mt-1 font-medium">
+              conversions from dispatched
             </p>
           </CardContent>
         </Card>
 
         {/* Conversion rate */}
-        <Card className="hover:shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between pb-1.5 pt-4">
+        <Card className="glass-card card-hover border-blue-500/20">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5">
             <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
               Funnel Conversion
             </CardTitle>
-            <Users className="h-4 w-4 text-blue-500" />
+            <div className="h-8 w-8 rounded-lg bg-blue-500/20 flex items-center justify-center border border-blue-500/30 backdrop-blur-sm">
+              <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            </div>
           </CardHeader>
           <CardContent className="pb-4">
-            <div className="text-xl font-extrabold text-foreground">
+            <div className="text-2xl font-extrabold text-foreground">
               {sent > 0 ? ((converted / sent) * 100).toFixed(1) : "0.0"}%
             </div>
-            <p className="text-[9px] text-muted-foreground mt-0.5">
-              Overall campaign conversion rate
+            <p className="text-[9px] text-muted-foreground mt-1 font-medium">
+              overall conversion rate
             </p>
           </CardContent>
         </Card>
 
         {/* Success Score */}
-        <Card className="hover:shadow-sm border-primary/10 bg-primary/[0.02]">
-          <CardHeader className="flex flex-row items-center justify-between pb-1.5 pt-4">
+        <Card className="glass-card card-hover border-accent/20 bg-accent/5">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 pt-5">
             <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
               Success Score
             </CardTitle>
-            <Sparkles className="h-4 w-4 text-orange-500" />
+            <div className="h-8 w-8 rounded-lg bg-accent/20 flex items-center justify-center border border-accent/30 backdrop-blur-sm">
+              <Sparkles className="h-4 w-4 text-accent" />
+            </div>
           </CardHeader>
           <CardContent className="pb-4">
-            <div className="text-xl font-extrabold text-foreground">
+            <div className="text-2xl font-extrabold text-foreground">
               {successScore}/100
             </div>
-            <p className="text-[9px] text-muted-foreground mt-0.5">
-              Funnel conversion efficiency score
+            <p className="text-[9px] text-muted-foreground mt-1 font-medium">
+              funnel efficiency score
             </p>
           </CardContent>
         </Card>
@@ -220,18 +228,18 @@ export default function CampaignDetails({ params }: PageProps) {
       {/* Funnel chart and AI insights grid */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Live Delivery Funnel Chart */}
-        <Card className="md:col-span-2">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold flex items-center justify-between">
+        <Card className="glass-card md:col-span-2 border-primary/20">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-bold flex items-center justify-between text-foreground">
               <span>Conversion Funnel</span>
               {campaign.status === "sending" && (
-                <span className="text-[10px] text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+                <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold flex items-center gap-1.5 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  Callbacks flowing...
+                  Callbacks flowing
                 </span>
               )}
             </CardTitle>
-            <CardDescription>Visual performance stages of message outreach</CardDescription>
+            <CardDescription>Message performance through conversion stages</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
             {sent === 0 ? (
@@ -300,13 +308,15 @@ export default function CampaignDetails({ params }: PageProps) {
         </Card>
 
         {/* AI Performance Insights */}
-        <Card className="h-fit">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold flex items-center gap-1.5">
-              <Sparkles className="h-4.5 w-4.5 text-primary" />
+        <Card className="glass-card h-fit border-accent/20 sticky top-32">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-bold flex items-center gap-2 text-foreground">
+              <div className="h-8 w-8 rounded-lg bg-accent/20 flex items-center justify-center border border-accent/30 backdrop-blur-sm">
+                <Sparkles className="h-4.5 w-4.5 text-accent" />
+              </div>
               AI Performance Insights
             </CardTitle>
-            <CardDescription>Plain-English marketing results explainer</CardDescription>
+            <CardDescription>Campaign performance analysis</CardDescription>
           </CardHeader>
           <CardContent>
             {isInsightsLoading ? (
@@ -329,10 +339,10 @@ export default function CampaignDetails({ params }: PageProps) {
       {/* Bottom specs details */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Campaign specs detail */}
-        <Card>
+        <Card className="glass-card border-primary/20">
           <CardHeader>
-            <CardTitle className="text-base font-bold">Campaign Strategy Specs</CardTitle>
-            <CardDescription>The decisions generated by AI strategy engine before launch</CardDescription>
+            <CardTitle className="text-lg font-bold text-foreground">Campaign Strategy Specs</CardTitle>
+            <CardDescription>AI-generated strategic rationale</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-xs">
             {stats.explainChannel && (
@@ -357,10 +367,10 @@ export default function CampaignDetails({ params }: PageProps) {
         </Card>
 
         {/* Message Template specs */}
-        <Card>
+        <Card className="glass-card border-primary/20">
           <CardHeader>
-            <CardTitle className="text-base font-bold">Message Promo Specs</CardTitle>
-            <CardDescription>Personalized copy copywriting justifications</CardDescription>
+            <CardTitle className="text-lg font-bold text-foreground">Message Promo Specs</CardTitle>
+            <CardDescription>Copywriting personalization rationale</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-xs">
             <div className="space-y-1">
@@ -380,13 +390,15 @@ export default function CampaignDetails({ params }: PageProps) {
       </div>
 
       {/* Agent thoughts timeline */}
-      <Card className="mt-6">
+      <Card className="glass-card border-primary/20 mt-6">
         <CardHeader>
-          <CardTitle className="text-base font-bold flex items-center gap-1.5">
-            <Sparkles className="h-4.5 w-4.5 text-primary" />
-            Agent Execution & Thinking Timeline
+          <CardTitle className="text-lg font-bold flex items-center gap-2.5 text-foreground">
+            <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center border border-primary/30 backdrop-blur-sm">
+              <Sparkles className="h-4.5 w-4.5 text-primary" />
+            </div>
+            Agent Execution Timeline
           </CardTitle>
-          <CardDescription>Chronological reasoning path of coordinating agents recorded during campaign generation</CardDescription>
+          <CardDescription>Agent reasoning path during generation</CardDescription>
         </CardHeader>
         <CardContent>
           <AgentThoughtsTimeline thoughts={campaign.agentThoughts} />

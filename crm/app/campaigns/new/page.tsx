@@ -126,14 +126,16 @@ export default function NewCampaign() {
 
       {/* 1. INITIAL GOAL INPUT VIEW */}
       {!isGenerating && !workspace && (
-        <Card className="border-primary/15 bg-radial-[circle_at_right] from-primary/5 via-transparent to-transparent">
+        <Card className="glass-card border-primary/20 premium-gradient shadow-2xl">
           <CardHeader>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Sparkles className="h-5.5 w-5.5 text-primary" />
+            <CardTitle className="text-2xl font-bold flex items-center gap-2.5 text-foreground">
+              <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center border border-primary/30 backdrop-blur-sm">
+                <Sparkles className="h-6 w-6 text-primary" />
+              </div>
               Campaign Autopilot Workspace
             </CardTitle>
-            <CardDescription>
-              Input your marketing goal in plain English. The CampaignOS agent pipeline will construct the segment filters, sizing, channel strategy, and promos automatically.
+            <CardDescription className="text-base">
+              Describe your marketing goal in plain English. The AI will construct audience segments, sizing, channel strategy, and personalized messages.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -178,13 +180,15 @@ export default function NewCampaign() {
 
       {/* 2. LOADING STATE CONTAINER WITH SEQUENCE STEPS */}
       {isGenerating && (
-        <Card className="p-8 text-center space-y-6 animate-pulse">
+        <Card className="glass-card border-primary/20 p-8 text-center space-y-8 shadow-2xl">
           <div className="flex justify-center">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center border border-primary/30 backdrop-blur-sm">
+              <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            </div>
           </div>
-          <div className="max-w-md mx-auto space-y-2">
-            <h3 className="font-bold text-lg text-foreground">Coordinating AI Agents</h3>
-            <p className="text-xs text-muted-foreground">The CampaignOS orchestrator is building your campaign draft.</p>
+          <div className="max-w-md mx-auto space-y-3">
+            <h3 className="font-bold text-2xl text-foreground">Coordinating AI Agents</h3>
+            <p className="text-sm text-muted-foreground font-medium">The CampaignOS orchestrator is composing your campaign...</p>
           </div>
           <div className="max-w-lg mx-auto text-left border border-border rounded-lg p-4 bg-muted/20 text-xs space-y-3">
             {loadingSteps.map((step, idx) => {
@@ -217,13 +221,13 @@ export default function NewCampaign() {
         <div className="grid gap-6 md:grid-cols-3 animate-in fade-in slide-in-from-bottom-6 duration-500">
           <div className="space-y-6 md:col-span-2">
             {/* Opportunity sizing */}
-            <Card className="border-primary/10">
-              <CardHeader className="bg-primary/5 pb-3">
-                <CardTitle className="text-base font-bold flex items-center justify-between">
-                  <span>Discovered Marketing Opportunity</span>
-                  <Badge className="bg-primary text-primary-foreground">Opportunity sizing</Badge>
+            <Card className="glass-card border-accent/20">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-bold flex items-center justify-between text-foreground">
+                  <span>Marketing Opportunity</span>
+                  <Badge className="bg-accent/20 text-accent border border-accent/30 font-semibold">Sizing</Badge>
                 </CardTitle>
-                <CardDescription>Estimated potential business value resolved against DB</CardDescription>
+                <CardDescription>Potential revenue value from database</CardDescription>
               </CardHeader>
               <CardContent className="pt-6 space-y-4">
                 <div className="grid gap-4 sm:grid-cols-3">
@@ -257,13 +261,13 @@ export default function NewCampaign() {
             </Card>
 
             {/* Target Audience details */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base font-bold flex items-center justify-between">
+            <Card className="glass-card border-primary/20">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-bold flex items-center justify-between text-foreground">
                   <span>Target Audience Segment</span>
-                  <Badge variant="outline">{workspace.segmentName}</Badge>
+                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 font-semibold">{workspace.segmentName}</Badge>
                 </CardTitle>
-                <CardDescription>{workspace.description}</CardDescription>
+                <CardDescription className="font-medium">{workspace.description}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="rounded-lg border border-border/80 bg-muted/10 p-4 text-xs space-y-2">
@@ -276,15 +280,15 @@ export default function NewCampaign() {
             </Card>
 
             {/* Content preview */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base font-bold flex items-center justify-between">
-                  <span>Draft Message template</span>
-                  <Badge variant="outline" className="uppercase font-bold text-[9px]">
+            <Card className="glass-card border-primary/20">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-bold flex items-center justify-between text-foreground">
+                  <span>Draft Message Template</span>
+                  <Badge variant="outline" className="uppercase font-bold text-[10px] bg-primary/10 text-primary border-primary/20">
                     {workspace.channel}
                   </Badge>
                 </CardTitle>
-                <CardDescription>Personalized content copy</CardDescription>
+                <CardDescription>Personalized content & copy</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {workspace.subject && (
@@ -310,13 +314,15 @@ export default function NewCampaign() {
             </Card>
 
             {/* Agent thoughts timeline */}
-            <Card>
+            <Card className="glass-card border-primary/20">
               <CardHeader>
-                <CardTitle className="text-base font-bold flex items-center gap-1.5">
-                  <Sparkles className="h-4.5 w-4.5 text-primary" />
-                  Agent Execution & Thinking Timeline
+                <CardTitle className="text-lg font-bold flex items-center gap-2 text-foreground">
+                  <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center border border-primary/30 backdrop-blur-sm">
+                    <Sparkles className="h-4.5 w-4.5 text-primary" />
+                  </div>
+                  Agent Execution Timeline
                 </CardTitle>
-                <CardDescription>Chronological reasoning path of coordinating agents</CardDescription>
+                <CardDescription>Agent reasoning & decision paths</CardDescription>
               </CardHeader>
               <CardContent>
                 <AgentThoughtsTimeline thoughts={workspace.agentThoughts} />
@@ -326,10 +332,10 @@ export default function NewCampaign() {
 
           <div className="space-y-6">
             {/* Strategy recommendations */}
-            <Card>
+            <Card className="glass-card border-primary/20 sticky top-24">
               <CardHeader>
-                <CardTitle className="text-base font-bold">Marketing Strategy</CardTitle>
-                <CardDescription>Decisions generated by AI strategy engine</CardDescription>
+                <CardTitle className="text-lg font-bold text-foreground">Marketing Strategy</CardTitle>
+                <CardDescription>AI-generated strategic decisions</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 text-xs">
                 {/* Channel choice */}
@@ -371,13 +377,15 @@ export default function NewCampaign() {
             </Card>
 
             {/* Launch Controller card */}
-            <Card className="border-emerald-500/20 bg-emerald-50/10 dark:bg-emerald-950/5">
-              <CardHeader className="pb-3 text-center">
-                <CardTitle className="text-base font-bold text-foreground flex items-center justify-center gap-1.5">
-                  <ShieldCheck className="h-5 w-5 text-emerald-600" />
+            <Card className="glass-card border-emerald-500/30 bg-emerald-500/5">
+              <CardHeader className="pb-4 text-center">
+                <CardTitle className="text-lg font-bold text-foreground flex items-center justify-center gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 backdrop-blur-sm">
+                    <ShieldCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                  </div>
                   One-Click Launch
                 </CardTitle>
-                <CardDescription>Launches draft to simulator immediately</CardDescription>
+                <CardDescription>Send campaign to webhook simulator</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Button
