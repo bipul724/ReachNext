@@ -16,8 +16,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Brew & Co. CampaignOS",
-  description: "AI-native Campaign Operating System for Brew & Co.",
+  title: "Xeno - AI-Native Marketing for Coffee Brands",
+  description: "AI-powered campaign automation and customer management for premium D2C coffee retailers",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    userScalable: false,
+  },
 };
 
 export default function RootLayout({
@@ -26,23 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-background">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}
       >
-        <div className="relative flex min-h-screen">
-          {/* Sidebar Nav */}
-          <Sidebar />
-
-          {/* Main Layout Area */}
-          <div className="flex-1 pl-64 flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-1 p-8 bg-muted/20">
-              {children}
-            </main>
-          </div>
-        </div>
-
+        <>{children}</>
         {/* Global Toast Provider */}
         <Toaster position="top-right" closeButton richColors />
       </body>

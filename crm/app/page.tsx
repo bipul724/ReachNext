@@ -1,371 +1,367 @@
-"use client";
+'use client'
 
-import useSWR from "swr";
-import Link from "next/link";
-import { fetcher } from "../lib/api";
-import {
-  TrendingUp,
-  Users,
-  Send,
-  ShoppingBag,
-  ArrowUpRight,
-  Coffee,
-  Sparkles,
-  Loader2,
-} from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from "recharts";
-import { Badge } from "../components/ui/badge";
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Sparkles, TrendingUp, Users, Zap, Mail, BarChart3, Coffee, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
-// Helper to format currency in INR Indian numbering format
-function formatCurrency(amount: number) {
-  if (amount >= 100000) {
-    return `₹${(amount / 100000).toFixed(2)}L`;
-  }
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
-
-const COLORS = ["#7c2d12", "#9a3412", "#c2410c", "#ea580c", "#f97316"];
-
-export default function Dashboard() {
-  const { data, error, isLoading } = useSWR("/api/dashboard/stats", fetcher);
-
-  if (isLoading) {
-    return (
-      <div className="flex h-[70vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-6 text-destructive">
-        <h3 className="font-bold">Error loading stats</h3>
-        <p className="text-sm mt-1">{error.message || "Please check your network and database connections."}</p>
-      </div>
-    );
-  }
-
-  const { summary, locationSales, recentCampaigns, recentOrders } = data;
-
+export default function LandingPage() {
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      {/* Autopilot CTA banner - Premium Glassmorphism */}
-      <div className="relative overflow-hidden rounded-2xl glass-card p-8 md:p-10 border-primary/20 shadow-2xl">
-        <div className="absolute inset-0 premium-gradient opacity-100" />
-        <div className="relative z-10 max-w-xl space-y-5">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold text-accent border border-accent/30">
-            <Sparkles className="h-3.5 w-3.5 animate-pulse" />
-            AI-Native Marketing Engine
+    <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 backdrop-blur-lg border-b border-border bg-background/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+              <Coffee className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <span className="text-xl font-bold text-foreground">Xeno</span>
           </div>
-          <h2 className="text-3xl font-bold tracking-tight text-balance text-foreground">
-            Launch campaigns with plain English objectives
-          </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-            The CampaignOS multi-agent brain sizes target segments, suggests optimal channels and timing, and drafts personalized messages in seconds.
-          </p>
-          <Link href="/campaigns/new">
-            <Button className="mt-3 font-bold text-base h-11 gap-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              Create Autopilot Campaign
-              <ArrowUpRight className="h-5 w-5" />
-            </Button>
+          <div className="hidden md:flex items-center gap-8">
+            <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition">Features</a>
+            <a href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition">How It Works</a>
+            <a href="#benefits" className="text-sm font-medium text-muted-foreground hover:text-foreground transition">Benefits</a>
+          </div>
+          <Link href="/login">
+            <Button className="font-semibold">Get Started</Button>
           </Link>
         </div>
-        <div className="absolute right-0 bottom-0 top-0 hidden w-80 items-center justify-center opacity-15 md:flex pointer-events-none">
-          <Coffee className="h-48 w-48 text-primary blur-sm" />
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent pointer-events-none" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative z-10">
+          <div className="space-y-6 text-center max-w-3xl mx-auto">
+            <div className="inline-block">
+              <div className="glass-card px-4 py-2 rounded-full border-primary/20">
+                <span className="text-xs font-bold text-accent uppercase tracking-wider flex items-center gap-1">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  AI-Native Marketing
+                </span>
+              </div>
+            </div>
+            
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground tracking-tight text-balance">
+              Your AI-Powered Coffee Marketing Brain
+            </h1>
+            
+            <p className="text-lg text-muted-foreground text-balance leading-relaxed max-w-2xl mx-auto">
+              Launch targeted campaigns, nurture customer relationships, and scale your D2C coffee business—all with plain English objectives and AI-powered automation.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+              <Link href="/campaigns/new">
+                <Button size="lg" className="font-bold text-base gap-2 shadow-lg hover:shadow-xl transition-all">
+                  Launch Demo Campaign
+                  <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button size="lg" variant="outline" className="font-semibold border-primary/20 hover:bg-primary/5">
+                  View Dashboard
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Hero Card */}
+          <div className="mt-16 md:mt-20">
+            <div className="glass-card p-1 rounded-2xl border-primary/20 shadow-2xl">
+              <div className="bg-muted/40 rounded-xl p-8 md:p-12 aspect-video flex items-center justify-center">
+                <div className="text-center space-y-2">
+                  <Coffee className="h-16 w-16 mx-auto text-primary/30" />
+                  <p className="text-sm text-muted-foreground font-medium">Dashboard Preview</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Stats Cards grid - Premium styling */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {/* Revenue */}
-        <Card className="glass-card card-hover border-accent/20">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
-              Total Revenue
-            </CardTitle>
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20 text-accent backdrop-blur-sm border border-accent/30">
-              <TrendingUp className="h-5 w-5" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-foreground">
-              {formatCurrency(summary.totalRevenue)}
-            </div>
-            <p className="text-[10px] text-muted-foreground mt-2 font-medium">
-              ₹ from {summary.totalOrders} orders
+      {/* Features Section */}
+      <section id="features" className="py-24 md:py-32">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+          <div className="text-center space-y-4 max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+              Powerful Features Built for Scale
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Everything you need to run sophisticated marketing campaigns with zero complexity.
             </p>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Customers */}
-        <Card className="glass-card card-hover border-primary/20">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
-              Target Shoppers
-            </CardTitle>
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary backdrop-blur-sm border border-primary/30">
-              <Users className="h-5 w-5" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-foreground">
-              {summary.totalCustomers.toLocaleString()}
-            </div>
-            <p className="text-[10px] text-muted-foreground mt-2 font-medium">
-              Active profiles in database
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Feature 1 */}
+            <Card className="glass-card border-primary/20 card-hover">
+              <CardHeader>
+                <div className="h-10 w-10 rounded-lg bg-accent/20 flex items-center justify-center border border-accent/30 mb-3">
+                  <Sparkles className="h-6 w-6 text-accent" />
+                </div>
+                <CardTitle>Campaign Autopilot</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Describe your marketing goal in plain English. AI handles segment sizing, channel selection, and copywriting.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 2 */}
+            <Card className="glass-card border-primary/20 card-hover">
+              <CardHeader>
+                <div className="h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center border border-primary/30 mb-3">
+                  <Users className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle>Smart Segmentation</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Build dynamic audience segments with flexible filtering. Real-time preview shows exactly who you&apos;re reaching.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 3 */}
+            <Card className="glass-card border-primary/20 card-hover">
+              <CardHeader>
+                <div className="h-10 w-10 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 mb-3">
+                  <BarChart3 className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <CardTitle>Live Analytics</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Track campaign performance in real-time. Conversion funnels, revenue attribution, and AI-powered insights included.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 4 */}
+            <Card className="glass-card border-primary/20 card-hover">
+              <CardHeader>
+                <div className="h-10 w-10 rounded-lg bg-blue-500/20 flex items-center justify-center border border-blue-500/30 mb-3">
+                  <Mail className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <CardTitle>Multi-Channel Dispatch</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Send personalized messages across email, SMS, and more. Strategy engine recommends optimal timing and channels.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 5 */}
+            <Card className="glass-card border-primary/20 card-hover">
+              <CardHeader>
+                <div className="h-10 w-10 rounded-lg bg-purple-500/20 flex items-center justify-center border border-purple-500/30 mb-3">
+                  <Zap className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                </div>
+                <CardTitle>Instant Personalization</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  AI generates tailored messages for each customer segment. Every message feels personal and relevant.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Feature 6 */}
+            <Card className="glass-card border-primary/20 card-hover">
+              <CardHeader>
+                <div className="h-10 w-10 rounded-lg bg-orange-500/20 flex items-center justify-center border border-orange-500/30 mb-3">
+                  <TrendingUp className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+                </div>
+                <CardTitle>ROI Optimization</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Automatic order attribution. Know exactly which campaigns drove sales and customer lifetime value.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-24 md:py-32 bg-muted/30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+          <div className="text-center space-y-4 max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+              How CampaignOS Works
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Three simple steps to launch sophisticated campaigns in minutes, not weeks.
             </p>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Campaigns */}
-        <Card className="glass-card card-hover border-emerald-500/20">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
-              Campaigns
-            </CardTitle>
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 backdrop-blur-sm border border-emerald-500/30">
-              <Send className="h-5 w-5" />
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Step 1 */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-primary text-primary-foreground font-bold text-lg">
+                1
+              </div>
+              <h3 className="text-xl font-bold text-foreground">Describe Your Goal</h3>
+              <p className="text-muted-foreground">
+                Tell the AI your marketing objective in plain English. "Reach espresso lovers who bought within 30 days" is enough.
+              </p>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-foreground">
-              {summary.totalCampaigns}
+
+            {/* Step 2 */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-primary text-primary-foreground font-bold text-lg">
+                2
+              </div>
+              <h3 className="text-xl font-bold text-foreground">AI Composes Strategy</h3>
+              <p className="text-muted-foreground">
+                The multi-agent orchestrator sizes your audience, picks channels, and writes personalized copy in seconds.
+              </p>
             </div>
-            <p className="text-[10px] text-muted-foreground mt-2 font-medium">
-              Draft & active campaigns
+
+            {/* Step 3 */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-primary text-primary-foreground font-bold text-lg">
+                3
+              </div>
+              <h3 className="text-xl font-bold text-foreground">Launch & Optimize</h3>
+              <p className="text-muted-foreground">
+                Deploy with one click. Watch real-time analytics and AI insights guide performance optimization.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section id="benefits" className="py-24 md:py-32">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+          <div className="text-center space-y-4 max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+              Why Coffee Brands Love Xeno
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Built specifically for premium D2C roasters and retailers.
             </p>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Sales Conversions */}
-        <Card className="glass-card card-hover border-purple-500/20">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
-              Sales Orders
-            </CardTitle>
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20 text-purple-600 dark:text-purple-400 backdrop-blur-sm border border-purple-500/30">
-              <ShoppingBag className="h-5 w-5" />
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="glass-card border-primary/20 p-8 space-y-4">
+              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <span className="text-accent">→</span>
+                90% Faster Campaign Creation
+              </h3>
+              <p className="text-muted-foreground">
+                From idea to launch in minutes. No more juggling spreadsheets, email platforms, and manual targeting.
+              </p>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-foreground">
-              {summary.totalOrders.toLocaleString()}
+
+            <div className="glass-card border-primary/20 p-8 space-y-4">
+              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <span className="text-accent">→</span>
+                10x Better Personalization
+              </h3>
+              <p className="text-muted-foreground">
+                Every customer gets a tailored message. AI learns what resonates with each segment of your audience.
+              </p>
             </div>
-            <p className="text-[10px] text-muted-foreground mt-2 font-medium">
-              Storewide purchases recorded
+
+            <div className="glass-card border-primary/20 p-8 space-y-4">
+              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <span className="text-accent">→</span>
+                Complete ROI Visibility
+              </h3>
+              <p className="text-muted-foreground">
+                Know exactly which campaigns drive sales. Automatic order attribution for every campaign.
+              </p>
+            </div>
+
+            <div className="glass-card border-primary/20 p-8 space-y-4">
+              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <span className="text-accent">→</span>
+                Built for Coffee Retail
+              </h3>
+              <p className="text-muted-foreground">
+                Templates, strategies, and insights tailored to coffee sellers. Every feature designed for your business.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 md:py-32 bg-primary/5">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="glass-card border-primary/20 p-8 md:p-16 text-center space-y-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight text-balance">
+              Ready to Transform Your Marketing?
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Join premium coffee brands scaling with AI-powered campaigns. Start free, no credit card required.
             </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Chart & Highlights layout */}
-      <div className="grid gap-6 md:grid-cols-3">
-        {/* Sales by Store location Bar Chart */}
-        <Card className="glass-card md:col-span-2 border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold text-foreground">Sales by Cafe Location</CardTitle>
-            <CardDescription className="text-muted-foreground">Revenue performance across store locations</CardDescription>
-          </CardHeader>
-          <CardContent className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={locationSales}
-                margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
-                <XAxis
-                  dataKey="name"
-                  stroke="var(--muted-foreground)"
-                  fontSize={11}
-                  tickLine={false}
-                />
-                <YAxis
-                  stroke="var(--muted-foreground)"
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(val) => `₹${val / 1000}k`}
-                />
-                <Tooltip
-                  formatter={(value) => [`₹${Number(value).toLocaleString()}`, "Revenue"]}
-                  contentStyle={{
-                    backgroundColor: "var(--card)",
-                    borderColor: "var(--border)",
-                    borderRadius: "8px",
-                  }}
-                  labelStyle={{ fontWeight: "bold" }}
-                />
-                <Bar dataKey="sales" radius={[4, 4, 0, 0]} maxBarSize={45}>
-                  {locationSales.map((entry: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* AI Performance Quick stats */}
-        <Card className="glass-card border-accent/20">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-accent" />
-              AI Autopilot Performance
-            </CardTitle>
-            <CardDescription>Key success metrics across channels</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm font-medium">
-                <span>WhatsApp Conversion</span>
-                <span className="text-emerald-600 font-semibold">24.2%</span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                <div className="h-full w-[24.2%] rounded-full bg-emerald-500" />
-              </div>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+              <Link href="/campaigns/new">
+                <Button size="lg" className="font-bold text-base gap-2 shadow-lg hover:shadow-xl">
+                  Launch Your Campaign
+                  <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+              <p className="text-sm text-muted-foreground">
+                No setup required. 100% free for 14 days.
+              </p>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm font-medium">
-                <span>Email Click Rate</span>
-                <span className="text-orange-600 font-semibold">14.8%</span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                <div className="h-full w-[14.8%] rounded-full bg-orange-500" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm font-medium">
-                <span>SMS Delivery Success</span>
-                <span className="text-blue-600 font-semibold">91.5%</span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                <div className="h-full w-[91.5%] rounded-full bg-blue-500" />
-              </div>
-            </div>
-
-            <div className="rounded-lg bg-orange-50/50 dark:bg-orange-950/10 border border-orange-100 dark:border-orange-900/30 p-4 text-xs space-y-1 text-orange-800 dark:text-orange-300 leading-relaxed">
-              <span className="font-bold flex items-center gap-1">
-                <Sparkles className="h-3.5 w-3.5" />
-                AI Recommendation:
-              </span>
-              WhatsApp campaigns target premium cafe segments with 2.3x higher order conversion speeds compared to traditional SMS discount lists.
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Grid of Tables */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Recent Campaigns */}
-        <Card className="glass-card border-primary/20">
-          <CardHeader className="flex flex-row items-center justify-between pb-4">
+      {/* Footer */}
+      <footer className="border-t border-border py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <CardTitle className="text-lg font-bold text-foreground">Recent Campaigns</CardTitle>
-              <CardDescription>Latest executions and drafts</CardDescription>
-            </div>
-            <Link href="/campaigns">
-              <Button variant="ghost" size="sm" className="text-xs font-semibold text-primary hover:bg-primary/10">
-                View All →
-              </Button>
-            </Link>
-          </CardHeader>
-          <CardContent>
-            {recentCampaigns.length === 0 ? (
-              <p className="text-xs text-muted-foreground text-center py-6">No campaigns found. Create one above!</p>
-            ) : (
-              <div className="space-y-4">
-                {recentCampaigns.map((camp: any) => {
-                  const statusColors: Record<string, string> = {
-                    draft: "bg-muted text-muted-foreground",
-                    sending: "bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400",
-                    sent: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400",
-                    completed: "bg-purple-50 text-purple-700 dark:bg-purple-950/20 dark:text-purple-400",
-                  };
-
-                  return (
-                    <div key={camp.id} className="flex items-center justify-between border-b border-border/40 pb-3 last:border-0 last:pb-0">
-                      <div className="flex flex-col">
-                        <Link href={`/campaigns/${camp.id}`} className="text-sm font-semibold hover:underline text-foreground">
-                          {camp.name}
-                        </Link>
-                        <span className="text-[10px] text-muted-foreground mt-0.5">
-                          Segment: {camp.segment.name} • Channel: {camp.channel.toUpperCase()}
-                        </span>
-                      </div>
-                      <Badge className={statusColors[camp.status] || "bg-muted"} variant="outline">
-                        {camp.status}
-                      </Badge>
-                    </div>
-                  );
-                })}
+              <div className="flex items-center gap-2 mb-4">
+                <div className="h-6 w-6 rounded-lg bg-primary flex items-center justify-center">
+                  <Coffee className="h-4 w-4 text-primary-foreground" />
+                </div>
+                <span className="font-bold text-foreground">Xeno</span>
               </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Recent Orders */}
-        <Card className="glass-card border-emerald-500/20">
-          <CardHeader className="flex flex-row items-center justify-between pb-4">
+              <p className="text-xs text-muted-foreground">
+                AI-native marketing for premium D2C coffee brands.
+              </p>
+            </div>
             <div>
-              <CardTitle className="text-lg font-bold text-foreground">Recent Store Orders</CardTitle>
-              <CardDescription>Latest transactions in database</CardDescription>
+              <h4 className="font-semibold text-foreground text-sm mb-4">Product</h4>
+              <ul className="space-y-2">
+                <li><a href="#features" className="text-xs text-muted-foreground hover:text-foreground transition">Features</a></li>
+                <li><a href="#how-it-works" className="text-xs text-muted-foreground hover:text-foreground transition">How It Works</a></li>
+                <li><a href="#benefits" className="text-xs text-muted-foreground hover:text-foreground transition">Benefits</a></li>
+              </ul>
             </div>
-            <Link href="/customers">
-              <Button variant="ghost" size="sm" className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10">
-                View All →
-              </Button>
-            </Link>
-          </CardHeader>
-          <CardContent>
-            {recentOrders.length === 0 ? (
-              <p className="text-xs text-muted-foreground text-center py-6">No orders found.</p>
-            ) : (
-              <div className="space-y-4">
-                {recentOrders.map((order: any) => (
-                  <div key={order.id} className="flex items-center justify-between border-b border-border/40 pb-3 last:border-0 last:pb-0">
-                    <div className="flex flex-col">
-                      <span className="text-sm font-semibold text-foreground">
-                        {order.customer.name}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground mt-0.5">
-                        Location: {order.storeLocation} • {new Date(order.orderDate).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <span className="text-sm font-bold text-foreground">
-                        ₹{order.totalAmount.toLocaleString()}
-                      </span>
-                      {order.attributedCampaignId && (
-                        <Badge variant="outline" className="bg-emerald-50/50 text-[9px] text-emerald-700 border-emerald-100 py-0 px-1 mt-0.5">
-                          Attributed
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+            <div>
+              <h4 className="font-semibold text-foreground text-sm mb-4">Company</h4>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-xs text-muted-foreground hover:text-foreground transition">About</a></li>
+                <li><a href="#" className="text-xs text-muted-foreground hover:text-foreground transition">Blog</a></li>
+                <li><a href="#" className="text-xs text-muted-foreground hover:text-foreground transition">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground text-sm mb-4">Legal</h4>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-xs text-muted-foreground hover:text-foreground transition">Privacy</a></li>
+                <li><a href="#" className="text-xs text-muted-foreground hover:text-foreground transition">Terms</a></li>
+                <li><a href="#" className="text-xs text-muted-foreground hover:text-foreground transition">Cookies</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-border pt-8">
+            <p className="text-xs text-muted-foreground text-center">
+              © 2025 Xeno. All rights reserved. Built with ☕ for coffee brands.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
-  );
+  )
 }
