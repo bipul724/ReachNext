@@ -58,7 +58,10 @@ export default function CampaignDetails({ params }: PageProps) {
     campaign?.status === "sent" || campaign?.stats?.sent > 0
       ? `/api/campaigns/${id}/insights`
       : null,
-    fetcher
+    fetcher,
+    {
+      refreshInterval: isLive ? 2500 : 0,
+    }
   );
 
   // Stop polling if campaign status is draft, completed, or failed
