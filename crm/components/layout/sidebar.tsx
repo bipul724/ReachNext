@@ -25,7 +25,7 @@ const NAV_ITEMS = [
   },
   {
     name: "Compare",
-    href: "/campaigns/compare",
+    href: "/compare",
     icon: BarChart3,
   },
   {
