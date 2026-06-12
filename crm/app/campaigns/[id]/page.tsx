@@ -15,6 +15,7 @@ import {
   Loader2,
   AlertCircle,
   Activity,
+  Play,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
@@ -23,6 +24,7 @@ import { Button } from "../../../components/ui/button";
 import AgentThoughtsTimeline from "../../../components/agent-thoughts-timeline";
 import DeliveryActivityFeed from "../../../components/delivery-activity-feed";
 import AudienceSnapshotPanel from "../../../components/audience-snapshot-panel";
+import CampaignReplay from "../../../components/campaign-replay";
 
 function calculateSuccessScore(stats: any): number {
   const sent = stats.sent || 0;
@@ -54,6 +56,7 @@ export default function CampaignDetails({ params }: PageProps) {
 
   // 1. Fetch Campaign data (Poll every 2.5s if status is sending/active)
   const [isLive, setIsLive] = useState(true);
+  const [showReplay, setShowReplay] = useState(false);
   const { campaign, isLoading, isError: error } = useCampaign(id, isLive);
 
   // 2. Fetch AI Performance Insights
@@ -387,6 +390,36 @@ export default function CampaignDetails({ params }: PageProps) {
           />
         </CardContent>
       </Card>
+
+      {/* Campaign Replay — uses same events, no duplicate fetch */}
+      {eventsData?.events?.length > 0 && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-bold flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Play className="h-4.5 w-4.5 text-primary" />
+                Campaign Replay
+              </span>
+              <Button
+                size="sm"
+                variant={showReplay ? "outline" : "default"}
+                onClick={() => setShowReplay(!showReplay)}
+                className="h-7 text-xs gap-1.5"
+              >
+                {showReplay ? "Hide Replay" : "▶ Replay Campaign"}
+              </Button>
+            </CardTitle>
+            <CardDescription>
+              Watch the delivery lifecycle unfold chronologically using real webhook events
+            </CardDescription>
+          </CardHeader>
+          {showReplay && (
+            <CardContent>
+              <CampaignReplay events={eventsData.events} />
+            </CardContent>
+          )}
+        </Card>
+      )}
 
       {/* Audience Snapshot — derived from Communications, no polling needed */}
       <Card>

@@ -8,6 +8,7 @@ import {
   Layers,
   Send,
   Coffee,
+  BarChart3,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 
@@ -21,6 +22,11 @@ const NAV_ITEMS = [
     name: "Campaigns",
     href: "/campaigns",
     icon: Send,
+  },
+  {
+    name: "Compare",
+    href: "/campaigns/compare",
+    icon: BarChart3,
   },
   {
     name: "Segments",
@@ -57,7 +63,7 @@ export function Sidebar() {
           const isActive =
             item.href === "/"
               ? pathname === "/"
-              : pathname.startsWith(item.href);
+              : item.href === pathname || pathname.startsWith(item.href + "/");
 
           return (
             <Link
