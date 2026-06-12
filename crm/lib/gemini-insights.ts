@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // ---------------------------------------------------------------------------
-// This file is intentionally separate from `lib/gemini.ts` (which wraps the
+// This file is intentionally separate from `lib/groq.ts` (which wraps the
 // Groq/Llama-3.3-70b agent pipeline). This file is the ONLY place Gemini is
 // called from, scoped specifically to campaign performance insights.
 // ---------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-import { safeGenerate } from "../lib/gemini";
+import { safeGenerate } from "../lib/groq";
 import { segmentSystemPrompt } from "./prompts/segment.prompt";
 import {
   SegmentationResponseSchema,

@@ -4,7 +4,7 @@ import { SegmentEngine } from "./segment-engine";
 import { runSegmentationAgent } from "../ai/segmentation";
 import { runStrategyAgent } from "../ai/strategy";
 import { runContentAgent } from "../ai/content";
-import { safeGenerate } from "../lib/gemini";
+import { safeGenerate } from "../lib/groq";
 import { AgentThought, SegmentRule } from "../types";
 import { cleanJsonString, SegmentationResponseSchema } from "../ai/schemas";
 
