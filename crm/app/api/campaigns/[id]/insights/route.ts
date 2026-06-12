@@ -1,5 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getCampaignInsight, type CampaignInsight } from "@/services/insights.service";
+import type { CampaignStats } from "@/lib/gemini-insights";
+
+// Fallback shape used if a campaign's `stats` JSON is missing/incomplete
+// (e.g. a brand-new campaign that hasn't been launched yet).
+const EMPTY_STATS: CampaignStats = {
+  queued: 0,
+  sent: 0,
+  delivered: 0,
+  opened: 0,
+  read: 0,
+  clicked: 0,
+  failed: 0,
+  convertedOrders: 0,
+  conversionRevenue: 0,
+};
 
 interface RouteParams {
   params: Promise<{
@@ -7,58 +23,58 @@ interface RouteParams {
   }>;
 }
 
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET(
+  _request: Request,
+  { params }: RouteParams
+) {
   try {
     const { id } = await params;
 
-    // 1. Fetch Campaign
     const campaign = await prisma.campaign.findUnique({
       where: { id },
-      include: { segment: { select: { name: true } } },
+      include: { segment: true },
     });
 
     if (!campaign) {
       return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
     }
 
-    const stats = (campaign.stats as any) || {};
-    const total = campaign.totalRecipients || 0;
-    const delivered = stats.delivered || 0;
-    const opened = stats.opened || 0;
-    const clicked = stats.clicked || 0;
-    const converted = stats.convertedOrders || 0;
-    const revenue = stats.conversionRevenue || 0;
+    const stats: CampaignStats = {
+      ...EMPTY_STATS,
+      ...((campaign.stats as Partial<CampaignStats>) ?? {}),
+    };
 
-    if (total === 0) {
-      return NextResponse.json({
-        insights: "No delivery data recorded yet. Launch the campaign to begin collecting delivery statistics and AI-native analytics.",
-      });
-    }
+    // Safe extraction of the human-readable marketing goal from campaign stats or segment
+    const goal = (campaign.stats as any)?.goal ?? campaign.segment?.naturalLanguageQuery ?? "";
 
-    const clickRate = opened > 0 ? (clicked / opened) * 100 : 0;
-    const convRate = clicked > 0 ? (converted / clicked) * 100 : 0;
-
-    const segmentName = campaign.segment.name;
-    const channelName = campaign.channel.toUpperCase();
-
-    let insights = `This campaign successfully targeted the "${segmentName}" segment via ${channelName}. `;
-    if (converted > 0) {
-      insights += `It achieved an excellent conversion rate of ${convRate.toFixed(1)}% from link clicks, generating ₹${revenue.toLocaleString("en-IN")} in total revenue from ${converted} attributed orders. `;
-      if (clickRate < 20) {
-        insights += `While order conversion was strong, click-through rates were relatively low (${clickRate.toFixed(1)}%), suggesting a clearer call-to-action or link placement could improve engagement next time.`;
-      } else {
-        insights += `Performance was highly optimized across the funnel, showing strong customer interest and high brand engagement.`;
-      }
-    } else {
-      insights += `Messages were successfully dispatched (${delivered} delivered), but no conversion orders have been recorded yet. Start the transaction simulator to attribute sales and compile revenue figures.`;
-    }
-
-    return NextResponse.json({ insights }, { status: 200 });
-  } catch (error: any) {
-    console.error(`GET /api/campaigns/[id]/insights error:`, error);
-    return NextResponse.json({
-      insights: "Insights are currently loading. Start the simulator and run transactions to compile complete performance graphs.",
-      isFallback: true,
+    const insight: CampaignInsight = await getCampaignInsight({
+      campaignId: campaign.id,
+      campaignName: campaign.name,
+      goal,
+      channel: campaign.channel ?? "UNKNOWN",
+      segmentName: campaign.segment?.name ?? "Unknown segment",
+      stats,
     });
+
+    // Format for frontend page.tsx consumption (expects a single `insights` string)
+    const formattedInsights = `${insight.summary}\n\n💡 Next Step Suggestion:\n${insight.nextStep}`;
+
+    return NextResponse.json({
+      insights: formattedInsights,
+      summary: insight.summary,
+      nextStep: insight.nextStep,
+      source: insight.source,
+    }, { status: 200 });
+  } catch (error: any) {
+    console.error("GET /api/campaigns/[id]/insights error:", error);
+    return NextResponse.json(
+      {
+        insights: "Insights are currently loading. Start the simulator and run transactions to compile complete performance graphs.",
+        summary: "Insights are currently loading.",
+        nextStep: "Check back once the campaign has finished sending.",
+        source: "programmatic",
+      },
+      { status: 500 }
+    );
   }
 }
