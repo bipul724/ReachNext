@@ -14,12 +14,14 @@ import {
   Users,
   Loader2,
   AlertCircle,
+  Activity,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
 import AgentThoughtsTimeline from "../../../components/agent-thoughts-timeline";
+import DeliveryActivityFeed from "../../../components/delivery-activity-feed";
 
 function calculateSuccessScore(stats: any): number {
   const sent = stats.sent || 0;
@@ -61,6 +63,19 @@ export default function CampaignDetails({ params }: PageProps) {
     fetcher,
     {
       refreshInterval: isLive ? 2500 : 0,
+    }
+  );
+
+  // 3. Fetch Live Delivery Events (poll only while campaign is actively sending/sent)
+  const shouldPollEvents =
+    campaign?.status === "sending" || campaign?.status === "sent";
+  const { data: eventsData, isLoading: isEventsLoading } = useSWR(
+    campaign?.status && campaign.status !== "draft"
+      ? `/api/campaigns/${id}/events`
+      : null,
+    fetcher,
+    {
+      refreshInterval: shouldPollEvents ? 2500 : 0,
     }
   );
 
@@ -328,6 +343,41 @@ export default function CampaignDetails({ params }: PageProps) {
           </CardContent>
         </Card>
       </div>
+
+      {/* Live Delivery Activity Feed */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-bold flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <Activity className="h-4.5 w-4.5 text-primary" />
+              Live Delivery Activity
+            </span>
+            <span className="flex items-center gap-2">
+              {eventsData?.events?.length > 0 && (
+                <span className="text-[10px] text-muted-foreground font-medium">
+                  {eventsData.events.length} Events
+                </span>
+              )}
+              {shouldPollEvents && (
+                <span className="text-[10px] text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Live
+                </span>
+              )}
+            </span>
+          </CardTitle>
+          <CardDescription>
+            Real-time webhook callbacks showing delivery lifecycle progression
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DeliveryActivityFeed
+            events={eventsData?.events}
+            isLoading={isEventsLoading}
+            isLive={shouldPollEvents}
+          />
+        </CardContent>
+      </Card>
 
       {/* Bottom specs details */}
       <div className="grid gap-6 md:grid-cols-2">
