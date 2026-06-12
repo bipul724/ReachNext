@@ -22,6 +22,7 @@ import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
 import AgentThoughtsTimeline from "../../../components/agent-thoughts-timeline";
 import DeliveryActivityFeed from "../../../components/delivery-activity-feed";
+import AudienceSnapshotPanel from "../../../components/audience-snapshot-panel";
 
 function calculateSuccessScore(stats: any): number {
   const sent = stats.sent || 0;
@@ -77,6 +78,14 @@ export default function CampaignDetails({ params }: PageProps) {
     {
       refreshInterval: shouldPollEvents ? 2500 : 0,
     }
+  );
+
+  // 4. Fetch Audience Snapshot (one-time, no polling — audience is static after launch)
+  const { data: audienceData, isLoading: isAudienceLoading } = useSWR(
+    campaign?.status && campaign.status !== "draft"
+      ? `/api/campaigns/${id}/audience-preview`
+      : null,
+    fetcher
   );
 
   // Stop polling if campaign status is draft, completed, or failed
@@ -375,6 +384,28 @@ export default function CampaignDetails({ params }: PageProps) {
             events={eventsData?.events}
             isLoading={isEventsLoading}
             isLive={shouldPollEvents}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Audience Snapshot — derived from Communications, no polling needed */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-bold flex items-center gap-1.5">
+            <Users className="h-4.5 w-4.5 text-primary" />
+            Audience Snapshot
+          </CardTitle>
+          <CardDescription>
+            Representative customers reached by this campaign
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AudienceSnapshotPanel
+            totalAudience={audienceData?.totalAudience}
+            segmentName={audienceData?.segmentName}
+            targetingRationale={audienceData?.targetingRationale}
+            customers={audienceData?.customers}
+            isLoading={isAudienceLoading}
           />
         </CardContent>
       </Card>
