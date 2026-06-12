@@ -22,6 +22,7 @@ import {
   ArrowRight,
   ShieldCheck,
   CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -382,42 +383,77 @@ export default function NewCampaign() {
             </Card>
 
             {/* Launch Controller card */}
-            <Card className="border-emerald-500/20 bg-emerald-50/10 dark:bg-emerald-950/5">
-              <CardHeader className="pb-3 text-center">
-                <CardTitle className="text-base font-bold text-foreground flex items-center justify-center gap-1.5">
-                  <ShieldCheck className="h-5 w-5 text-emerald-600" />
-                  One-Click Launch
-                </CardTitle>
-                <CardDescription>Launches draft to simulator immediately</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Button
-                  onClick={handleLaunchCampaign}
-                  disabled={isLaunching}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-11 gap-2 shadow-md"
-                >
-                  {isLaunching ? (
-                    <Loader2 className="h-4.5 w-4.5 animate-spin" />
-                  ) : (
-                    <Play className="h-4.5 w-4.5 fill-white" />
-                  )}
-                  Launch Campaign
-                </Button>
-                
-                {/* Reset button */}
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    setWorkspace(null);
-                    setGoal("");
-                  }}
-                  className="w-full text-xs text-muted-foreground"
-                  disabled={isLaunching}
-                >
-                  Draft Another Campaign
-                </Button>
-              </CardContent>
-            </Card>
+            {workspace.status === "failed" ? (
+              <Card className="border-destructive/20 bg-destructive/10 dark:bg-destructive/950/10">
+                <CardHeader className="pb-3 text-center">
+                  <CardTitle className="text-base font-bold text-destructive flex items-center justify-center gap-1.5">
+                    <AlertCircle className="h-5 w-5" />
+                    Launch Blocked
+                  </CardTitle>
+                  <CardDescription>This campaign has no target audience</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                    Sizing failed to find matching customers even after relaxing filters. You cannot launch a campaign to 0 recipients.
+                  </p>
+                  <Button
+                    disabled
+                    className="w-full bg-muted text-muted-foreground font-bold h-11 gap-2 cursor-not-allowed border border-border/60"
+                  >
+                    Launch Campaign
+                  </Button>
+                  
+                  {/* Reset button */}
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setWorkspace(null);
+                      setGoal("");
+                    }}
+                    className="w-full text-xs border-destructive/20 hover:bg-destructive/10 text-destructive"
+                  >
+                    Draft Another Campaign
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="border-emerald-500/20 bg-emerald-50/10 dark:bg-emerald-950/5">
+                <CardHeader className="pb-3 text-center">
+                  <CardTitle className="text-base font-bold text-foreground flex items-center justify-center gap-1.5">
+                    <ShieldCheck className="h-5 w-5 text-emerald-600" />
+                    One-Click Launch
+                  </CardTitle>
+                  <CardDescription>Launches draft to simulator immediately</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Button
+                    onClick={handleLaunchCampaign}
+                    disabled={isLaunching}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-11 gap-2 shadow-md"
+                  >
+                    {isLaunching ? (
+                      <Loader2 className="h-4.5 w-4.5 animate-spin" />
+                    ) : (
+                      <Play className="h-4.5 w-4.5 fill-white" />
+                    )}
+                    Launch Campaign
+                  </Button>
+                  
+                  {/* Reset button */}
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setWorkspace(null);
+                      setGoal("");
+                    }}
+                    className="w-full text-xs text-muted-foreground"
+                    disabled={isLaunching}
+                  >
+                    Draft Another Campaign
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       )}
