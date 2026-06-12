@@ -16,7 +16,7 @@ interface GenerateOptions {
 }
 
 /** Error from the Groq API with the HTTP status attached. */
-export class ApiError extends Error {
+class ApiError extends Error {
   constructor(public status: number, message: string) {
     super(message);
     this.name = "ApiError";

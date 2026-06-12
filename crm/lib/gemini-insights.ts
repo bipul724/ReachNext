@@ -36,7 +36,7 @@ const GEMINI_MODEL = "gemini-2.5-pro";
 const RATE_LIMIT_COOLDOWN_MS = 2 * 60 * 1000; // 2 minutes
 let rateLimitedUntil = 0;
 
-export function isRateLimitCooldownActive(): boolean {
+function isRateLimitCooldownActive(): boolean {
   return Date.now() < rateLimitedUntil;
 }
 

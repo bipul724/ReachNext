@@ -6,16 +6,6 @@ export const CHANNELS = {
 
 export type Channel = typeof CHANNELS[keyof typeof CHANNELS];
 
-export const CAMPAIGN_STATUS = {
-  DRAFT: "draft",
-  SENDING: "sending",
-  SENT: "sent",
-  COMPLETED: "completed",
-  FAILED: "failed",
-} as const;
-
-export type CampaignStatus = typeof CAMPAIGN_STATUS[keyof typeof CAMPAIGN_STATUS];
-
 export const COMMUNICATION_STATUS = {
   QUEUED: "queued",
   SENT: "sent",

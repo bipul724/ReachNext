@@ -11,16 +11,3 @@ export function useSegments() {
     mutate,
   };
 }
-
-export function useSegmentPreview(id: string) {
-  const { data, error, isLoading } = useSWR(
-    id ? `/api/segments/${id}/preview` : null,
-    fetcher
-  );
-
-  return {
-    previewCustomers: data || [],
-    isLoading,
-    error,
-  };
-}

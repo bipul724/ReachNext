@@ -41,28 +41,6 @@ export const CustomerService = {
     return { items, total };
   },
 
-  async getById(id: string) {
-    return prisma.customer.findUnique({
-      where: { id },
-      include: {
-        orders: {
-          orderBy: { orderDate: "desc" },
-          take: 10,
-        },
-        communications: {
-          orderBy: { createdAt: "desc" },
-          take: 10,
-        },
-      },
-    });
-  },
-
-  async create(data: CreateCustomerInput) {
-    return prisma.customer.create({
-      data,
-    });
-  },
-
   async upsert(data: CreateCustomerInput) {
     return prisma.customer.upsert({
       where: { email: data.email },

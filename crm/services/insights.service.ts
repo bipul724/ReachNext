@@ -37,7 +37,7 @@ function hashStats(stats: CampaignStats): string {
   );
 }
 
-export function getCachedInsight(
+function getCachedInsight(
   campaignId: string,
   stats: CampaignStats
 ): CampaignInsight | null {
@@ -55,7 +55,7 @@ function setCachedInsight(campaignId: string, stats: CampaignStats, insight: Cam
 // Programmatic fallback (existing deterministic logic, preserved)
 // ---------------------------------------------------------------------------
 
-export function buildProgrammaticInsight(
+function buildProgrammaticInsight(
   campaignName: string,
   goal: string,
   stats: CampaignStats

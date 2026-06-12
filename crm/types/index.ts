@@ -1,5 +1,5 @@
-import { Channel, CampaignStatus, CommunicationStatus } from "../lib/constants";
-export type { Channel, CampaignStatus, CommunicationStatus };
+import { Channel, CommunicationStatus } from "../lib/constants";
+export type { Channel, CommunicationStatus };
 
 export interface SegmentRule {
   field: "totalSpent" | "totalOrders" | "lastOrderAt" | "createdAt" | "city" | "daysSinceLastOrder";
@@ -23,12 +23,7 @@ export interface CampaignStats {
   conversionRevenue?: number;
 }
 
-export interface DeliveryCallbackPayload {
-  communicationId: string;
-  status: CommunicationStatus;
-  timestamp: string;
-  error?: string;
-}
+
 
 export interface SendMessagePayload {
   communicationId: string;
