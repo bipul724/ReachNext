@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { useCampaigns } from "../../hooks/use-campaigns";
 import Link from "next/link";
 import {
@@ -30,6 +30,10 @@ import {
   AlertCircle,
   Check,
   Trophy,
+  Sparkles,
+  RefreshCw,
+  Lightbulb,
+  ShieldCheck,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -151,12 +155,82 @@ const METRICS: MetricRow[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// computeFacts — deterministic fact extraction reusing METRICS winner logic
+// ---------------------------------------------------------------------------
+
+interface ComparisonWinner {
+  name: string;
+  value: number;
+}
+
+interface ComparisonFacts {
+  revenueWinner: ComparisonWinner | null;
+  openRateWinner: ComparisonWinner | null;
+  ctrWinner: ComparisonWinner | null;
+  conversionWinner: ComparisonWinner | null;
+  successScoreWinner: ComparisonWinner | null;
+  campaigns: { name: string; channel: string }[];
+}
+
+interface InsightsResponse {
+  summary: string;
+  patterns: string[];
+  recommendations: string[];
+}
+
+function computeFacts(selectedCampaigns: any[]): ComparisonFacts {
+  const findWinner = (metricLabel: string): ComparisonWinner | null => {
+    const metric = METRICS.find((m) => m.label === metricLabel);
+    if (!metric) return null;
+
+    let bestCampaign: any = null;
+    let bestVal = -Infinity;
+
+    for (const c of selectedCampaigns) {
+      const v = metric.getRaw(c.stats || {}, c);
+      if (v > bestVal) {
+        bestVal = v;
+        bestCampaign = c;
+      }
+    }
+
+    if (!bestCampaign || bestVal <= 0) return null;
+
+    // For percentages, send as human-readable values (e.g. 45.2 not 0.452)
+    const displayValue =
+      metric.format === "percent"
+        ? Math.round(bestVal * 1000) / 10
+        : Math.round(bestVal * 100) / 100;
+
+    return { name: bestCampaign.name, value: displayValue };
+  };
+
+  return {
+    revenueWinner: findWinner("Revenue"),
+    openRateWinner: findWinner("Open Rate"),
+    ctrWinner: findWinner("Click-Through Rate"),
+    conversionWinner: findWinner("Conversions"),
+    successScoreWinner: findWinner("Success Score"),
+    campaigns: selectedCampaigns.map((c) => ({
+      name: c.name,
+      channel: c.channel,
+    })),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Page Component
 // ---------------------------------------------------------------------------
 
 export default function CampaignComparison() {
   const { campaigns, isLoading, isError } = useCampaigns();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // --- AI Insights state ---
+  const [insights, setInsights] = useState<InsightsResponse | null>(null);
+  const [isLoadingInsights, setIsLoadingInsights] = useState(false);
+  const [insightsError, setInsightsError] = useState<string | null>(null);
+  const insightsCacheRef = useRef<Map<string, InsightsResponse>>(new Map());
 
   // Filter to launched campaigns only (have stats)
   const launchedCampaigns = useMemo(
@@ -222,6 +296,56 @@ export default function CampaignComparison() {
     };
   }, [selectedCampaigns]);
 
+  // --- AI Insights handler ---
+  const generateInsights = useCallback(
+    async (forceRegenerate = false) => {
+      if (selectedCampaigns.length < 2) return;
+
+      // Build cache key from sorted campaign IDs
+      const cacheKey = [...selectedIds].sort().join("-");
+
+      // Check cache (skip if force-regenerating)
+      if (!forceRegenerate && insightsCacheRef.current.has(cacheKey)) {
+        setInsights(insightsCacheRef.current.get(cacheKey)!);
+        setInsightsError(null);
+        return;
+      }
+
+      setIsLoadingInsights(true);
+      setInsightsError(null);
+
+      try {
+        const facts = computeFacts(selectedCampaigns);
+
+        const res = await fetch("/api/compare/insights", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ facts }),
+        });
+
+        if (!res.ok) {
+          const errBody = await res.json().catch(() => ({}));
+          throw new Error(
+            errBody.error || `Request failed with status ${res.status}`
+          );
+        }
+
+        const data: InsightsResponse = await res.json();
+
+        // Cache the result
+        insightsCacheRef.current.set(cacheKey, data);
+        setInsights(data);
+      } catch (err: any) {
+        setInsightsError(
+          err.message || "Failed to generate insights. Please try again."
+        );
+      } finally {
+        setIsLoadingInsights(false);
+      }
+    },
+    [selectedCampaigns, selectedIds]
+  );
+
   function toggleCampaign(id: string) {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -230,6 +354,9 @@ export default function CampaignComparison() {
       } else if (next.size < 5) {
         next.add(id);
       }
+      // Clear displayed insights when selection changes
+      setInsights(null);
+      setInsightsError(null);
       return next;
     });
   }
@@ -438,7 +565,7 @@ export default function CampaignComparison() {
                         className="font-semibold text-xs text-foreground text-right"
                       >
                         <div className="flex flex-col items-end gap-0.5">
-                          <span className="truncate max-w-[140px]">{camp.name}</span>
+                          <Link href={`/campaigns/${camp.id}`} target="_blank" className="truncate max-w-[140px] hover:text-primary hover:underline underline-offset-2 transition-colors">{camp.name}</Link>
                           <span className="text-[9px] text-muted-foreground font-normal uppercase">
                             {camp.channel}
                           </span>
@@ -486,6 +613,143 @@ export default function CampaignComparison() {
                   })}
                 </TableBody>
               </Table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* AI Marketing Analyst Section */}
+      {selectedCampaigns.length >= 2 && (
+        <Card className="border-primary/20 dark:border-primary/10">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-bold flex items-center gap-2">
+              <Sparkles className="h-4.5 w-4.5 text-primary" />
+              AI Marketing Analyst
+            </CardTitle>
+            <CardDescription>
+              Get AI-powered insights explaining campaign performance patterns and actionable recommendations.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Generate / Regenerate button */}
+            {!insights && !isLoadingInsights && (
+              <Button
+                onClick={() => generateInsights()}
+                disabled={isLoadingInsights}
+                className="gap-2"
+              >
+                <Sparkles className="h-4 w-4" />
+                Generate AI Insights
+              </Button>
+            )}
+
+            {/* Loading state */}
+            {isLoadingInsights && (
+              <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
+                <Loader2 className="h-5 w-5 animate-spin text-primary shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Analyzing campaigns…</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Our AI analyst is reviewing your comparison data.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Error state */}
+            {insightsError && !isLoadingInsights && (
+              <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4 space-y-3">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-destructive">Insight generation failed</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{insightsError}</p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => generateInsights(true)}
+                  className="gap-1.5"
+                >
+                  <RefreshCw className="h-3 w-3" />
+                  Retry
+                </Button>
+              </div>
+            )}
+
+            {/* Insights result */}
+            {insights && !isLoadingInsights && (
+              <div className="space-y-4">
+                {/* Summary */}
+                <div className="rounded-lg border bg-muted/20 p-4">
+                  <h4 className="text-xs font-bold tracking-wider text-muted-foreground uppercase mb-2">
+                    Analysis Summary
+                  </h4>
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {insights.summary}
+                  </p>
+                </div>
+
+                {/* Patterns */}
+                {insights.patterns && insights.patterns.length > 0 && (
+                  <div className="rounded-lg border bg-muted/20 p-4">
+                    <h4 className="text-xs font-bold tracking-wider text-muted-foreground uppercase mb-3 flex items-center gap-1.5">
+                      <TrendingUp className="h-3.5 w-3.5" />
+                      Patterns Identified
+                    </h4>
+                    <ul className="space-y-2">
+                      {insights.patterns.map((pattern, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-foreground">
+                          <span className="text-primary mt-1 shrink-0">•</span>
+                          <span className="leading-relaxed">{pattern}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Recommendations */}
+                {insights.recommendations.length > 0 && (
+                  <div className="rounded-lg border bg-muted/20 p-4">
+                    <h4 className="text-xs font-bold tracking-wider text-muted-foreground uppercase mb-3 flex items-center gap-1.5">
+                      <Lightbulb className="h-3.5 w-3.5" />
+                      Recommendations
+                    </h4>
+                    <ul className="space-y-2">
+                      {insights.recommendations.map((rec, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-foreground">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-[10px] font-bold mt-0.5">
+                            {i + 1}
+                          </span>
+                          <span className="leading-relaxed">{rec}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Regenerate button */}
+                <div className="pt-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => generateInsights(true)}
+                    className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    <RefreshCw className="h-3 w-3" />
+                    Regenerate
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Confidence Note — always visible */}
+            <div className="flex items-start gap-2.5 rounded-lg border border-emerald-200/60 dark:border-emerald-900/30 bg-emerald-50/50 dark:bg-emerald-950/10 px-4 py-3">
+              <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+              <p className="text-xs text-emerald-800 dark:text-emerald-300 leading-relaxed">
+                <span className="font-semibold">How this works:</span> Campaign winners are computed from PostgreSQL-backed metrics. AI only interprets validated facts — it never decides rankings or invents numbers.
+              </p>
             </div>
           </CardContent>
         </Card>

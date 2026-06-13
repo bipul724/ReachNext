@@ -84,7 +84,7 @@ export default function NewCampaign() {
       toast.success("Autopilot campaign draft generated successfully!");
     } catch (err: any) {
       toast.error("Generation failed", {
-        description: err.message || "Please make sure GEMINI_API_KEY is configured in crm/.env",
+        description: err.message || "Please make sure GROQ_API_KEY is configured in crm/.env",
       });
     } finally {
       setIsGenerating(false);
