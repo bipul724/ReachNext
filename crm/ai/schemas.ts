@@ -61,3 +61,26 @@ export const ContentResponseSchema = z.object({
 export type SegmentationAgentResponse = z.infer<typeof SegmentationResponseSchema>;
 export type StrategyAgentResponse = z.infer<typeof StrategyResponseSchema>;
 export type ContentAgentResponse = z.infer<typeof ContentResponseSchema>;
+
+export const IntentValidationResponseSchema = z.object({
+  normalizedGoal: z.string(),
+  confidenceScore: z.number().min(0).max(1),
+  explanation: z.string(),
+});
+export type IntentValidationResponse = z.infer<typeof IntentValidationResponseSchema>;
+
+export const IntentClarificationPayloadSchema = z.object({
+  status: z.literal("needs_clarification"),
+  message: z.string(),
+  suggestions: z.array(z.string()),
+});
+export type IntentClarificationPayload = z.infer<typeof IntentClarificationPayloadSchema>;
+
+export const IntentConfirmationPayloadSchema = z.object({
+  status: z.literal("needs_confirmation"),
+  inferredObjective: z.string(),
+  explanation: z.string(),
+  warning: z.string(),
+  confidenceScore: z.number(),
+});
+export type IntentConfirmationPayload = z.infer<typeof IntentConfirmationPayloadSchema>;

@@ -34,6 +34,7 @@ import {
 import Link from "next/link";
 import { toast } from "sonner";
 import { CampaignWorkspacePayload } from "../../../../services/agent-orchestrator";
+import { IntentClarificationPayload, IntentConfirmationPayload } from "../../../../ai/schemas";
 
 const EXAMPLE_GOALS = [
   "Re-engage high-value Delhi customers who have not ordered in 45 days.",
@@ -47,6 +48,8 @@ export default function NewCampaign() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLaunching, setIsLaunching] = useState(false);
   const [workspace, setWorkspace] = useState<CampaignWorkspacePayload | null>(null);
+  const [clarificationState, setClarificationState] = useState<IntentClarificationPayload | null>(null);
+  const [confirmationState, setConfirmationState] = useState<IntentConfirmationPayload | null>(null);
   const [adaptiveInsights, setAdaptiveInsights] = useState<AdaptiveRecommendation | null>(null);
 
   useEffect(() => {
@@ -92,9 +95,11 @@ export default function NewCampaign() {
     return () => clearInterval(interval);
   }, [isGenerating]);
 
-  const handleGenerateAutopilot = async (objectiveGoal: string) => {
+  const handleGenerateAutopilot = async (objectiveGoal: string, skipValidation: boolean = false) => {
     setIsGenerating(true);
     setWorkspace(null);
+    setClarificationState(null);
+    setConfirmationState(null);
     setAdaptiveInsights(null);
 
     // Fetch adaptive insights in parallel (non-blocking)
@@ -117,8 +122,15 @@ export default function NewCampaign() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Autopilot generation failed.");
 
-      setWorkspace(result);
-      toast.success("Autopilot campaign draft generated successfully!");
+      if (result.status === "needs_clarification") {
+        setClarificationState(result);
+        toast.error("Objective Unclear", { description: "Please provide a more specific marketing goal." });
+      } else if (result.status === "needs_confirmation") {
+        setConfirmationState(result);
+      } else {
+        setWorkspace(result);
+        toast.success("Autopilot campaign draft generated successfully!");
+      }
     } catch (err: any) {
       toast.error("Generation failed", {
         description: err.message || "Please make sure GROQ_API_KEY is configured in crm/.env",
@@ -164,7 +176,7 @@ export default function NewCampaign() {
       </div>
 
       {/* 1. INITIAL GOAL INPUT VIEW */}
-      {!isGenerating && !workspace && (
+      {!isGenerating && !workspace && !clarificationState && !confirmationState && (
         <Card className="border-primary/15 bg-radial-[circle_at_right] from-primary/5 via-transparent to-transparent">
           <CardHeader>
             <CardTitle className="text-xl font-bold flex items-center gap-2">
@@ -248,6 +260,90 @@ export default function NewCampaign() {
               );
             })}
           </div>
+        </Card>
+      )}
+
+      {/* CLARIFICATION STATE */}
+      {clarificationState && (
+        <Card className="border-destructive/20 bg-destructive/5 animate-in fade-in slide-in-from-bottom-6 duration-500">
+          <CardHeader className="pb-3 text-center">
+            <CardTitle className="text-xl font-bold text-destructive flex items-center justify-center gap-2">
+              <AlertTriangle className="h-6 w-6" />
+              Goal Unclear
+            </CardTitle>
+            <CardDescription className="text-base text-foreground mt-2">{clarificationState.message}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-3 max-w-lg mx-auto">
+              <span className="text-sm font-semibold text-muted-foreground block text-center">Try a prompt like:</span>
+              <div className="grid gap-2">
+                {clarificationState.suggestions.map((s: string) => (
+                  <button
+                    key={s}
+                    onClick={() => {
+                      setGoal(s);
+                      setClarificationState(null);
+                    }}
+                    className="text-left text-sm bg-background hover:bg-muted/50 p-3 rounded-lg border border-border/60 text-foreground transition-all duration-200"
+                  >
+                    • {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="pt-4 flex justify-center border-t border-border/40">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setClarificationState(null);
+                  setGoal("");
+                }}
+              >
+                Clear & Start Over
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* CONFIRMATION STATE */}
+      {confirmationState && (
+        <Card className="border-amber-500/30 bg-amber-50/10 dark:bg-amber-950/10 animate-in fade-in slide-in-from-bottom-6 duration-500">
+          <CardHeader className="pb-3 text-center">
+            <CardTitle className="text-xl font-bold flex items-center justify-center gap-2">
+              <AlertCircle className="h-6 w-6 text-amber-500" />
+              Did you mean:
+            </CardTitle>
+            <div className="mt-4 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20 max-w-xl mx-auto">
+              <p className="text-lg font-bold text-amber-700 dark:text-amber-400">"{confirmationState.inferredObjective}"</p>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6 text-center max-w-2xl mx-auto">
+            <div className="space-y-2 text-sm text-muted-foreground bg-muted/20 p-4 rounded-lg">
+              <p><strong className="text-foreground">Why we asked:</strong> {confirmationState.explanation}</p>
+              <p className="text-amber-600 dark:text-amber-400 font-semibold">{confirmationState.warning}</p>
+            </div>
+            <div className="flex items-center justify-center gap-4 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setConfirmationState(null);
+                }}
+              >
+                Cancel & Edit Prompt
+              </Button>
+              <Button
+                onClick={() => {
+                  setGoal(confirmationState.inferredObjective);
+                  handleGenerateAutopilot(confirmationState.inferredObjective, true); // We just pass it back, it will re-evaluate but with normalized goal it should get 0.95
+                }}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-2"
+              >
+                <CheckCircle2 className="h-4 w-4" />
+                Confirm & Generate Campaign
+              </Button>
+            </div>
+          </CardContent>
         </Card>
       )}
 

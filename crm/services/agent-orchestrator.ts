@@ -12,6 +12,8 @@ import {
   buildAdaptivePromptSection,
   type AdaptiveRecommendation,
 } from "../ai/adaptive-recommendation";
+import { runIntentValidationAgent } from "../ai/intent";
+import { IntentClarificationPayload, IntentConfirmationPayload } from "../ai/schemas";
 
 export interface CampaignWorkspacePayload {
   campaignId: string;
@@ -39,19 +41,54 @@ export interface CampaignWorkspacePayload {
 }
 
 export const AgentOrchestrator = {
-  async generateCampaign(goal: string): Promise<CampaignWorkspacePayload> {
+  async generateCampaign(goal: string): Promise<CampaignWorkspacePayload | IntentClarificationPayload | IntentConfirmationPayload> {
     console.log(`🤖 Starting Agent Orchestrator for goal: "${goal}"`);
+
+    // --- Intent Validation Layer ---
+    console.log("🛡️ Running Goal Validation Checks...");
+    const intentValidation = await runIntentValidationAgent(goal);
+    console.log(`🛡️ Validation Result: Confidence=${intentValidation.confidenceScore.toFixed(2)}`);
+
+    if (intentValidation.confidenceScore < 0.30) {
+      console.warn("🛡️ Goal rejected due to LOW confidence. Clarification required.");
+      return {
+        status: "needs_clarification",
+        message: "I couldn't determine your marketing objective.",
+        suggestions: [
+          "Re-engage inactive customers who haven't ordered in 45 days.",
+          "Reward loyal customers with a special offer.",
+          "Promote our new seasonal menu.",
+          "Increase repeat purchases.",
+          "Recover abandoned customers."
+        ]
+      };
+    }
+
+    if (intentValidation.confidenceScore >= 0.30 && intentValidation.confidenceScore < 0.60) {
+      console.warn("🛡️ Goal accepted but requires CONFIRMATION. Medium confidence.");
+      return {
+        status: "needs_confirmation",
+        inferredObjective: intentValidation.normalizedGoal,
+        explanation: intentValidation.explanation,
+        warning: "Confidence is low. Please confirm this is what you meant before we generate the campaign.",
+        confidenceScore: intentValidation.confidenceScore
+      };
+    }
+
+    // High confidence -> use normalized goal for downstream
+    const normalizedGoal = intentValidation.normalizedGoal;
+    console.log(`✅ Goal validated. Proceeding with normalized intent: "${normalizedGoal}"`);
 
     const agentThoughts: AgentThought[] = [];
 
     // 1. Run Segmentation Agent
     console.log("👥 Running Segmentation Agent...");
-    let segmentation = await runSegmentationAgent(goal);
+    let segmentation = await runSegmentationAgent(normalizedGoal);
 
     agentThoughts.push({
       step: "segmentation_generation",
       agent: "Segmentation Agent",
-      reasoning: `Translated goal "${goal}" into database rules for segment "${segmentation.segmentName}". Explanation: ${segmentation.explainAudience}`,
+      reasoning: `Translated goal "${normalizedGoal}" into database rules for segment "${segmentation.segmentName}". Explanation: ${segmentation.explainAudience}`,
       timestamp: new Date().toISOString(),
     });
 
@@ -113,7 +150,7 @@ Your previous segment rules matched 0 customers.
 Previous Segment Name: "${segmentation.segmentName}"
 Previous Rules JSON: ${JSON.stringify(segmentation.rules)}
 
-Please relax the most restrictive filter by 30-50% to target a valid, larger audience for the goal: "${goal}".
+Please relax the most restrictive filter by 30-50% to target a valid, larger audience for the goal: "${normalizedGoal}".
 Here are the actual database ranges for ALL customers currently in the system:
 ${rangeSummary}
 
@@ -213,7 +250,7 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
     console.log("🧠 Running Adaptive Recommendation Engine...");
     let adaptiveInsights: AdaptiveRecommendation | null = null;
     try {
-      adaptiveInsights = await getAdaptiveRecommendations(goal);
+      adaptiveInsights = await getAdaptiveRecommendations(normalizedGoal);
       console.log(`✅ Adaptive Engine: mode=${adaptiveInsights.mode}, confidence=${adaptiveInsights.confidence}, samples=${adaptiveInsights.sampleSize}`);
 
       agentThoughts.push({
@@ -240,7 +277,7 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
     if (!isExhaustedFailure) {
       try {
         const strategyRes = await runStrategyAgent(
-          goal,
+          normalizedGoal,
           segmentation.segmentName,
           segmentation.description,
           customerCount,
@@ -278,7 +315,7 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
         const dormancyDays = dormancyRule ? Number(dormancyRule.value) : undefined;
 
         const contentRes = await runContentAgent(
-          goal,
+          normalizedGoal,
           segmentation.segmentName,
           strategy.channel,
           strategy.offer,
@@ -309,7 +346,7 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
         name: segmentation.segmentName,
         description: segmentation.description,
         rules: segmentation.rules as unknown as Prisma.InputJsonValue,
-        naturalLanguageQuery: goal,
+        naturalLanguageQuery: normalizedGoal,
         customerCount: customerCount,
         createdBy: "AI Autopilot",
       },
@@ -338,7 +375,7 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
       subject: content.subject,
       offer: strategy.offer,
       timing: strategy.timing,
-      goal,
+      goal: normalizedGoal,
     };
 
     const campaignStatus = isExhaustedFailure ? "failed" : "draft";
@@ -361,7 +398,7 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
 
     return {
       campaignId: campaign.id,
-      goal,
+      goal: normalizedGoal,
       segmentId: segment.id,
       segmentName: segmentation.segmentName,
       description: segmentation.description,
