@@ -1,9 +1,9 @@
 "use client";
 
 import { use, useState, useEffect } from "react";
-import { useCampaign } from "../../../hooks/use-campaigns";
+import { useCampaign } from "../../../../hooks/use-campaigns";
 import useSWR from "swr";
-import { fetcher } from "../../../lib/api";
+import { fetcher } from "../../../../lib/api";
 import {
   ArrowLeft,
   Mail,
@@ -18,13 +18,13 @@ import {
   Play,
 } from "lucide-react";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Badge } from "../../../components/ui/badge";
-import { Button } from "../../../components/ui/button";
-import AgentThoughtsTimeline from "../../../components/agent-thoughts-timeline";
-import DeliveryActivityFeed from "../../../components/delivery-activity-feed";
-import AudienceSnapshotPanel from "../../../components/audience-snapshot-panel";
-import CampaignReplay from "../../../components/campaign-replay";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Badge } from "../../../../components/ui/badge";
+import { Button } from "../../../../components/ui/button";
+import AgentThoughtsTimeline from "../../../../components/agent-thoughts-timeline";
+import DeliveryActivityFeed from "../../../../components/delivery-activity-feed";
+import AudienceSnapshotPanel from "../../../../components/audience-snapshot-panel";
+import CampaignReplay from "../../../../components/campaign-replay";
 
 function calculateSuccessScore(stats: any): number {
   const sent = stats.sent || 0;

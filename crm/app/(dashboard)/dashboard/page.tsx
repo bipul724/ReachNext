@@ -2,7 +2,7 @@
 
 import useSWR from "swr";
 import Link from "next/link";
-import { fetcher } from "../lib/api";
+import { fetcher } from "../../../lib/api";
 import {
   TrendingUp,
   Users,
@@ -13,8 +13,8 @@ import {
   Sparkles,
   Loader2,
 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
 import {
   BarChart,
   Bar,
@@ -25,7 +25,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { Badge } from "../components/ui/badge";
+import { Badge } from "../../../components/ui/badge";
 
 // Helper to format currency in INR Indian numbering format
 function formatCurrency(amount: number) {
@@ -58,8 +58,9 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[70vh] items-center justify-center">
+      <div className="flex h-[70vh] flex-col items-center justify-center gap-4 animate-in fade-in duration-1000">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-sm font-medium text-muted-foreground animate-pulse">Syncing your workspace...</p>
       </div>
     );
   }
@@ -439,7 +440,7 @@ export default function Dashboard() {
                       <span className="text-sm font-semibold text-foreground">
                         {order.customer.name}
                       </span>
-                      <span className="text-[10px] text-muted-foreground mt-0.5">
+                      <span suppressHydrationWarning className="text-[10px] text-muted-foreground mt-0.5">
                         Location: {order.storeLocation} • {new Date(order.orderDate).toLocaleDateString()}
                       </span>
                     </div>

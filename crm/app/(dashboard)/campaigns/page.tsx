@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useCampaigns } from "../../hooks/use-campaigns";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { Badge } from "../../components/ui/badge";
+import { useCampaigns } from "../../../hooks/use-campaigns";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
+import { Badge } from "../../../components/ui/badge";
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
+} from "../../../components/ui/table";
 import { Send, Plus, Loader2, Sparkles, TrendingUp, BarChart3, AlertCircle } from "lucide-react";
 
 export default function Campaigns() {

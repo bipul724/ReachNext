@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { Calendar } from "lucide-react";
 
 const PAGE_TITLES: Record<string, string> = {
-  "/": "Dashboard Overview",
+  "/dashboard": "Dashboard Overview",
   "/campaigns": "Marketing Campaigns",
   "/campaigns/new": "Campaign Autopilot Workspace",
   "/segments": "Audience Segments",
@@ -43,9 +43,9 @@ export function Header() {
         </div>
 
         {/* Date tracker */}
-        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground border-l border-border pl-6">
+        <div suppressHydrationWarning className="flex items-center gap-2 text-xs font-medium text-muted-foreground border-l border-border pl-6">
           <Calendar className="h-4 w-4" />
-          <span>{currentDate}</span>
+          <span suppressHydrationWarning>{currentDate}</span>
         </div>
       </div>
     </header>

@@ -1,14 +1,14 @@
 "use client";
 
-import type { AdaptiveRecommendation } from "../../../ai/adaptive-recommendation";
+import type { AdaptiveRecommendation } from "../../../../ai/adaptive-recommendation";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Input } from "../../../components/ui/input";
-import { Button } from "../../../components/ui/button";
-import AgentThoughtsTimeline from "../../../components/agent-thoughts-timeline";
-import { Badge } from "../../../components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Input } from "../../../../components/ui/input";
+import { Button } from "../../../../components/ui/button";
+import AgentThoughtsTimeline from "../../../../components/agent-thoughts-timeline";
+import { Badge } from "../../../../components/ui/badge";
 import {
   Sparkles,
   ArrowLeft,
@@ -33,7 +33,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { CampaignWorkspacePayload } from "../../../services/agent-orchestrator";
+import { CampaignWorkspacePayload } from "../../../../services/agent-orchestrator";
 
 const EXAMPLE_GOALS = [
   "Re-engage high-value Delhi customers who have not ordered in 45 days.",

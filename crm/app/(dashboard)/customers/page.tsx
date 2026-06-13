@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCustomers } from "../../hooks/use-customers";
+import { useCustomers } from "../../../hooks/use-customers";
 import {
   Table,
   TableBody,
@@ -9,11 +9,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
-import { Badge } from "../../components/ui/badge";
+} from "../../../components/ui/table";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
+import { Badge } from "../../../components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../components/ui/dialog";
+} from "../../../components/ui/dialog";
 import {
   Search,
   ChevronLeft,

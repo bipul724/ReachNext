@@ -15,7 +15,7 @@ import { cn } from "../../lib/utils";
 const NAV_ITEMS = [
   {
     name: "Dashboard",
-    href: "/",
+    href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
@@ -46,7 +46,7 @@ export function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-20 flex w-64 flex-col border-r border-border bg-card/65 backdrop-blur-md">
       <div className="flex h-16 items-center px-6 border-b border-border">
-        <Link href="/" className="flex items-center gap-2.5 font-semibold">
+        <Link href="/dashboard" className="flex items-center gap-2.5 font-semibold">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md">
             <Coffee className="h-5 w-5" />
           </div>
@@ -61,8 +61,8 @@ export function Sidebar() {
       <nav className="flex-1 space-y-1.5 p-4">
         {NAV_ITEMS.map((item) => {
           const isActive =
-            item.href === "/"
-              ? pathname === "/"
+            item.href === "/dashboard"
+              ? pathname === "/dashboard"
               : item.href === pathname || pathname.startsWith(item.href + "/");
 
           return (

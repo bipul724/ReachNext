@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Input } from "../../../components/ui/input";
-import { Button } from "../../../components/ui/button";
-import { Badge } from "../../../components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Input } from "../../../../components/ui/input";
+import { Button } from "../../../../components/ui/button";
+import { Badge } from "../../../../components/ui/badge";
 import {
   Table,
   TableBody,
@@ -13,7 +13,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../components/ui/table";
+} from "../../../../components/ui/table";
 import {
   Plus,
   Trash2,
@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { SegmentRule } from "../../../types";
+import { SegmentRule } from "../../../../types";
 
 const FIELDS = [
   { value: "totalSpent", label: "Total Spent (₹)" },

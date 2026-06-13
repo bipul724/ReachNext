@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef } from "react";
-import { useCampaigns } from "../../hooks/use-campaigns";
+import { useCampaigns } from "../../../hooks/use-campaigns";
 import Link from "next/link";
 import {
   Card,
@@ -9,9 +9,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
-import { Button } from "../../components/ui/button";
+} from "../../../components/ui/card";
+import { Badge } from "../../../components/ui/badge";
+import { Button } from "../../../components/ui/button";
 import {
   Table,
   TableBody,
@@ -19,7 +19,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
+} from "../../../components/ui/table";
 import {
   ArrowLeft,
   BarChart3,
