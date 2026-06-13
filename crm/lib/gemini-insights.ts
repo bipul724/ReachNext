@@ -134,3 +134,97 @@ Respond ONLY with a JSON object (no markdown fences, no preamble) with exactly t
     clearTimeout(timeout);
   }
 }
+
+// ---------------------------------------------------------------------------
+// Revenue Opportunity Copilot Explanations
+// ---------------------------------------------------------------------------
+
+export interface OpportunityInput {
+  type: "DORMANT_VIP" | "CROSS_SELL" | "CHANNEL_OPT";
+  affectedCustomers: number;
+  estimatedRevenue: number;
+  confidence: "HIGH" | "MEDIUM" | "LOW";
+  suggestedGoal: string;
+  historicalSpend: number;
+}
+
+export interface OpportunityOutput {
+  type: "DORMANT_VIP" | "CROSS_SELL" | "CHANNEL_OPT";
+  title: string;
+  whyItMatters: string;
+  recommendedAction: string;
+  suggestedGoal: string;
+}
+
+export async function generateOpportunityExplanations(
+  opportunities: OpportunityInput[]
+): Promise<OpportunityOutput[]> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is not configured");
+  }
+
+  if (isRateLimitCooldownActive()) {
+    throw new Error("Gemini is in rate-limit cooldown, skipping call");
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
+
+  const prompt = `You are a marketing strategist.
+Below is a list of deterministic customer opportunities discovered in our database:
+
+${JSON.stringify(opportunities, null, 2)}
+
+For each opportunity in the input list, write:
+1. "title": A short, marketing-focused, catchy title.
+2. "whyItMatters": A 1-2 sentence explanation of why this opportunity represents high value or customer leakage.
+3. "recommendedAction": A 1-sentence recommendation on how the marketer should act (e.g. offering a specific discount or channel choice).
+4. "suggestedGoal": A clear, marketer-friendly campaign goal that can be used directly as a prompt for our campaign generator. Keep it action-oriented (e.g. "Win back dormant VIP customers in Mumbai with a 20% WhatsApp offer").
+
+Rules:
+- Keep the explanations focused entirely on B2C consumer behavior.
+- Do NOT change the opportunity "type" (must match the input "type" exactly).
+- Do NOT include any formatting like markdown fences (e.g., \`\`\`json) or text other than the raw JSON object.
+- Output exactly a JSON object with this schema:
+{
+  "opportunities": [
+    {
+      "type": "DORMANT_VIP | CROSS_SELL | CHANNEL_OPT",
+      "title": "...",
+      "whyItMatters": "...",
+      "recommendedAction": "...",
+      "suggestedGoal": "..."
+    }
+  ]
+}
+`;
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), GEMINI_TIMEOUT_MS);
+
+  try {
+    const result = await model.generateContent(prompt, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      signal: controller.signal,
+    } as any);
+
+    const text = result.response.text();
+    const cleaned = text.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(cleaned);
+
+    if (!parsed.opportunities || !Array.isArray(parsed.opportunities)) {
+      throw new Error("Gemini response missing opportunities array");
+    }
+
+    return parsed.opportunities as OpportunityOutput[];
+  } catch (error) {
+    if (isRateLimitError(error)) {
+      rateLimitedUntil = Date.now() + RATE_LIMIT_COOLDOWN_MS;
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+

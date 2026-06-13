@@ -41,6 +41,22 @@ export default function NewCampaign() {
   const [isLaunching, setIsLaunching] = useState(false);
   const [workspace, setWorkspace] = useState<CampaignWorkspacePayload | null>(null);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlGoal = searchParams.get("goal");
+      const autoplay = searchParams.get("autoplay");
+      if (urlGoal) {
+        setGoal(urlGoal);
+        if (autoplay === "true") {
+          handleGenerateAutopilot(urlGoal);
+          // Clean parameters from the URL bar to prevent re-triggering on manual refresh
+          router.replace("/campaigns/new");
+        }
+      }
+    }
+  }, []);
+
   // Dynamic loading steps for visual wow factor
   const [loadingStep, setLoadingStep] = useState(0);
   const loadingSteps = [

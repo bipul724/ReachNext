@@ -41,6 +41,18 @@ function formatCurrency(amount: number) {
 
 const COLORS = ["#7c2d12", "#9a3412", "#c2410c", "#ea580c", "#f97316"];
 
+interface Opportunity {
+  type: string;
+  title: string;
+  whyItMatters: string;
+  recommendedAction: string;
+  suggestedGoal: string;
+  affectedCustomers: number;
+  estimatedRevenue: number;
+  confidence: string;
+  historicalSpend: number;
+}
+
 export default function Dashboard() {
   const { data, error, isLoading } = useSWR("/api/dashboard/stats", fetcher);
 
@@ -61,7 +73,7 @@ export default function Dashboard() {
     );
   }
 
-  const { summary, locationSales, recentCampaigns, recentOrders } = data;
+  const { summary, locationSales, recentCampaigns, recentOrders, opportunities } = data;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -89,6 +101,92 @@ export default function Dashboard() {
           <Coffee className="h-40 w-40 text-primary" />
         </div>
       </div>
+
+      {/* Revenue Opportunity Copilot */}
+      {opportunities && opportunities.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold tracking-tight text-foreground flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-indigo-500" />
+              Revenue Opportunity Copilot
+            </h2>
+            <Badge variant="outline" className="border-indigo-200 text-indigo-700 bg-indigo-50/50">
+              AI-Optimized Suggestions
+            </Badge>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {opportunities.map((opp: Opportunity, idx: number) => {
+              // Determine badge colors based on confidence
+              let badgeColor = "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 border-gray-200/50";
+              if (opp.confidence === "HIGH") {
+                badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800/50";
+              } else if (opp.confidence === "MEDIUM") {
+                badgeColor = "bg-amber-50 text-amber-700 border-amber-200/50 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-800/50";
+              }
+
+              return (
+                <Card key={idx} className="hover:shadow-md transition-all border-indigo-100/40 bg-radial-[circle_at_bottom_right] from-indigo-500/[0.01] via-transparent to-transparent flex flex-col justify-between">
+                  <CardHeader className="pb-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+                        {opp.type.replace("_", " ")}
+                      </span>
+                      <Badge variant="outline" className={`text-[10px] px-2 py-0.5 font-semibold ${badgeColor}`}>
+                        {opp.confidence} CONFIDENCE
+                      </Badge>
+                    </div>
+                    <CardTitle className="text-sm font-bold leading-snug">
+                      {opp.title}
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {opp.whyItMatters}
+                    </p>
+                    <div className="text-[11px] leading-relaxed text-muted-foreground/90 bg-muted/40 rounded border border-border/20 p-2 mt-2">
+                      <span className="font-bold text-foreground block text-[9px] uppercase tracking-wider mb-0.5">Why We Are Confident</span>
+                      {opp.affectedCustomers} customers match this cohort, representing {formatCurrency(opp.historicalSpend)} historical spend.
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4 pt-0 mt-auto">
+                    <div className="border-t border-border/60 pt-3 flex justify-between items-baseline">
+                      <div>
+                        <span className="text-[10px] text-muted-foreground block">AFFECTED AUDIENCE</span>
+                        <span className="text-xs font-bold text-foreground">{opp.affectedCustomers} Customers</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[10px] text-muted-foreground block">POTENTIAL RECOVERY</span>
+                        <span className="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">
+                          {formatCurrency(opp.estimatedRevenue)} potential recovery
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-indigo-50/30 dark:bg-indigo-950/10 border border-indigo-100/10 rounded-lg p-2.5 space-y-1">
+                      <span className="text-[9px] uppercase font-bold tracking-wider text-indigo-600 dark:text-indigo-400 block">RECOMMENDED ACTION</span>
+                      <p className="text-[11px] leading-snug font-medium text-foreground">
+                        {opp.recommendedAction}
+                      </p>
+                    </div>
+
+                    <Link
+                      href={`/campaigns/new?goal=${encodeURIComponent(opp.suggestedGoal)}&autoplay=true`}
+                      className="block w-full"
+                    >
+                      <Button
+                        size="sm"
+                        className="w-full text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white gap-1"
+                      >
+                        <Sparkles className="h-3.5 w-3.5" />
+                        Launch Autopilot
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Stats Cards grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
