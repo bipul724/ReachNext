@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { generateOpportunityExplanations, OpportunityInput } from "@/lib/gemini-insights";
+import { getAIService } from "@/lib/ai";
+
+interface OpportunityInput {
+  type: string;
+  affectedCustomers: number;
+  estimatedRevenue: number;
+  confidence: "HIGH" | "MEDIUM" | "LOW";
+  suggestedGoal: string;
+  historicalSpend: number;
+}
 
 const FALLBACK_OPPORTUNITIES: Record<string, { title: string; whyItMatters: string; recommendedAction: string; suggestedGoal: string }> = {
   DORMANT_VIP: {
@@ -235,13 +244,55 @@ export async function GET() {
       },
     ];
 
-    // ── Gemini Call with Fallback ──
+    // ── AI Call with Fallback ──
     let explanations: any[] = [];
     try {
-      explanations = await generateOpportunityExplanations(opportunityInputs);
+      const prompt = `You are a marketing strategist.
+Below is a list of deterministic customer opportunities discovered in our database:
+
+${JSON.stringify(opportunityInputs, null, 2)}
+
+For each opportunity in the input list, write:
+1. "title": A short, marketing-focused, catchy title.
+2. "whyItMatters": A 1-2 sentence explanation of why this opportunity represents high value or customer leakage.
+3. "recommendedAction": A 1-sentence recommendation on how the marketer should act (e.g. offering a specific discount or channel choice).
+4. "suggestedGoal": A clear, marketer-friendly campaign goal that can be used directly as a prompt for our campaign generator. Keep it action-oriented (e.g. "Win back dormant VIP customers in Mumbai with a 20% WhatsApp offer").
+
+Rules:
+- Keep the explanations focused entirely on B2C consumer behavior.
+- Do NOT change the opportunity "type" (must match the input "type" exactly).
+- Do NOT include any formatting like markdown fences (e.g., \`\`\`json) or text other than the raw JSON object.
+- Output exactly a JSON object with this schema:
+{
+  "opportunities": [
+    {
+      "type": "DORMANT_VIP | CROSS_SELL | CHANNEL_OPT",
+      "title": "...",
+      "whyItMatters": "...",
+      "recommendedAction": "...",
+      "suggestedGoal": "..."
+    }
+  ]
+}
+`;
+      const { text } = await getAIService().callModel({
+        task: "opportunity_explanations",
+        userPrompt: prompt,
+        temperature: 0.7,
+        timeoutMs: 8000,
+      });
+
+      const cleaned = text.replace(/```json|```/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+
+      if (!parsed.opportunities || !Array.isArray(parsed.opportunities)) {
+        throw new Error("AI response missing opportunities array");
+      }
+
+      explanations = parsed.opportunities;
     } catch (e) {
-      console.warn("Failed to generate opportunity explanations using Gemini. Using fallbacks.", e);
-      explanations = opportunityInputs.map((input) => {
+      console.warn("Failed to generate opportunity explanations using AI. Using fallbacks.", e);
+      explanations = opportunityInputs.map((input: any) => {
         const fb = FALLBACK_OPPORTUNITIES[input.type];
         return {
           type: input.type,

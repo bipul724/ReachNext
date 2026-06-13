@@ -4,7 +4,7 @@ import { SegmentEngine } from "./segment-engine";
 import { runSegmentationAgent } from "../ai/segmentation";
 import { runStrategyAgent } from "../ai/strategy";
 import { runContentAgent } from "../ai/content";
-import { safeGenerate } from "../lib/groq";
+import { getAIService } from "../lib/ai";
 import { AgentThought, SegmentRule } from "../types";
 import { cleanJsonString, SegmentationResponseSchema } from "../ai/schemas";
 import {
@@ -133,7 +133,11 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
 `;
 
         try {
-          const text = await safeGenerate(correctionPrompt);
+          const { text } = await getAIService().callModel({
+            task: "self_correction",
+            userPrompt: correctionPrompt,
+            temperature: 0.1,
+          });
           const cleanJson = cleanJsonString(text);
           const parsed = JSON.parse(cleanJson);
           segmentation = SegmentationResponseSchema.parse(parsed);

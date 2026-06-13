@@ -1,11 +1,20 @@
-import {
-  generateCampaignInsight,
-  type CampaignStats,
-} from "@/lib/gemini-insights";
+import { getAIService } from "@/lib/ai";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
+
+export interface CampaignStats {
+  queued: number;
+  sent: number;
+  delivered: number;
+  opened: number;
+  read: number;
+  clicked: number;
+  failed: number;
+  convertedOrders: number;
+  conversionRevenue: number;
+}
 
 export interface CampaignInsight {
   summary: string;
@@ -20,9 +29,9 @@ export interface CampaignInsight {
 // callbacks repeatedly, each triggering a debounced syncStats in
 // campaign.service.ts. The frontend then polls /insights every ~2.5s.
 // Without this cache, every poll during an active simulation would call
-// Gemini for what is effectively the same data. The hash below changes only
-// when one of the funnel numbers actually moves, so Gemini is called once
-// per *meaningful* state change, not once per poll.
+// the AI provider for what is effectively the same data. The hash below
+// changes only when one of the funnel numbers actually moves, so the AI
+// is called once per *meaningful* state change, not once per poll.
 
 const insightCache = new Map<string, { hash: string; insight: CampaignInsight }>();
 
@@ -112,19 +121,59 @@ export async function getCampaignInsight(params: {
 
   let insight: CampaignInsight;
   try {
-    const ai = await generateCampaignInsight({
-      campaignName,
-      goal,
-      channel,
-      segmentName,
-      stats,
+    const openedOrRead = Math.max(stats.opened || 0, stats.read || 0);
+
+    const prompt = `You are a marketing analytics assistant. Write a short performance report for the following campaign.
+
+Campaign: "${campaignName}"
+Goal: ${goal}
+Channel: ${channel}
+Audience segment: ${segmentName}
+
+Funnel statistics:
+- Queued: ${stats.queued}
+- Sent: ${stats.sent}
+- Delivered: ${stats.delivered}
+- Opened/Read: ${openedOrRead}
+- Clicked: ${stats.clicked}
+- Failed: ${stats.failed}
+- Converted orders: ${stats.convertedOrders}
+- Conversion revenue: ₹${stats.conversionRevenue}
+
+Respond ONLY with a JSON object (no markdown fences, no preamble) with exactly two keys:
+- "summary": a 2-3 sentence plain-English performance summary referencing the campaign's goal, channel, segment, and key funnel numbers. Be honest about sample size — if converted orders are very few (e.g. under 5), note that the percentage is based on a small sample rather than calling it definitively "optimized" or "strong."
+- "nextStep": one constructive, actionable next-step suggestion based on where the funnel is weakest, or on what to test next given the sample size.`;
+
+    const { text } = await getAIService().callModel({
+      task: "campaign_insight",
+      userPrompt: prompt,
+      temperature: 0.7,
+      timeoutMs: 8000,
     });
-    insight = { ...ai, source: "ai" };
+
+    const cleaned = text.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(cleaned);
+
+    if (
+      typeof parsed.summary !== "string" ||
+      typeof parsed.nextStep !== "string" ||
+      !parsed.summary.trim() ||
+      !parsed.nextStep.trim()
+    ) {
+      throw new Error("AI response missing required fields");
+    }
+
+    insight = {
+      summary: parsed.summary.trim(),
+      nextStep: parsed.nextStep.trim(),
+      source: "ai",
+    };
   } catch (error) {
-    console.error("Gemini insight generation failed, falling back:", error);
+    console.error("AI insight generation failed, falling back:", error);
     insight = buildProgrammaticInsight(campaignName, goal, stats);
   }
 
   setCachedInsight(campaignId, stats, insight);
   return insight;
 }
+

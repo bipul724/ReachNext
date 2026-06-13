@@ -1,4 +1,4 @@
-import { safeGenerate } from "../lib/groq";
+import { getAIService } from "../lib/ai";
 import { cleanJsonString } from "./schemas";
 
 // ---------------------------------------------------------------------------
@@ -75,7 +75,11 @@ ${JSON.stringify(facts, null, 2)}
 Please output the raw JSON object.`;
 
   try {
-    const text = await safeGenerate(prompt);
+    const { text } = await getAIService().callModel({
+      task: "compare_insights",
+      userPrompt: prompt,
+      temperature: 0.1,
+    });
     const cleanJson = cleanJsonString(text);
     const parsed = JSON.parse(cleanJson);
 
