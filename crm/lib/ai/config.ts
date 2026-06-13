@@ -5,6 +5,7 @@
 import type { AIProvider } from "./types";
 import { GroqProvider } from "./providers/groq.provider";
 import { GeminiProvider } from "./providers/gemini.provider";
+import { OpenRouterProvider } from "./providers/openrouter.provider";
 
 // ── Provider factory ──
 
@@ -22,9 +23,12 @@ function getOrCreateProvider(name: string): AIProvider {
     case "gemini":
       provider = new GeminiProvider();
       break;
+    case "openrouter":
+      provider = new OpenRouterProvider();
+      break;
     default:
       throw new Error(
-        `Unknown AI provider: "${name}". Supported: groq, gemini`
+        `Unknown AI provider: "${name}". Supported: groq, gemini, openrouter`
       );
   }
 

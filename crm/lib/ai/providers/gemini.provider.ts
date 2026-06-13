@@ -103,10 +103,16 @@ export class GeminiProvider implements AIProvider {
 
       // Wrap unknown errors
       if (!(error instanceof AIProviderError)) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        let statusCode: number | null = null;
+        const match = errorMessage.match(/(\d{3})\s/);
+        if (match) {
+          statusCode = parseInt(match[1], 10);
+        }
         throw new AIProviderError(
           "gemini",
-          null,
-          error instanceof Error ? error.message : String(error)
+          statusCode,
+          errorMessage
         );
       }
 
