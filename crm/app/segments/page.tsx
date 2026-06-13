@@ -85,7 +85,9 @@ export default function Segments() {
                   {segments.map((seg: any) => (
                     <TableRow key={seg.id} className="hover:bg-muted/20">
                       <TableCell className="font-semibold text-foreground py-4">
-                        {seg.name}
+                        <Link href={`/segments/${seg.id}`} className="hover:text-primary hover:underline underline-offset-2 transition-colors">
+                          {seg.name}
+                        </Link>
                       </TableCell>
                       <TableCell className="text-xs max-w-xs truncate py-4 text-muted-foreground">
                         {seg.description || "No description provided."}
