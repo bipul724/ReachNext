@@ -1,5 +1,7 @@
 "use client";
 
+import type { AdaptiveRecommendation } from "../../../ai/adaptive-recommendation";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
@@ -23,6 +25,11 @@ import {
   ShieldCheck,
   CheckCircle2,
   AlertCircle,
+  Brain,
+  BarChart3,
+  Zap,
+  Activity,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -40,6 +47,7 @@ export default function NewCampaign() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLaunching, setIsLaunching] = useState(false);
   const [workspace, setWorkspace] = useState<CampaignWorkspacePayload | null>(null);
+  const [adaptiveInsights, setAdaptiveInsights] = useState<AdaptiveRecommendation | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -60,6 +68,7 @@ export default function NewCampaign() {
   // Dynamic loading steps for visual wow factor
   const [loadingStep, setLoadingStep] = useState(0);
   const loadingSteps = [
+    "Adaptive Engine: Analyzing historical campaign outcomes for similar objectives...",
     "Segmentation Agent: Translating campaign goal into database query filters...",
     "Opportunity Sizing: Aggregating shopper metrics and matching audience size...",
     "Strategy Agent: Selecting optimal communication channel, offer, and timing...",
@@ -86,6 +95,18 @@ export default function NewCampaign() {
   const handleGenerateAutopilot = async (objectiveGoal: string) => {
     setIsGenerating(true);
     setWorkspace(null);
+    setAdaptiveInsights(null);
+
+    // Fetch adaptive insights in parallel (non-blocking)
+    fetch("/api/campaigns/adaptive-insights", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ goal: objectiveGoal }),
+    })
+      .then((r) => r.json())
+      .then((data) => setAdaptiveInsights(data))
+      .catch(() => setAdaptiveInsights(null));
+
     try {
       const res = await fetch("/api/campaigns/generate", {
         method: "POST",
@@ -343,6 +364,140 @@ export default function NewCampaign() {
           </div>
 
           <div className="space-y-6">
+            {/* Adaptive Recommendation Engine */}
+            {adaptiveInsights && (
+              <Card className="border-violet-500/20 bg-gradient-to-br from-violet-50/50 via-transparent to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/10">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base font-bold flex items-center gap-2">
+                    <Brain className="h-4.5 w-4.5 text-violet-600 dark:text-violet-400" />
+                    Adaptive Recommendation Engine
+                  </CardTitle>
+                  <CardDescription className="flex items-center gap-2">
+                    <Badge
+                      variant="outline"
+                      className={`text-[9px] uppercase font-bold ${
+                        adaptiveInsights.mode === "adaptive"
+                          ? "border-emerald-500/50 text-emerald-700 dark:text-emerald-400"
+                          : adaptiveInsights.mode === "hybrid"
+                          ? "border-amber-500/50 text-amber-700 dark:text-amber-400"
+                          : "border-muted-foreground/30 text-muted-foreground"
+                      }`}
+                    >
+                      {adaptiveInsights.mode} mode
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className="text-[9px] uppercase font-bold border-violet-500/30 text-violet-600 dark:text-violet-400"
+                    >
+                      {adaptiveInsights.confidence} confidence
+                    </Badge>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 text-xs">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Activity className="h-3.5 w-3.5" />
+                    <span>
+                      Based on <strong className="text-foreground">{adaptiveInsights.sampleSize}</strong>{" "}
+                      similar completed campaign{adaptiveInsights.sampleSize !== 1 ? "s" : ""}
+                      <span className="text-[10px] ml-1 opacity-60">(similarity ≥ {adaptiveInsights.similarityThreshold})</span>
+                    </span>
+                  </div>
+
+                  {/* Channel Performance Comparison */}
+                  {adaptiveInsights.channelPerformance.length > 0 && (
+                    <div className="space-y-2">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                        <BarChart3 className="h-3.5 w-3.5" />
+                        Channel Performance
+                      </span>
+                      <div className="space-y-1.5">
+                        {adaptiveInsights.channelPerformance.map((cp, idx) => {
+                          const isTop = idx === 0;
+                          const barWidth = adaptiveInsights.channelPerformance[0].conversionRate > 0
+                            ? (cp.conversionRate / adaptiveInsights.channelPerformance[0].conversionRate) * 100
+                            : 50;
+                          return (
+                            <div key={cp.channel} className="space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className={`font-semibold uppercase text-[11px] ${
+                                  isTop ? "text-emerald-700 dark:text-emerald-400" : "text-muted-foreground"
+                                }`}>
+                                  {isTop && "✓ "}{cp.channel}
+                                </span>
+                                <span className={`font-bold text-[11px] ${
+                                  isTop ? "text-emerald-700 dark:text-emerald-400" : "text-muted-foreground"
+                                }`}>
+                                  {(cp.conversionRate * 100).toFixed(1)}%
+                                </span>
+                              </div>
+                              <div className="h-1.5 bg-muted/40 rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full rounded-full transition-all duration-700 ${
+                                    isTop
+                                      ? "bg-emerald-500 dark:bg-emerald-400"
+                                      : "bg-muted-foreground/30"
+                                  }`}
+                                  style={{ width: `${barWidth}%` }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Key Insights (Hidden in Benchmark Mode) */}
+                  {adaptiveInsights.mode !== "benchmark" && (
+                    <div className="space-y-2 border-t border-border/40 pt-3">
+                      {adaptiveInsights.bestTiming && (
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-3.5 w-3.5 text-purple-500" />
+                          <span>Best timing: <strong className="text-foreground">{adaptiveInsights.bestTiming}</strong></span>
+                        </div>
+                      )}
+                      {adaptiveInsights.bestOffer && (
+                        <div className="flex items-center gap-2">
+                          <Gift className="h-3.5 w-3.5 text-orange-500" />
+                          <span>Best offer: <strong className="text-foreground">{adaptiveInsights.bestOffer}</strong></span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-3.5 w-3.5 text-amber-500" />
+                        <span>Best channel: <strong className="text-foreground uppercase">{adaptiveInsights.bestChannel}</strong></span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Explanation */}
+                  <div className="rounded-lg bg-violet-50/50 dark:bg-violet-950/10 border border-violet-100 dark:border-violet-900/30 p-3 text-[11px] leading-relaxed text-violet-700 dark:text-violet-400">
+                    {adaptiveInsights.message}
+                  </div>
+
+                  {/* Strategy Drift Insights */}
+                  {adaptiveInsights.driftInsights && adaptiveInsights.driftInsights.length > 0 && (
+                    <div className="space-y-2 border-t border-border/40 pt-3">
+                      <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <AlertTriangle className="h-3.5 w-3.5" />
+                        Strategy Drift Insights
+                      </span>
+                      <div className="space-y-1.5">
+                        {adaptiveInsights.driftInsights.map((insight: string, idx: number) => (
+                          <div
+                            key={idx}
+                            className="flex items-start gap-2 rounded-md bg-amber-50/50 dark:bg-amber-950/10 border border-amber-100/60 dark:border-amber-900/20 p-2.5 text-[11px] leading-relaxed text-amber-800 dark:text-amber-300"
+                          >
+                            <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-amber-500" />
+                            <span>{insight}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             {/* Strategy recommendations */}
             <Card>
               <CardHeader>
@@ -424,6 +579,7 @@ export default function NewCampaign() {
                     variant="outline"
                     onClick={() => {
                       setWorkspace(null);
+                      setAdaptiveInsights(null);
                       setGoal("");
                     }}
                     className="w-full text-xs border-destructive/20 hover:bg-destructive/10 text-destructive"
@@ -460,6 +616,7 @@ export default function NewCampaign() {
                     variant="ghost"
                     onClick={() => {
                       setWorkspace(null);
+                      setAdaptiveInsights(null);
                       setGoal("");
                     }}
                     className="w-full text-xs text-muted-foreground"

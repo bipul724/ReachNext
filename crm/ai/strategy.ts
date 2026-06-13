@@ -8,7 +8,8 @@ export async function runStrategyAgent(
   segmentDescription: string,
   customerCount: number,
   potentialRevenue: number,
-  aov: number
+  aov: number,
+  adaptiveContext?: string
 ): Promise<StrategyAgentResponse> {
   console.log(`🎯 Running deterministic Strategy Engine for segment: "${segmentName}"`);
 
@@ -21,6 +22,25 @@ export async function runStrategyAgent(
 
   const isDormant = dormancyDays > 0 || lowercaseGoal.includes("inactive") || lowercaseGoal.includes("dormant");
   const isVIP = lowercaseGoal.includes("vip") || lowercaseGoal.includes("high spent") || lowercaseGoal.includes("high-value") || aov >= 3000 || lowercaseGoal.includes("reward");
+
+  // 1.5. Parse adaptive insights to influence decisions
+  let adaptiveBestChannel: string | null = null;
+  let adaptiveBestTiming: string | null = null;
+  let adaptiveBestOffer: string | null = null;
+  let adaptiveMode: string | null = null;
+
+  if (adaptiveContext) {
+    console.log(`📊 Adaptive context injected into Strategy Agent`);
+    const channelMatch = adaptiveContext.match(/Best Channel:\s*(\w+)/i);
+    const timingMatch = adaptiveContext.match(/Best Timing:\s*(.+)/i);
+    const offerMatch = adaptiveContext.match(/Best Offer:\s*(.+)/i);
+    const modeMatch = adaptiveContext.match(/Mode:\s*(\w+)/i);
+
+    if (channelMatch) adaptiveBestChannel = channelMatch[1].toLowerCase();
+    if (timingMatch) adaptiveBestTiming = timingMatch[1].trim();
+    if (offerMatch) adaptiveBestOffer = offerMatch[1].trim();
+    if (modeMatch) adaptiveMode = modeMatch[1].toLowerCase();
+  }
 
   let channel: "email" | "sms" | "whatsapp" = "email";
   let offer = "None";
@@ -80,6 +100,38 @@ export async function runStrategyAgent(
     explainOffer = "A standard 10% discount is offered to capture deal-seeking regular shoppers.";
   }
 
+  // 2. Apply Adaptive Overrides — when adaptive/hybrid mode provides strong evidence,
+  //    override the deterministic defaults while respecting explicit user intent in the goal.
+  if (adaptiveMode === "adaptive" || adaptiveMode === "hybrid") {
+    // Channel override: only if user didn't explicitly specify a channel in their goal
+    const userRequestedChannel =
+      lowercaseGoal.includes("whatsapp") ||
+      lowercaseGoal.includes("email") ||
+      lowercaseGoal.includes("sms");
+
+    if (!userRequestedChannel && adaptiveBestChannel) {
+      const validChannels = ["email", "sms", "whatsapp"] as const;
+      const adaptiveChannel = validChannels.find((c) => c === adaptiveBestChannel);
+      if (adaptiveChannel && adaptiveChannel !== channel) {
+        const previousChannel = channel;
+        channel = adaptiveChannel;
+        explainChannel = `${channel.toUpperCase()} is selected based on historical campaign performance (adaptive override from ${previousChannel.toUpperCase()}). ${explainChannel}`;
+      }
+    }
+
+    // Timing override: use adaptive timing if available
+    if (adaptiveBestTiming) {
+      timing = adaptiveBestTiming;
+      explainTiming = `Timing set to "${adaptiveBestTiming}" based on historical campaign conversion data. ${explainTiming}`;
+    }
+
+    // Offer override: use adaptive offer if the current offer is generic
+    if (adaptiveBestOffer && (offer === "None" || offer === "10% off coupon")) {
+      offer = adaptiveBestOffer;
+      explainOffer = `Offer "${adaptiveBestOffer}" recommended by adaptive engine based on historical conversion performance. ${explainOffer}`;
+    }
+  }
+
   // Validate output using Zod schema to ensure shape safety
   return StrategyResponseSchema.parse({
     channel,
@@ -90,3 +142,4 @@ export async function runStrategyAgent(
     explainTiming,
   });
 }
+

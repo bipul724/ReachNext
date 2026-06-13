@@ -7,6 +7,11 @@ import { runContentAgent } from "../ai/content";
 import { safeGenerate } from "../lib/groq";
 import { AgentThought, SegmentRule } from "../types";
 import { cleanJsonString, SegmentationResponseSchema } from "../ai/schemas";
+import {
+  getAdaptiveRecommendations,
+  buildAdaptivePromptSection,
+  type AdaptiveRecommendation,
+} from "../ai/adaptive-recommendation";
 
 export interface CampaignWorkspacePayload {
   campaignId: string;
@@ -30,6 +35,7 @@ export interface CampaignWorkspacePayload {
   explainContent: string;
   agentThoughts?: AgentThought[];
   status?: string;
+  adaptiveInsights?: AdaptiveRecommendation | null;
 }
 
 export const AgentOrchestrator = {
@@ -199,6 +205,23 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
     // Safety check: detect if AI returned fallback/empty rules (targets ALL customers)
     const isAIFallback = !segmentation.rules?.and?.length;
 
+    // 2.5. Run Adaptive Recommendation Engine (historical intelligence)
+    console.log("🧠 Running Adaptive Recommendation Engine...");
+    let adaptiveInsights: AdaptiveRecommendation | null = null;
+    try {
+      adaptiveInsights = await getAdaptiveRecommendations(goal);
+      console.log(`✅ Adaptive Engine: mode=${adaptiveInsights.mode}, confidence=${adaptiveInsights.confidence}, samples=${adaptiveInsights.sampleSize}`);
+
+      agentThoughts.push({
+        step: "adaptive_recommendation",
+        agent: "Adaptive Recommendation Engine",
+        reasoning: `Analyzed ${adaptiveInsights.sampleSize} similar historical campaigns (category: ${adaptiveInsights.category}, similarity ≥ ${adaptiveInsights.similarityThreshold}). Mode: ${adaptiveInsights.mode.toUpperCase()}. Best channel: ${adaptiveInsights.bestChannel.toUpperCase()}${adaptiveInsights.bestTiming ? `, best timing: ${adaptiveInsights.bestTiming}` : ""}${adaptiveInsights.bestOffer ? `, best offer: ${adaptiveInsights.bestOffer}` : ""}${adaptiveInsights.driftInsights.length > 0 ? `. ${adaptiveInsights.driftInsights.length} strategy drift insight(s) detected.` : ""}. ${adaptiveInsights.message}`,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (err) {
+      console.error("Error in Adaptive Recommendation Engine (non-blocking):", err);
+    }
+
     // 3. Run Strategy Agent
     console.log("🎯 Running Strategy Agent...");
     let strategy = {
@@ -218,7 +241,8 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
           segmentation.description,
           customerCount,
           potentialRevenue,
-          calculatedAov
+          calculatedAov,
+          adaptiveInsights ? buildAdaptivePromptSection(adaptiveInsights) : undefined
         );
         strategy = strategyRes;
       } catch (err) {
@@ -353,6 +377,7 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
       explainContent: content.explainContent,
       agentThoughts,
       status: campaignStatus,
+      adaptiveInsights,
     };
   },
 };
