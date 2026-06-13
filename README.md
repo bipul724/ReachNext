@@ -30,6 +30,8 @@ This repository contains two cooperating applications:
 
 The CRM handles customer data, segmentation, campaign creation, and analytics. The channel service accepts send requests, simulates probabilistic delivery lifecycles, and POSTs status webhooks back to the CRM. Conversions can trigger simulated orders with campaign attribution.
 
+**Channel service docs:** [`channel-service/README.md`](channel-service/README.md) (setup + API) · [`docs/CHANNEL_SERVICE.md`](docs/CHANNEL_SERVICE.md) (system design: volume, ordering, retries, failures)
+
 **Skills highlighted:** full-stack TypeScript, service-layer architecture, Prisma data modeling, REST + webhook integration, hybrid AI (LLM + deterministic logic), and pragmatic trade-offs for an assignment scope.
 
 ---
@@ -152,7 +154,7 @@ npm install
 npm run dev               # http://localhost:3001
 ```
 
-Both services must be running for campaign launch and funnel polling to work.
+Both services must be running for campaign launch and funnel polling to work. See [`channel-service/README.md`](channel-service/README.md) for API details, simulation probabilities, and troubleshooting.
 
 ### Build (local verification)
 
@@ -219,7 +221,7 @@ See `.env.example` at the repo root for a combined template. Note: `GROQ_API_KEY
 | Decision | Why | Trade-off |
 |----------|-----|-----------|
 | **Next.js full-stack** | Single codebase for UI + API; straightforward local dev | Large campaign launches run inside the API request lifecycle |
-| **Separate channel service** | Demonstrates async provider + webhook pattern | Two processes to run locally; more moving parts |
+| **Separate channel service** | Demonstrates async provider + webhook pattern; see [`docs/CHANNEL_SERVICE.md`](docs/CHANNEL_SERVICE.md) | Two processes to run locally; more moving parts |
 | **Groq for segmentation, Gemini for insights** | Split in `lib/groq.ts` vs `lib/gemini-insights.ts` | Two external API keys when using both features |
 | **Deterministic strategy/copy** | `ai/strategy.ts` and `local-nlp-parser.ts` avoid LLM calls at launch time | Less flexible than a fully LLM-driven pipeline |
 | **Denormalized customer fields** | `totalSpent`, `totalOrders`, `lastOrderAt` speed up `SegmentEngine` queries | Must stay in sync on order create |
@@ -312,6 +314,10 @@ Cross-service env wiring would require public URLs for `CHANNEL_SERVICE_URL`, `C
 ```
 xeno-mini-crm/
 ├── README.md
+├── docs/
+│   ├── API.md                    # Full HTTP API reference
+│   ├── ARCHITECTURE.md           # System architecture
+│   └── CHANNEL_SERVICE.md        # Channel loop: volume, ordering, retries
 ├── .env.example
 ├── crm/                          # Next.js CRM application
 │   ├── app/                      # Pages + API routes
@@ -329,6 +335,7 @@ xeno-mini-crm/
 │   ├── prisma/                   # schema.prisma (5 models), migrations, seed.ts
 │   └── types/                    # Shared TypeScript interfaces
 └── channel-service/              # Express delivery simulator
+    ├── README.md                 # Setup, API, simulation model
     └── src/
         ├── controllers/
         ├── simulation/           # State machine, probabilities, callbacks

@@ -12,7 +12,7 @@ This document explains how **Xeno Mini CRM** is structured internally and why ce
 
 **Scope:** Based on inspection of the repository implementation. Where something cannot be confirmed from code, it is marked **Unable to determine from implementation.**
 
-**Related:** High-level setup and feature summary live in the root [`README.md`](../README.md). This document focuses on architecture, data flow, and design rationale.
+**Related:** High-level setup and feature summary live in the root [`README.md`](../README.md). Channel service details: [`channel-service/README.md`](../channel-service/README.md), [`CHANNEL_SERVICE.md`](./CHANNEL_SERVICE.md). This document focuses on architecture, data flow, and design rationale.
 
 **Verified against repo (June 2026):** 9 files under `crm/services/`; one Prisma migration (`20260610063607_init`); `useSegmentPreview` exported but not imported by any page; `agentThoughts` and `convertedAt` present in `schema.prisma` but absent from init migration SQL.
 
@@ -194,6 +194,8 @@ Hosting provider (Supabase, Vercel, etc.) is mentioned in `README.md` only — *
 ---
 
 ## Channel Service (`channel-service/`)
+
+**Docs:** [`channel-service/README.md`](../channel-service/README.md) · [`CHANNEL_SERVICE.md`](./CHANNEL_SERVICE.md) (volume, ordering, retries, failures)
 
 **Purpose:** Standalone **delivery simulator** — not a real messaging provider.
 
@@ -1071,6 +1073,7 @@ This section describes architectural changes that would be needed beyond the cur
 
 ```
 1.  README.md
+1b. channel-service/README.md + docs/CHANNEL_SERVICE.md
 2.  crm/prisma/schema.prisma
 3.  crm/types/index.ts + crm/lib/constants.ts
 4.  crm/services/segment-engine.ts

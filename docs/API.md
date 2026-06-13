@@ -17,7 +17,7 @@ This document describes every HTTP API exposed by this repository: the **CRM** (
 
 **Authentication:** **Not implemented.** All endpoints are publicly accessible. See [Authentication](#authentication).
 
-**Related docs:** [`README.md`](../README.md) (setup), [`ARCHITECTURE.md`](./ARCHITECTURE.md) (system design).
+**Related docs:** [`README.md`](../README.md) (setup), [`ARCHITECTURE.md`](./ARCHITECTURE.md) (system design), [`CHANNEL_SERVICE.md`](./CHANNEL_SERVICE.md) (channel loop design), [`channel-service/README.md`](../channel-service/README.md) (channel setup + API).
 
 ---
 
@@ -937,6 +937,8 @@ POST route
 ## Channel Service API
 
 Base URL: `http://localhost:3001` (default). Routes mounted at `/api` in `channel-service/src/index.ts`.
+
+**Extended docs:** [`channel-service/README.md`](../channel-service/README.md) (setup, probabilities, troubleshooting) · [`CHANNEL_SERVICE.md`](./CHANNEL_SERVICE.md) (system design)
 
 ### POST `/api/send`
 
