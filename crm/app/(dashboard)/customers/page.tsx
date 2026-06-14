@@ -296,6 +296,7 @@ export default function Customers() {
                     <Button
                       variant="outline"
                       size="sm"
+                      aria-label="Previous page"
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
                       disabled={page === 1}
                       className="h-8 w-8 p-0"
@@ -305,6 +306,7 @@ export default function Customers() {
                     <Button
                       variant="outline"
                       size="sm"
+                      aria-label="Next page"
                       onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
                       className="h-8 w-8 p-0"

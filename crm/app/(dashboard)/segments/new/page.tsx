@@ -306,6 +306,7 @@ export default function NewSegment() {
                           type="button"
                           variant="ghost"
                           size="sm"
+                          aria-label="Delete rule"
                           onClick={() => handleRemoveRule(index)}
                           className="text-destructive hover:bg-destructive/10 h-8.5 w-8.5 p-0 shrink-0"
                         >
