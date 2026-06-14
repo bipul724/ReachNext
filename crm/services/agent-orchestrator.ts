@@ -376,6 +376,7 @@ Return ONLY the raw JSON string. Do not include markdown code block formatting (
       offer: strategy.offer,
       timing: strategy.timing,
       goal: normalizedGoal,
+      adaptiveInsights: adaptiveInsights,
     };
 
     const campaignStatus = isExhaustedFailure ? "failed" : "draft";
