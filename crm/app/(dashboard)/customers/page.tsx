@@ -292,7 +292,7 @@ export default function Customers() {
               Ingest CSV Data
             </Button>
           } />
-          <DialogContent className="sm:max-w-xl max-w-xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-3xl max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <FileSpreadsheet className="h-5 w-5 text-primary" />
@@ -447,7 +447,8 @@ export default function Customers() {
 
         {/* Import Preview Dialog */}
         <Dialog open={showPreviewDialog} onOpenChange={setShowPreviewDialog}>
-          <DialogContent className="sm:max-w-2xl max-w-2xl max-h-[90vh] overflow-y-auto">
+          {/* <DialogContent className="sm:max-w-2xl max-w-2xl max-h-[90vh] overflow-y-auto"> */}
+          <DialogContent className="w-[85vw] !max-w-2xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <FileSpreadsheet className="h-5 w-5 text-primary" />
