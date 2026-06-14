@@ -4,7 +4,7 @@ Intelligent Customer Management and Campaign Execution. Turn customer data into 
 
 ---
 
-## Badges
+## 🏅 Badges
 
 ![React](https://img.shields.io/badge/React-19.1-blue?logo=react)
 ![Next.js](https://img.shields.io/badge/Next.js-15.5-black?logo=next.js)
@@ -17,6 +17,13 @@ Intelligent Customer Management and Campaign Execution. Turn customer data into 
 
 ---
 
+## 🌐 Live Demo
+
+*   **Main Application**: [https://reach-next-iota.vercel.app](https://reach-next-iota.vercel.app)
+*   **Channel Service**: [https://reachnext-channel-service.onrender.com](https://reachnext-channel-service.onrender.com)
+
+---
+
 ## 🎯 The Challenge & Approach
 
 The assignment required building a system to ingest data, segment shoppers, send personalized communications, and track performance using a stubbed channel service—all while being deeply "AI-native."
@@ -25,26 +32,45 @@ Instead of bolting an AI chatbot onto a traditional SaaS interface, ReachNext is
 
 ---
 
-## Features
+## ✨ Features
 
-### Intelligent Segmentation
+### 1. Intelligent Segmentation
 Group customers using complex data rules (e.g., total spend, city, total orders). The segmentation engine queries the PostgreSQL database dynamically to instantly isolate target audiences.
 
-### AI-Powered Campaign Personalization
+### 2. AI-Powered Campaign Personalization
 Uses Groq or Google Gemini to process batches of customer data. For each recipient, the AI analyzes their unique attributes (name, location, spending history) and automatically rewrites the base campaign template into a highly personalized message.
 
-### Automated Campaign Dispatch
+### 3. Automated Campaign Dispatch
 Synchronously evaluates segmented customers, delegates message personalization to the AI services, and bulk-inserts the communications into the database. The system then batches the finalized payloads and dispatches them via HTTP to the delivery channel.
 
-### Real-Time Delivery Webhooks
+### 4. Real-Time Delivery Webhooks
 Features a dedicated webhook listener endpoint (`/api/webhooks/receipt`). The system receives continuous updates regarding message status (queued, sent, delivered, opened, clicked, converted, failed) and automatically aggregates these statistics onto the parent campaign.
 
-### Mock Delivery Simulation
+### 5. Mock Delivery Simulation
 Includes a dedicated microservice (`channel-service`) that mimics real-world email/SMS providers. When a campaign is launched, this service accepts the payloads and fires randomized, asynchronous webhook receipts back to the CRM to simulate the lifecycle of a marketing blast.
 
 ---
 
-## Tech Stack
+## 🏗️ Architecture
+
+### Product Journey
+![High-Level Product Journey](./assets/reachnext_diagram1_product_journey.svg)
+
+### Technical Architecture
+![Technical Architecture](./assets/reachnext_diagram2_technical_architecture.svg)
+
+### AI Workflow
+![AI Workflow](./assets/reachnext_diagram3_ai_workflow.svg)
+
+### Campaign Delivery Lifecycle
+![Campaign Delivery Lifecycle](./assets/reachnext_diagram4_delivery_lifecycle.svg)
+
+### Closed-Loop Marketing Intelligence
+![Closed-Loop Marketing Intelligence](./assets/reachnext_diagram5_closed_loop.svg)
+
+---
+
+## 🛠️ Tech Stack
 
 **Frontend**
 *   Next.js 15 (App Router)
@@ -68,7 +94,7 @@ Includes a dedicated microservice (`channel-service`) that mimics real-world ema
 
 ---
 
-## Demo Walkthrough
+## 🚀 Demo Walkthrough
 
 1.  **Launch Both Servers**: Ensure the CRM is running on `:3000` and the Channel Service on `:3001`.
 2.  **Create a Segment**: Navigate to the Segments tab and create a rule (e.g., `Total Spent > 500`).
@@ -78,7 +104,7 @@ Includes a dedicated microservice (`channel-service`) that mimics real-world ema
 
 ---
 
-## Known Limitations
+## ⚠️ Known Limitations
 
 *   **No Authentication**: The application currently has no login system, authentication middleware, or user authorization.
 *   **Single Tenant Architecture**: The database and UI are designed for a single organization. There is no multi-tenant workspace isolation.
@@ -87,7 +113,7 @@ Includes a dedicated microservice (`channel-service`) that mimics real-world ema
 
 ---
 
-## Future Improvements
+## 🔮 Future Improvements
 
 *   **Implement Resilient Background Queues**: Introduce Redis and BullMQ to extract the `CampaignSender` logic out of the Next.js API route, allowing for resilient, retryable background job processing for massive audience segments.
 *   **Authentication & Multi-Tenancy**: Integrate NextAuth.js or Clerk and update the Prisma schema to relate Customers, Segments, and Campaigns to specific Organization IDs.
