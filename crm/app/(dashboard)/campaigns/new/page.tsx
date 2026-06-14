@@ -273,15 +273,35 @@ function NewCampaignContent() {
             Input your marketing goal in plain English. The CRM agent pipeline will construct the segment filters, sizing, channel strategy, and promos automatically.
           </p>
           <div className="flex flex-col gap-3">
-            <textarea
-              className="w-full h-32 rounded-lg border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-              placeholder="What is your business objective? e.g., Increase repeat purchases among footwear buyers who have not purchased in the last 45 days..."
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-            />
+            <div className="space-y-1.5">
+              <textarea
+                id="campaign-prompt"
+                aria-describedby="campaign-prompt-counter"
+                maxLength={500}
+                className="w-full h-32 rounded-lg border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                placeholder="What is your business objective? e.g., Increase repeat purchases among footwear buyers who have not purchased in the last 45 days..."
+                value={goal}
+                onChange={(e) => {
+                  if (e.target.value.length <= 500 || e.target.value.length < goal.length) {
+                    setGoal(e.target.value);
+                  }
+                }}
+              />
+              <div className="flex justify-end">
+                <span
+                  id="campaign-prompt-counter"
+                  aria-live="polite"
+                  className={`text-xs ${
+                    goal.length >= 500 ? "text-destructive font-medium" : "text-muted-foreground"
+                  }`}
+                >
+                  {goal.length} of 500 characters used
+                </span>
+              </div>
+            </div>
             <Button
               onClick={() => handleGenerateAutopilot(goal)}
-              disabled={!goal.trim()}
+              disabled={!goal.trim() || goal.length > 500}
               className="w-full rounded-lg gap-2"
             >
               <Sparkles className="h-4 w-4" />
