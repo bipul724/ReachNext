@@ -41,7 +41,7 @@ function formatCurrency(amount: number) {
   }).format(amount);
 }
 
-const COLORS = ["#7c2d12", "#9a3412", "#c2410c", "#ea580c", "#f97316"];
+const COLORS = ["#3B82F6"];
 
 interface Opportunity {
   type: string;
