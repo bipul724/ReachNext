@@ -77,7 +77,7 @@ const METRICS: MetricRow[] = [
     getValue: (_, c) => c.totalRecipients?.toLocaleString() || "0",
     getRaw: (_, c) => c.totalRecipients || 0,
     format: "number",
-    winnerBadgeColor: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400",
+    winnerBadgeColor: "bg-[#DBEAFE] text-[#2563EB]",
     higherIsBetter: true,
   },
   {
@@ -92,7 +92,7 @@ const METRICS: MetricRow[] = [
       return sent > 0 ? (s.delivered || 0) / sent : 0;
     },
     format: "percent",
-    winnerBadgeColor: "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/20 dark:text-sky-400",
+    winnerBadgeColor: "bg-[#DBEAFE] text-[#2563EB]",
     higherIsBetter: true,
   },
   {
@@ -107,7 +107,7 @@ const METRICS: MetricRow[] = [
       return delivered > 0 ? (s.opened || 0) / delivered : 0;
     },
     format: "percent",
-    winnerBadgeColor: "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/20 dark:text-orange-400",
+    winnerBadgeColor: "bg-[#FFF7ED] text-[#EA580C]",
     higherIsBetter: true,
   },
   {
@@ -122,7 +122,7 @@ const METRICS: MetricRow[] = [
       return opened > 0 ? (s.clicked || 0) / opened : 0;
     },
     format: "percent",
-    winnerBadgeColor: "bg-pink-50 text-pink-700 border-pink-200 dark:bg-pink-950/20 dark:text-pink-400",
+    winnerBadgeColor: "bg-[#FCE7F3] text-[#DB2777]",
     higherIsBetter: true,
   },
   {
@@ -130,7 +130,7 @@ const METRICS: MetricRow[] = [
     getValue: (s) => s.convertedOrders || 0,
     getRaw: (s) => s.convertedOrders || 0,
     format: "number",
-    winnerBadgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400",
+    winnerBadgeColor: "bg-[#DCFCE7] text-[#16A34A]",
     higherIsBetter: true,
   },
   {
@@ -141,15 +141,15 @@ const METRICS: MetricRow[] = [
     },
     getRaw: (s) => s.conversionRevenue || 0,
     format: "currency",
-    winnerBadgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400",
+    winnerBadgeColor: "bg-[#DCFCE7] text-[#059669]",
     higherIsBetter: true,
   },
   {
     label: "Success Score",
-    getValue: (s) => `${calculateSuccessScore(s)}/100`,
+    getValue: (s) => `${calculateSuccessScore(s)}`,
     getRaw: (s) => calculateSuccessScore(s),
     format: "score",
-    winnerBadgeColor: "bg-slate-100 text-slate-700 border-slate-200", // Removed purple
+    winnerBadgeColor: "bg-[#EDE9FE] text-[#7C3AED]",
     higherIsBetter: true,
   },
 ];
@@ -383,260 +383,265 @@ export default function CampaignComparison() {
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto animate-in fade-in duration-500">
+    <div className="space-y-8 bg-[#FAFAFA] min-h-screen pb-12 animate-in fade-in duration-500">
       {/* Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4">
         <Link
           href="/campaigns"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900"
+          className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#64748B] hover:text-[#2563EB] transition-colors w-fit"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to campaigns
         </Link>
-      </div>
-
-      <div className="space-y-1">
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-          <BarChart3 className="h-6 w-6 text-blue-600" />
-          Campaign Comparison
-        </h2>
-        <p className="text-xs text-slate-500">
-          Select 2–5 launched campaigns to compare performance side-by-side.
-        </p>
+        <div className="space-y-1.5">
+          <h2 className="text-[32px] font-bold text-[#111827] tracking-tight flex items-center gap-2">
+            <BarChart3 className="h-8 w-8 text-[#2563EB]" />
+            Campaign Comparison
+          </h2>
+          <p className="text-[15px] text-[#6B7280]">
+            Select 2–5 launched campaigns to compare performance side-by-side.
+          </p>
+        </div>
       </div>
 
       {/* Campaign Selector */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-bold flex items-center justify-between">
-            <span className="text-slate-900">Select Campaigns</span>
-            <Badge variant="outline" className="font-semibold text-[10px] uppercase text-slate-600">
-              {selectedIds.size} / 5 selected
-            </Badge>
-          </CardTitle>
-          <CardDescription className="text-slate-500">
-            Choose launched campaigns to compare. Draft campaigns are excluded.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {launchedCampaigns.length === 0 ? (
-            <div className="text-center py-8 text-xs text-slate-500">
-              No launched campaigns found. Launch campaigns first to compare them.
+      <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-[18px] p-6 shadow-none">
+        <div className="flex items-center justify-between mb-6">
+            <span className="text-[20px] font-extrabold text-[#111827]">Select Campaigns</span>
+            <div className="px-3 py-1.5 bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] rounded-full text-[13px] font-semibold">
+              {selectedIds.size} / 5 Selected
             </div>
-          ) : (
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {launchedCampaigns.map((camp: any) => {
-                const isSelected = selectedIds.has(camp.id);
-                const isDisabled = !isSelected && selectedIds.size >= 5;
-                const stats = camp.stats || {};
-                const revenue = stats.conversionRevenue || 0;
+        </div>
+        
+        {launchedCampaigns.length === 0 ? (
+          <div className="text-center py-8 text-sm text-[#6B7280]">
+            No launched campaigns found. Launch campaigns first to compare them.
+          </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {launchedCampaigns.map((camp: any) => {
+              const isSelected = selectedIds.has(camp.id);
+              const isDisabled = !isSelected && selectedIds.size >= 5;
+              const stats = camp.stats || {};
+              const revenue = stats.conversionRevenue || 0;
+              
+              let channelClasses = "bg-gray-50 text-gray-700 border-gray-200";
+              if (camp.channel === "email") channelClasses = "bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]";
+              if (camp.channel === "whatsapp") channelClasses = "bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]";
+              if (camp.channel === "sms") channelClasses = "bg-[#FFF7ED] text-[#C2410C] border-[#FED7AA]";
 
-                return (
-                  <button
-                    key={camp.id}
-                    onClick={() => !isDisabled && toggleCampaign(camp.id)}
-                    disabled={isDisabled}
-                    className={`flex items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-all duration-200 ${
+              return (
+                <button
+                  key={camp.id}
+                  onClick={() => !isDisabled && toggleCampaign(camp.id)}
+                  disabled={isDisabled}
+                  className={`flex items-center gap-3 rounded-[14px] border px-3 py-2.5 text-left transition-all duration-150 ${
+                    isSelected
+                      ? "border-[#2563EB] border-[2px] bg-[#EFF6FF]"
+                      : isDisabled
+                        ? "border-[#D1D5DB] opacity-40 cursor-not-allowed bg-[#FFFFFF]"
+                        : "border-[#D1D5DB] hover:border-[#9CA3AF] hover:bg-[#F9FAFB] bg-[#FFFFFF]"
+                  }`}
+                >
+                  {/* Checkbox */}
+                  <div
+                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition-colors ${
                       isSelected
-                        ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600/20"
-                        : isDisabled
-                          ? "border-border/50 opacity-40 cursor-not-allowed"
-                          : "border-border hover:border-blue-600/40 hover:bg-slate-50"
+                        ? "bg-[#2563EB] border-[#2563EB] text-white"
+                        : "border-gray-400 bg-white"
                     }`}
                   >
-                    {/* Checkbox */}
-                    <div
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
-                        isSelected
-                          ? "bg-blue-600 border-blue-600 text-white"
-                          : "border-slate-300"
-                      }`}
-                    >
-                      {isSelected && <Check className="h-3 w-3" />}
-                    </div>
+                    {isSelected && <Check className="h-3 w-3" />}
+                  </div>
 
-                    {/* Campaign info */}
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[12px] font-semibold text-slate-900 truncate">
-                        {camp.name}
-                      </p>
-                      <p className="text-[10px] text-slate-500">
-                        {camp.channel.toUpperCase()} • {camp.totalRecipients} recipients
-                        {revenue > 0 ? ` • ₹${revenue.toLocaleString("en-IN")}` : ""}
-                      </p>
+                  {/* Campaign info */}
+                  <div className="min-w-0 flex-1 flex flex-col gap-1.5">
+                    <p className="text-[13px] font-semibold text-[#111827] truncate leading-none mt-0.5">
+                      {camp.name}
+                    </p>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={`px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wide leading-none ${channelClasses}`}>
+                          {camp.channel}
+                        </span>
+                        <span className="text-[11px] text-[#6B7280] font-medium leading-none">
+                          {camp.totalRecipients.toLocaleString()} rec.
+                        </span>
                     </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* Winner Summary Cards */}
       {topWinners && (topWinners.revenue || topWinners.engagement || topWinners.conversions) && (
         <div className="grid gap-4 md:grid-cols-3">
           {/* Best Revenue */}
           {topWinners.revenue && (
-            <Card className="border-emerald-200/60 dark:border-emerald-900/30 hover:shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between pb-1.5 pt-4">
-                <CardTitle className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+            <div className="bg-[#FFFFFF] border border-[#A7F3D0] rounded-[16px] p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[11px] font-bold tracking-wider text-[#6B7280] uppercase">
                   Highest Revenue
-                </CardTitle>
-                <TrendingUp className="h-4 w-4 text-emerald-500" />
-              </CardHeader>
-              <CardContent className="pb-4">
-                <div className="text-lg font-extrabold text-slate-900">
-                  {topWinners.revenue.value}
-                </div>
-                <p className="text-[10px] text-slate-500 mt-0.5 truncate">
-                  {topWinners.revenue.campaign.name}
-                </p>
-              </CardContent>
-            </Card>
+                </span>
+                <TrendingUp className="h-4.5 w-4.5 text-[#10B981]" />
+              </div>
+              <div className="text-[24px] font-bold text-[#111827]">
+                {topWinners.revenue.value}
+              </div>
+              <p className="text-[13px] text-[#6B7280] mt-1 font-medium truncate">
+                {topWinners.revenue.campaign.name}
+              </p>
+            </div>
           )}
 
           {/* Best Engagement */}
           {topWinners.engagement && (
-            <Card className="border-orange-200/60 dark:border-orange-900/30 hover:shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between pb-1.5 pt-4">
-                <CardTitle className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+            <div className="bg-[#FFFFFF] border border-[#FED7AA] rounded-[16px] p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[11px] font-bold tracking-wider text-[#6B7280] uppercase">
                   Highest Open Rate
-                </CardTitle>
-                <MousePointerClick className="h-4 w-4 text-orange-500" />
-              </CardHeader>
-              <CardContent className="pb-4">
-                <div className="text-lg font-extrabold text-slate-900">
-                  {topWinners.engagement.value}
-                </div>
-                <p className="text-[10px] text-slate-500 mt-0.5 truncate">
-                  {topWinners.engagement.campaign.name}
-                </p>
-              </CardContent>
-            </Card>
+                </span>
+                <MousePointerClick className="h-4.5 w-4.5 text-[#F97316]" />
+              </div>
+              <div className="text-[24px] font-bold text-[#111827]">
+                {topWinners.engagement.value}
+              </div>
+              <p className="text-[13px] text-[#6B7280] mt-1 font-medium truncate">
+                {topWinners.engagement.campaign.name}
+              </p>
+            </div>
           )}
 
           {/* Best Conversions */}
           {topWinners.conversions && (
-            <Card className="border-slate-200 hover:shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between pb-1.5 pt-4">
-                <CardTitle className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+            <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-[16px] p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[11px] font-bold tracking-wider text-[#6B7280] uppercase">
                   Most Conversions
-                </CardTitle>
-                <ShoppingBag className="h-4 w-4 text-slate-600" />
-              </CardHeader>
-              <CardContent className="pb-4">
-                <div className="text-lg font-extrabold text-slate-900">
-                  {topWinners.conversions.value} orders
-                </div>
-                <p className="text-[10px] text-slate-500 mt-0.5 truncate">
-                  {topWinners.conversions.campaign.name}
-                </p>
-              </CardContent>
-            </Card>
+                </span>
+                <ShoppingBag className="h-4.5 w-4.5 text-[#6B7280]" />
+              </div>
+              <div className="text-[24px] font-bold text-[#111827]">
+                {topWinners.conversions.value} orders
+              </div>
+              <p className="text-[13px] text-[#6B7280] mt-1 font-medium truncate">
+                {topWinners.conversions.campaign.name}
+              </p>
+            </div>
           )}
         </div>
       )}
 
       {/* Comparison Table */}
       {selectedCampaigns.length >= 2 && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold flex items-center gap-1.5 text-slate-900">
-              <Trophy className="h-4.5 w-4.5 text-blue-600" />
+        <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-[18px] overflow-hidden shadow-none">
+          <div className="px-6 py-5 border-b border-[#E5E7EB]">
+            <h3 className="text-[16px] font-bold flex items-center gap-2 text-[#111827]">
+              <Trophy className="h-5 w-5 text-[#2563EB]" />
               Side-by-Side Comparison
-            </CardTitle>
-            <CardDescription className="text-slate-500">
+            </h3>
+            <p className="text-[14px] text-[#6B7280] mt-1.5">
               {selectedCampaigns.length} campaigns compared.{" "}
-              <span className="text-blue-600 font-medium">★</span> marks the leader in each metric.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-md border border-border overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-slate-50">
-                  <TableRow>
-                    <TableHead className="font-semibold text-xs text-slate-500 w-[160px]">
-                      Metric
+              <span className="text-[#2563EB] font-bold">★</span> marks the leader in each metric.
+            </p>
+          </div>
+          <div className="w-full overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-[#F9FAFB] border-b border-[#E5E7EB]">
+                <TableRow className="border-0 hover:bg-transparent">
+                  <TableHead className="font-semibold text-[13px] tracking-[0.03em] uppercase text-[#6B7280] h-[52px] px-6 w-[180px]">
+                    Metric
+                  </TableHead>
+                  {selectedCampaigns.map((camp: any) => (
+                    <TableHead
+                      key={camp.id}
+                      className="font-semibold text-[13px] tracking-[0.03em] uppercase text-[#6B7280] h-[52px] px-6 text-right"
+                    >
+                      <div className="flex flex-col items-end gap-1">
+                        <Link href={`/campaigns/${camp.id}`} target="_blank" className="truncate max-w-[150px] text-[#111827] hover:text-[#2563EB] hover:underline underline-offset-2 transition-colors">
+                            {camp.name.replace(/^Autopilot:\s*/i, "")}
+                        </Link>
+                      </div>
                     </TableHead>
-                    {selectedCampaigns.map((camp: any) => (
-                      <TableHead
-                        key={camp.id}
-                        className="font-semibold text-xs text-slate-900 text-right"
-                      >
-                        <div className="flex flex-col items-end gap-0.5">
-                          <Link href={`/campaigns/${camp.id}`} target="_blank" className="truncate max-w-[140px] hover:text-blue-600 hover:underline underline-offset-2 transition-colors">{camp.name}</Link>
-                          <span className="text-[9px] text-slate-500 font-normal uppercase">
-                            {camp.channel}
-                          </span>
-                        </div>
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {METRICS.map((metric) => {
-                    const winnerId = winners.get(metric.label);
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {METRICS.map((metric) => {
+                  const winnerId = winners.get(metric.label);
 
-                    return (
-                      <TableRow key={metric.label}>
-                        <TableCell className="text-xs font-medium text-slate-500 py-3">
-                          {metric.label}
-                        </TableCell>
-                        {selectedCampaigns.map((camp: any) => {
-                          const stats = camp.stats || {};
-                          const value = metric.getValue(stats, camp);
-                          const isWinner = winnerId === camp.id;
+                  return (
+                    <TableRow key={metric.label} className="h-[64px] border-b border-[#F3F4F6] hover:bg-[#FAFAFA] transition-colors">
+                      <TableCell className="text-[14px] font-semibold text-[#374151] px-6 py-0">
+                        {metric.label}
+                      </TableCell>
+                      {selectedCampaigns.map((camp: any) => {
+                        const stats = camp.stats || {};
+                        const value = metric.getValue(stats, camp);
+                        const isWinner = winnerId === camp.id;
+                        
+                        let valueClass = "text-[14px] font-semibold text-[#111827]";
+                        if (metric.label === "Revenue") {
+                            valueClass = "text-[15px] font-bold text-[#059669]";
+                        } else if (metric.label === "Success Score") {
+                            const score = metric.getRaw(stats, camp);
+                            if (score >= 90) valueClass = "text-[14px] font-bold text-[#16A34A]";
+                            else if (score >= 70) valueClass = "text-[14px] font-bold text-[#2563EB]";
+                            else if (score >= 50) valueClass = "text-[14px] font-bold text-[#D97706]";
+                            else valueClass = "text-[14px] font-bold text-[#DC2626]";
+                        }
 
-                          return (
-                            <TableCell
-                              key={camp.id}
-                              className="text-right py-3"
-                            >
-                              <span
-                                className={`text-xs font-semibold ${
-                                  isWinner ? "text-slate-900" : "text-slate-500"
-                                }`}
-                              >
-                                {value}
-                              </span>
-                              {isWinner && (
-                                <span className={`ml-1.5 inline-flex items-center rounded-full border px-1 py-0.5 text-[9px] font-bold ${metric.winnerBadgeColor}`}>
-                                  ★
+                        return (
+                          <TableCell
+                            key={camp.id}
+                            className="px-6 py-0 text-right"
+                          >
+                            <div className="flex items-center justify-end gap-2.5">
+                                <span className={valueClass}>
+                                  {value}
                                 </span>
-                              )}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+                                {isWinner ? (
+                                  <span className={`w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold ${metric.winnerBadgeColor}`}>
+                                    ★
+                                  </span>
+                                ) : (
+                                  <span className="w-6 h-6" />
+                                )}
+                            </div>
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       )}
 
       {/* AI Marketing Analyst Section */}
       {selectedCampaigns.length >= 2 && (
-        <Card className="border-blue-100">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold flex items-center gap-2 text-slate-900">
-              <Sparkles className="h-4.5 w-4.5 text-blue-600" />
+        <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-[18px] p-6 shadow-none mt-6">
+          <div className="mb-6">
+            <h3 className="text-[18px] font-bold flex items-center gap-2 text-[#111827]">
+              <Sparkles className="h-5 w-5 text-[#9333EA]" />
               AI Marketing Analyst
-            </CardTitle>
-            <CardDescription className="text-slate-500">
+            </h3>
+            <p className="text-[14px] text-[#6B7280] mt-1.5 font-medium">
               Get AI-powered insights explaining campaign performance patterns and actionable recommendations.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Generate / Regenerate button */}
+            </p>
+          </div>
+          
+          <div className="space-y-5">
+            {/* Generate button */}
             {!insights && !isLoadingInsights && (
               <Button
                 onClick={() => generateInsights()}
                 disabled={isLoadingInsights}
-                className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                className="gap-2 bg-[#9333EA] hover:bg-[#7E22CE] text-white rounded-[12px] h-10 px-6 font-semibold transition-colors shadow-none"
               >
                 <Sparkles className="h-4 w-4" />
                 Generate AI Insights
@@ -645,11 +650,11 @@ export default function CampaignComparison() {
 
             {/* Loading state */}
             {isLoadingInsights && (
-              <div className="flex items-center gap-3 rounded-lg border border-blue-100 bg-blue-50 p-4">
-                <Loader2 className="h-5 w-5 animate-spin text-blue-600 shrink-0" />
+              <div className="flex items-center gap-3 rounded-[14px] border border-purple-100 bg-[#FAF5FF] p-5">
+                <Loader2 className="h-5 w-5 animate-spin text-[#9333EA] shrink-0" />
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">Analyzing campaigns…</p>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-[14px] font-semibold text-[#111827]">Analyzing campaigns…</p>
+                  <p className="text-[13px] text-[#6B7280] mt-0.5 font-medium">
                     Our AI analyst is reviewing your comparison data.
                   </p>
                 </div>
@@ -658,21 +663,21 @@ export default function CampaignComparison() {
 
             {/* Error state */}
             {insightsError && !isLoadingInsights && (
-              <div className="rounded-lg border border-red-200 bg-red-50 p-4 space-y-3">
+              <div className="rounded-[14px] border border-red-200 bg-[#FEF2F2] p-5 space-y-3">
                 <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
+                  <AlertCircle className="h-5 w-5 text-[#EF4444] shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-semibold text-red-600">Insight generation failed</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{insightsError}</p>
+                    <p className="text-[14px] font-semibold text-[#DC2626]">Insight generation failed</p>
+                    <p className="text-[13px] text-[#6B7280] mt-0.5 font-medium">{insightsError}</p>
                   </div>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => generateInsights(true)}
-                  className="gap-1.5"
+                  className="gap-1.5 rounded-[10px]"
                 >
-                  <RefreshCw className="h-3 w-3" />
+                  <RefreshCw className="h-3.5 w-3.5" />
                   Retry
                 </Button>
               </div>
@@ -680,28 +685,28 @@ export default function CampaignComparison() {
 
             {/* Insights result */}
             {insights && !isLoadingInsights && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {/* Summary */}
-                <div className="rounded-lg border bg-slate-50 p-4">
-                  <h4 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-2">
+                <div className="rounded-[14px] border border-[#E9D5FF] bg-[#FAF5FF] p-6">
+                  <h4 className="text-[13px] font-bold tracking-wide text-[#7C3AED] uppercase mb-3">
                     Analysis Summary
                   </h4>
-                  <p className="text-sm text-slate-900 leading-relaxed">
+                  <p className="text-[14px] text-[#111827] leading-relaxed font-medium">
                     {insights.summary}
                   </p>
                 </div>
 
                 {/* Patterns */}
                 {insights.patterns && insights.patterns.length > 0 && (
-                  <div className="rounded-lg border bg-slate-50 p-4">
-                    <h4 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-3 flex items-center gap-1.5">
-                      <TrendingUp className="h-3.5 w-3.5" />
+                  <div className="rounded-[14px] border border-[#BFDBFE] bg-[#EFF6FF] p-6">
+                    <h4 className="text-[13px] font-bold tracking-wide text-[#2563EB] uppercase mb-4 flex items-center gap-1.5">
+                      <TrendingUp className="h-4 w-4" />
                       Patterns Identified
                     </h4>
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {insights.patterns.map((pattern, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-slate-900">
-                          <span className="text-blue-600 mt-1 shrink-0">•</span>
+                        <li key={i} className="flex items-start gap-3 text-[14px] text-[#374151] font-medium">
+                          <span className="text-[#2563EB] mt-0.5 shrink-0 text-[18px] leading-none">•</span>
                           <span className="leading-relaxed">{pattern}</span>
                         </li>
                       ))}
@@ -711,18 +716,18 @@ export default function CampaignComparison() {
 
                 {/* Recommendations */}
                 {insights.recommendations.length > 0 && (
-                  <div className="rounded-lg border bg-slate-50 p-4">
-                    <h4 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-3 flex items-center gap-1.5">
-                      <Lightbulb className="h-3.5 w-3.5" />
+                  <div className="rounded-[14px] border border-[#FDE68A] bg-[#FFFBEB] p-6">
+                    <h4 className="text-[13px] font-bold tracking-wide text-[#D97706] uppercase mb-4 flex items-center gap-1.5">
+                      <Lightbulb className="h-4 w-4" />
                       Recommendations
                     </h4>
-                    <ul className="space-y-2">
+                    <ul className="space-y-4">
                       {insights.recommendations.map((rec, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-slate-900">
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold mt-0.5">
+                        <li key={i} className="flex items-start gap-3.5 text-[14px] text-[#111827] font-semibold">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#FEF3C7] text-[#B45309] text-[12px] font-bold mt-0.5">
                             {i + 1}
                           </span>
-                          <span className="leading-relaxed">{rec}</span>
+                          <span className="leading-relaxed pt-0.5">{rec}</span>
                         </li>
                       ))}
                     </ul>
@@ -730,41 +735,39 @@ export default function CampaignComparison() {
                 )}
 
                 {/* Regenerate button */}
-                <div className="pt-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                <div className="pt-2">
+                  <button
                     onClick={() => generateInsights(true)}
-                    className="gap-1.5 text-xs text-slate-500 hover:text-slate-900"
+                    className="flex items-center gap-1.5 text-[13px] font-bold text-[#2563EB] hover:text-[#1D4ED8] transition-colors"
                   >
-                    <RefreshCw className="h-3 w-3" />
-                    Regenerate
-                  </Button>
+                    <RefreshCw className="h-3.5 w-3.5" />
+                    Regenerate Insights
+                  </button>
                 </div>
               </div>
             )}
 
             {/* Confidence Note — always visible */}
-            <div className="flex items-start gap-2.5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3">
-              <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-              <p className="text-xs text-emerald-800 leading-relaxed">
-                <span className="font-semibold">How this works:</span> Campaign winners are computed from PostgreSQL-backed metrics. AI only interprets validated facts — it never decides rankings or invents numbers.
+            <div className="flex items-start gap-3 rounded-[14px] border border-[#A7F3D0] bg-[#ECFDF5] px-5 py-4 mt-8">
+              <ShieldCheck className="h-5 w-5 text-[#047857] shrink-0 mt-0.5" />
+              <p className="text-[13px] text-[#065F46] leading-relaxed">
+                <span className="font-bold">How this works:</span> Campaign winners are computed from PostgreSQL-backed metrics. <span className="font-bold">AI only interprets validated facts</span> — it never decides rankings or invents numbers.
               </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      {/* Prompt when less than 2 selected */}
+      {/* Prompts when nothing selected */}
       {selectedCampaigns.length < 2 && selectedIds.size > 0 && (
-        <div className="rounded-lg border border-dashed p-6 text-center text-xs text-slate-500 bg-white">
-          Select at least <span className="font-semibold text-slate-900">2 campaigns</span> to see the comparison table.
+        <div className="rounded-[16px] border border-dashed border-[#E5E7EB] p-8 text-center text-[14px] text-[#6B7280] bg-[#FFFFFF] font-medium mt-6">
+          Select at least <span className="font-bold text-[#111827]">2 campaigns</span> to see the comparison table.
         </div>
       )}
 
       {selectedIds.size === 0 && launchedCampaigns.length > 0 && (
-        <div className="rounded-lg border border-dashed p-6 text-center text-xs text-slate-500 bg-white space-y-1">
-          <p className="font-medium">Select campaigns above to begin comparing.</p>
+        <div className="rounded-[16px] border border-dashed border-[#E5E7EB] p-8 text-center text-[14px] text-[#6B7280] bg-[#FFFFFF] font-medium mt-6">
+          <p className="font-semibold text-[#111827] mb-1">Select campaigns above to begin comparing.</p>
           <p>You can compare up to 5 campaigns side-by-side.</p>
         </div>
       )}

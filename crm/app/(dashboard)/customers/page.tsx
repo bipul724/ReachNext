@@ -473,27 +473,29 @@ export default function Customers() {
   const totalPages = Math.ceil(data.total / 50);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 bg-[#FAFAFA] min-h-screen pb-10">
+
       {/* Header controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-3 h-4.5 w-4.5 text-muted-foreground" />
+          <Search className="absolute left-3.5 top-3 h-5 w-5 text-gray-500" />
           <Input
             placeholder="Search shopper name, email, or city..."
             value={search}
             onChange={handleSearch}
-            className="pl-10"
+            className="pl-11 h-11 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:border-blue-600 shadow-none transition-colors"
           />
         </div>
 
-        {/* CSV Upload Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={handleModalClose}>
-          <DialogTrigger render={
-            <Button variant="outline" className="gap-2">
-              <Upload className="h-4.5 w-4.5" />
-              Ingest CSV Data
-            </Button>
-          } />
+        <div className="flex flex-wrap items-center gap-3 mt-4 sm:mt-0">
+          {/* CSV Upload Dialog */}
+          <Dialog open={isDialogOpen} onOpenChange={handleModalClose}>
+            <DialogTrigger render={
+              <Button className="gap-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 shadow-none rounded-xl h-11 px-4 font-medium transition-colors">
+                <Upload className="h-4 w-4 text-gray-500" />
+                Ingest CSV Data
+              </Button>
+            } />
           <DialogContent className="sm:max-w-3xl max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
@@ -733,117 +735,138 @@ export default function Customers() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {/* Main Database Table card */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-bold flex items-center justify-between">
-            <span>Shoppers Directory</span>
-            <span className="text-xs text-muted-foreground font-medium">
+      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-none mt-4">
+        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white">
+            <span className="text-lg font-semibold text-gray-900">Shoppers Directory</span>
+            <span className="text-sm text-gray-500 font-medium">
               Showing {data.items.length} of {data.total} profiles
             </span>
-          </CardTitle>
-          <CardDescription>
-            Database of customer subscribers, total spends, and locations.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div className="p-0">
           {isLoading ? (
             <div className="flex h-60 items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
             </div>
           ) : data.items.length === 0 ? (
-            <div className="text-center py-12 space-y-3">
-              <Users className="h-10 w-10 mx-auto text-muted-foreground/50" />
-              <p className="text-sm text-muted-foreground">No customer records match your filter.</p>
+            <div className="text-center py-16 space-y-3">
+              <Users className="h-10 w-10 mx-auto text-gray-300" />
+              <p className="text-sm text-gray-500 font-medium">No customer records match your filter.</p>
             </div>
           ) : (
-            <div className="space-y-4">
-              <div className="rounded-md border border-border overflow-x-auto">
+            <div className="flex flex-col">
+              <div className="w-full overflow-x-auto">
                 <Table>
-                  <TableHeader className="bg-muted/30">
-                    <TableRow>
-                      <TableHead className="font-semibold text-xs text-muted-foreground">Customer</TableHead>
-                      <TableHead className="font-semibold text-xs text-muted-foreground">Contact</TableHead>
-                      <TableHead className="font-semibold text-xs text-muted-foreground">Location</TableHead>
-                      <TableHead className="font-semibold text-xs text-muted-foreground">Tags</TableHead>
-                      <TableHead className="font-semibold text-xs text-muted-foreground text-right">Orders</TableHead>
-                      <TableHead className="font-semibold text-xs text-muted-foreground text-right">Total Spent</TableHead>
+                  <TableHeader className="bg-[#F9FAFB] border-b border-gray-200">
+                    <TableRow className="border-0 hover:bg-transparent">
+                      <TableHead className="font-semibold text-[13px] tracking-[0.02em] uppercase text-gray-500 h-12 px-6">Customer</TableHead>
+                      <TableHead className="font-semibold text-[13px] tracking-[0.02em] uppercase text-gray-500 h-12 px-6">Contact</TableHead>
+                      <TableHead className="font-semibold text-[13px] tracking-[0.02em] uppercase text-gray-500 h-12 px-6">Location</TableHead>
+                      <TableHead className="font-semibold text-[13px] tracking-[0.02em] uppercase text-gray-500 h-12 px-6">Tags</TableHead>
+                      <TableHead className="font-semibold text-[13px] tracking-[0.02em] uppercase text-gray-500 h-12 px-6 text-right">Orders</TableHead>
+                      <TableHead className="font-semibold text-[13px] tracking-[0.02em] uppercase text-gray-500 h-12 px-6 text-right">Total Spent</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {data.items.map((cust: any) => (
-                      <TableRow key={cust.id} className="hover:bg-muted/20">
-                        <TableCell className="font-medium text-foreground py-3">
-                          {cust.name}
+                    {data.items.map((cust: any) => {
+                      return (
+                      <TableRow key={cust.id} className="h-[72px] hover:bg-gray-50 transition-colors duration-150 cursor-pointer border-b border-gray-100 last:border-0">
+                        <TableCell className="px-6 py-0">
+                          <span className="text-gray-900 font-semibold text-sm">
+                            {cust.name}
+                          </span>
                         </TableCell>
-                        <TableCell className="text-xs font-mono py-3">
-                          <div className="flex flex-col gap-0.5">
-                            <span>{cust.email}</span>
-                            {cust.phone && <span className="text-[10px] text-muted-foreground">{cust.phone}</span>}
+                        <TableCell className="px-6 py-0">
+                          <div className="flex flex-col">
+                            <span className="text-gray-700 font-medium text-sm">{cust.email}</span>
+                            {cust.phone && <span className="text-[13px] text-gray-400">{cust.phone}</span>}
                           </div>
                         </TableCell>
-                        <TableCell className="text-xs py-3">{cust.city || "—"}</TableCell>
-                        <TableCell className="py-3">
-                          <div className="flex flex-wrap gap-1">
+                        <TableCell className="px-6 py-0">
+                          <span className="text-gray-600 font-medium text-sm">{cust.city || "—"}</span>
+                        </TableCell>
+                        <TableCell className="px-6 py-0">
+                          <div className="flex flex-wrap gap-2">
                             {cust.tags.length === 0 ? (
-                              <span className="text-xs text-muted-foreground">—</span>
+                              <span className="text-sm text-gray-400">—</span>
                             ) : (
-                              cust.tags.map((tag: string) => (
-                                <Badge key={tag} variant="secondary" className="text-[9px] uppercase px-1 py-0 font-bold bg-muted text-muted-foreground">
-                                  {tag}
-                                </Badge>
-                              ))
+                              cust.tags.map((tag: string) => {
+                                let tagClasses = "bg-gray-50 text-gray-700 border-gray-200";
+                                const lowerTag = tag.toLowerCase();
+                                if (lowerTag.includes("vip")) {
+                                  tagClasses = "bg-[#FAF5FF] text-[#7E22CE] border-[#D8B4FE]";
+                                } else if (lowerTag.includes("coffee-lover")) {
+                                  tagClasses = "bg-[#FFF7ED] text-[#C2410C] border-[#FED7AA]";
+                                } else if (lowerTag.includes("regular")) {
+                                  tagClasses = "bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]";
+                                } else if (lowerTag.includes("new-customer")) {
+                                  tagClasses = "bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]";
+                                }
+                                return (
+                                  <span key={tag} className={`px-2.5 py-1 rounded-full border text-[12px] font-semibold tracking-[0.02em] whitespace-nowrap ${tagClasses}`}>
+                                    {tag.replace("-", " ").replace(/\b\w/g, l => l.toUpperCase())}
+                                  </span>
+                                );
+                              })
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="text-xs text-right font-semibold py-3">
-                          {cust.totalOrders}
+                        <TableCell className="px-6 py-0 text-right">
+                          <span className="text-gray-900 font-semibold text-sm">
+                            {cust.totalOrders}
+                          </span>
                         </TableCell>
-                        <TableCell className="text-sm text-right font-bold text-foreground py-3">
-                          ₹{cust.totalSpent.toLocaleString()}
+                        <TableCell className="px-6 py-0 text-right">
+                          <span className="text-emerald-600 font-bold text-[15px]">
+                            ₹{cust.totalSpent.toLocaleString()}
+                          </span>
                         </TableCell>
                       </TableRow>
-                    ))}
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>
 
               {/* Pagination controls */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between pt-2">
-                  <span className="text-xs text-muted-foreground font-medium">
+                <div className="flex items-center justify-between pt-4 px-6 pb-6">
+                  <span className="text-sm text-gray-500 font-medium">
                     Page {page} of {totalPages}
                   </span>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     <Button
+                      className="bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 shadow-none rounded-xl h-9 px-3 font-medium transition-colors"
                       variant="outline"
                       size="sm"
                       aria-label="Previous page"
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
                       disabled={page === 1}
-                      className="h-8 w-8 p-0"
                     >
-                      <ChevronLeft className="h-4 w-4" />
+                      <ChevronLeft className="h-4 w-4 mr-1" />
+                      Prev
                     </Button>
                     <Button
+                      className="bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 shadow-none rounded-xl h-9 px-3 font-medium transition-colors"
                       variant="outline"
                       size="sm"
                       aria-label="Next page"
                       onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
-                      className="h-8 w-8 p-0"
                     >
-                      <ChevronRight className="h-4 w-4" />
+                      Next
+                      <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
                   </div>
                 </div>
               )}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

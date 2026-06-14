@@ -163,86 +163,91 @@ export default function Dashboard() {
 
   const { summary, locationSales, recentCampaigns, recentOrders } = statsData;
 
+  // Process locationSales to only show top 7
+  const topLocationSales = locationSales
+    ? [...locationSales].sort((a: any, b: any) => b.sales - a.sales).slice(0, 7)
+    : [];
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
       
       {/* 1. Stats Cards grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* Revenue */}
-        <Card className="hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-              Total Revenue
+        <Card className="bg-orange-50 border-orange-200 shadow-none rounded-2xl p-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-medium text-gray-500">
+              Revenue
             </CardTitle>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-orange-700 dark:bg-orange-950/20 dark:text-orange-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-orange-500 shadow-sm border border-orange-100">
               <TrendingUp className="h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-4xl font-extrabold text-gray-900 tracking-tight">
               {formatCurrency(summary.totalRevenue)}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">
-              From {summary.totalOrders} attributed orders
+            <p className="text-sm font-medium text-gray-500 mt-2">
+              From {summary.totalOrders.toLocaleString()} attributed orders
             </p>
           </CardContent>
         </Card>
 
         {/* Customers */}
-        <Card className="hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+        <Card className="bg-blue-50 border-blue-200 shadow-none rounded-2xl p-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-medium text-gray-500">
               Target Shoppers
             </CardTitle>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-blue-600 shadow-sm border border-blue-100">
               <Users className="h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-4xl font-extrabold text-gray-900 tracking-tight">
               {summary.totalCustomers.toLocaleString()}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">
+            <p className="text-sm font-medium text-gray-500 mt-2">
               Active subscriber profiles in DB
             </p>
           </CardContent>
         </Card>
 
         {/* Campaigns */}
-        <Card className="hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+        <Card className="bg-emerald-50 border-emerald-200 shadow-none rounded-2xl p-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-medium text-gray-500">
               Campaigns
             </CardTitle>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-emerald-500 shadow-sm border border-emerald-100">
               <Send className="h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-4xl font-extrabold text-gray-900 tracking-tight">
               {summary.totalCampaigns}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">
+            <p className="text-sm font-medium text-gray-500 mt-2">
               Draft & launched campaigns
             </p>
           </CardContent>
         </Card>
 
         {/* Sales Conversions */}
-        <Card className="hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+        <Card className="bg-purple-50 border-purple-200 shadow-none rounded-2xl p-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-sm font-medium text-gray-500">
               Sales Conversions
             </CardTitle>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-50 text-purple-700 dark:bg-purple-950/20 dark:text-purple-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-purple-600 shadow-sm border border-purple-100">
               <ShoppingBag className="h-5 w-5" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-4xl font-extrabold text-gray-900 tracking-tight">
               {summary.totalOrders.toLocaleString()}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1">
+            <p className="text-sm font-medium text-gray-500 mt-2">
               Storewide purchases recorded
             </p>
           </CardContent>
@@ -250,19 +255,19 @@ export default function Dashboard() {
       </div>
 
       {/* 2. Slim CTA Strip */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between overflow-hidden rounded-xl border border-primary/10 bg-radial-[circle_at_right] from-primary/10 via-muted/40 to-muted/20 px-4 py-3 gap-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <Sparkles className="h-4 w-4" />
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm px-6 py-4 gap-4">
+        <div className="flex items-center gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-50 border border-gray-100 text-gray-600">
+            <Sparkles className="h-5 w-5" />
           </div>
-          <span className="text-sm font-bold tracking-tight text-foreground">
+          <span className="text-base font-semibold text-gray-900">
             Launch campaign drafts using plain English objectives
           </span>
         </div>
-        <Link href="/campaigns/new" className="shrink-0">
-          <Button size="sm" className="font-semibold h-9 w-full sm:w-auto">
+        <Link href="/campaigns/new" className="shrink-0 w-full sm:w-auto">
+          <Button className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white shadow-none font-semibold px-6 py-5 rounded-xl transition-colors">
             Create Campaign Autopilot
-            <ArrowUpRight className="h-4 w-4 ml-1" />
+            <ArrowUpRight className="h-4 w-4 ml-2" />
           </Button>
         </Link>
       </div>
@@ -270,93 +275,95 @@ export default function Dashboard() {
       {/* 3. Chart & Highlights layout */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Sales by Store location Bar Chart */}
-        <Card className="md:col-span-2">
+        <Card className="md:col-span-2 bg-white border-gray-200 shadow-none rounded-2xl p-2">
           <CardHeader>
-            <CardTitle className="text-base font-bold">Sales by Cafe Location</CardTitle>
-            <CardDescription>Attributed store revenue across locations</CardDescription>
+            <CardTitle className="text-lg font-bold text-gray-900">Sales by Location</CardTitle>
+            <CardDescription className="text-sm text-gray-500 font-medium">Attributed store revenue across locations</CardDescription>
           </CardHeader>
           <CardContent className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={locationSales}
+                data={topLocationSales}
                 margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
                 <XAxis
                   dataKey="name"
-                  stroke="var(--muted-foreground)"
-                  fontSize={11}
+                  stroke="#6B7280"
+                  fontSize={12}
                   tickLine={false}
+                  axisLine={false}
+                  dy={10}
                 />
                 <YAxis
-                  stroke="var(--muted-foreground)"
-                  fontSize={11}
+                  stroke="#6B7280"
+                  fontSize={12}
                   tickLine={false}
                   axisLine={false}
                   tickFormatter={(val) => `₹${val / 1000}k`}
+                  dx={-10}
                 />
                 <Tooltip
                   formatter={(value) => [`₹${Number(value).toLocaleString()}`, "Revenue"]}
                   contentStyle={{
-                    backgroundColor: "var(--card)",
-                    borderColor: "var(--border)",
-                    borderRadius: "8px",
+                    backgroundColor: "#FFFFFF",
+                    borderColor: "#E5E7EB",
+                    borderRadius: "12px",
+                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    color: "#111827",
                   }}
-                  labelStyle={{ fontWeight: "bold" }}
+                  labelStyle={{ fontWeight: "700", color: "#6B7280", marginBottom: "4px" }}
+                  cursor={{ fill: '#F9FAFB' }}
                 />
-                <Bar dataKey="sales" radius={[4, 4, 0, 0]} maxBarSize={45}>
-                  {locationSales.map((entry: any, index: number) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Bar>
+                <Bar dataKey="sales" radius={[6, 6, 0, 0]} maxBarSize={48} fill="#2563EB" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* AI Performance Quick stats */}
-        <Card>
+        <Card className="bg-white border-gray-200 shadow-none rounded-2xl p-2">
           <CardHeader>
-            <CardTitle className="text-base font-bold">AI Autopilot Performance</CardTitle>
-            <CardDescription>Key success ratios across launched channels</CardDescription>
+            <CardTitle className="text-lg font-bold text-gray-900">AI Autopilot Performance</CardTitle>
+            <CardDescription className="text-sm text-gray-500 font-medium">Key success ratios across launched channels</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm font-medium">
-                <span>WhatsApp Conversion</span>
-                <span className="text-emerald-600 font-semibold">24.2%</span>
+          <CardContent className="space-y-8">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-sm font-semibold">
+                <span className="text-gray-700">WhatsApp Conversion</span>
+                <span className="text-emerald-600">24.2%</span>
               </div>
-              <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+              <div className="h-2.5 w-full rounded-full bg-gray-100 overflow-hidden">
                 <div className="h-full w-[24.2%] rounded-full bg-emerald-500" />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm font-medium">
-                <span>Email Click Rate</span>
-                <span className="text-orange-600 font-semibold">14.8%</span>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-sm font-semibold">
+                <span className="text-gray-700">Email Click Rate</span>
+                <span className="text-amber-600">14.8%</span>
               </div>
-              <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                <div className="h-full w-[14.8%] rounded-full bg-orange-500" />
+              <div className="h-2.5 w-full rounded-full bg-gray-100 overflow-hidden">
+                <div className="h-full w-[14.8%] rounded-full bg-amber-500" />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm font-medium">
-                <span>SMS Delivery Success</span>
-                <span className="text-blue-600 font-semibold">91.5%</span>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-sm font-semibold">
+                <span className="text-gray-700">SMS Delivery Success</span>
+                <span className="text-blue-600">91.5%</span>
               </div>
-              <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+              <div className="h-2.5 w-full rounded-full bg-gray-100 overflow-hidden">
                 <div className="h-full w-[91.5%] rounded-full bg-blue-500" />
               </div>
             </div>
 
-            <div className="rounded-lg bg-orange-50/50 dark:bg-orange-950/10 border border-orange-100 dark:border-orange-900/30 p-4 text-xs space-y-1 text-orange-800 dark:text-orange-300 leading-relaxed">
-              <span className="font-bold flex items-center gap-1">
-                <Sparkles className="h-3.5 w-3.5" />
-                AI Recommendation:
+            <div className="rounded-xl bg-gray-50 border border-gray-200 p-4 text-sm space-y-2 text-gray-700">
+              <span className="font-bold flex items-center gap-2 text-gray-900">
+                <Sparkles className="h-4 w-4 text-gray-500" />
+                Recommendation
               </span>
-              WhatsApp campaigns target premium cafe segments with 2.3x higher order conversion speeds compared to traditional SMS discount lists.
+              <p className="leading-relaxed">WhatsApp campaigns target premium cafe segments with 2.3x higher order conversion speeds compared to traditional SMS discount lists.</p>
             </div>
           </CardContent>
         </Card>
@@ -364,147 +371,133 @@ export default function Dashboard() {
 
       {/* 4. Revenue Opportunity Copilot */}
       {insightsLoading ? (
-        <div className="space-y-4">
+        <div className="space-y-6 pt-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <h2 className="text-lg font-bold tracking-tight text-foreground flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-indigo-500 animate-pulse" />
+            <h2 className="text-xl font-extrabold tracking-tight text-gray-900 flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-gray-400 animate-pulse" />
               Revenue Opportunity Copilot
             </h2>
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="border-indigo-200 text-indigo-700 bg-indigo-50/50 animate-pulse hidden sm:inline-flex">
-                Generating Insights...
-              </Badge>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-8 gap-1.5 border-border bg-card text-foreground"
-                disabled={true}
-              >
-                <RefreshCw className="h-3.5 w-3.5" />
-                Refresh
-              </Button>
-            </div>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-3">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="h-64 border-indigo-100/40 flex flex-col justify-between">
-                <CardHeader className="pb-3 space-y-3">
+              <Card key={i} className="h-64 shadow-none rounded-2xl border border-gray-200 bg-white p-2">
+                <CardHeader className="pb-3 space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="h-3 w-20 bg-muted rounded animate-pulse"></div>
-                    <div className="h-4 w-24 bg-muted rounded-full animate-pulse"></div>
+                    <div className="h-3 w-20 bg-gray-100 rounded animate-pulse"></div>
+                    <div className="h-6 w-24 bg-gray-100 rounded-full animate-pulse"></div>
                   </div>
-                  <div className="h-4 w-3/4 bg-muted rounded animate-pulse mt-2"></div>
-                  <div className="h-12 w-full bg-muted rounded animate-pulse mt-2"></div>
+                  <div className="h-4 w-3/4 bg-gray-100 rounded animate-pulse"></div>
+                  <div className="h-12 w-full bg-gray-100 rounded animate-pulse"></div>
                 </CardHeader>
-                <CardContent className="mt-auto space-y-4 pt-0">
-                  <div className="h-10 w-full bg-muted rounded animate-pulse"></div>
-                </CardContent>
               </Card>
             ))}
           </div>
         </div>
       ) : insightsError && (!opportunities || opportunities.length === 0) ? (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-6 text-destructive">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-red-700 shadow-none mt-6">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-bold">Error loading AI Insights</h3>
+            <h3 className="font-bold text-lg">Error loading AI Insights</h3>
             <Button 
+              className="bg-white border-red-200 text-red-700 hover:bg-red-50 shadow-none rounded-xl"
               variant="outline" 
-              size="sm" 
-              disabled={isFetching}
               onClick={() => fetchCopilot(false)}
             >
-              {isFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+              <RefreshCw className="h-4 w-4 mr-2" />
               Retry
             </Button>
           </div>
-          <p className="text-sm mt-1">{insightsError.message || "Failed to generate insights."}</p>
+          <p className="text-sm font-medium mt-1">Failed to generate insights. Check connection.</p>
         </div>
       ) : opportunities && opportunities.length > 0 && (
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <h2 className="text-lg font-bold tracking-tight text-foreground flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-indigo-500" />
+        <div className="space-y-6 pt-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h2 className="text-xl font-extrabold tracking-tight text-gray-900 flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-gray-400" />
               Revenue Opportunity Copilot
             </h2>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               {timestampStr && (
-                <span className="text-xs text-muted-foreground font-medium">{timestampStr}</span>
+                <span className="text-sm text-gray-500 font-medium">{timestampStr}</span>
               )}
               <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-8 gap-1.5 border-border bg-card text-foreground"
+                className="bg-white border-gray-200 text-gray-700 hover:bg-gray-50 shadow-none rounded-xl font-semibold"
                 disabled={isFetching}
                 onClick={() => fetchCopilot(true)}
               >
-                {isFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+                {isFetching ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <RefreshCw className="h-4 w-4 mr-2" />}
                 Refresh
               </Button>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-3">
             {opportunities.map((opp: Opportunity, idx: number) => {
-              let badgeColor = "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 border-gray-200/50";
+              let cardBg = "bg-white border-gray-200";
+              let badgeStyle = "bg-gray-100 text-gray-700";
+              let valueColor = "text-gray-900";
+              
               if (opp.confidence === "HIGH") {
-                badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800/50";
+                cardBg = "bg-green-50 border-green-200";
+                badgeStyle = "bg-green-600 text-white";
+                valueColor = "text-green-700";
               } else if (opp.confidence === "MEDIUM") {
-                badgeColor = "bg-amber-50 text-amber-700 border-amber-200/50 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-800/50";
+                cardBg = "bg-amber-50 border-amber-200";
+                badgeStyle = "bg-amber-500 text-white";
+                valueColor = "text-amber-700";
+              } else if (opp.confidence === "LOW") {
+                cardBg = "bg-red-50 border-red-200";
+                badgeStyle = "bg-red-600 text-white";
+                valueColor = "text-red-700";
               }
 
               return (
-                <Card key={idx} className="hover:shadow-md transition-all border-indigo-100/40 bg-radial-[circle_at_bottom_right] from-indigo-500/[0.01] via-transparent to-transparent flex flex-col justify-between">
-                  <CardHeader className="pb-3 space-y-2">
+                <Card key={idx} className={`shadow-none rounded-2xl flex flex-col justify-between p-2 ${cardBg}`}>
+                  <CardHeader className="pb-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+                      <span className="text-xs font-bold tracking-widest text-gray-500 uppercase">
                         {opp.type.replace("_", " ")}
                       </span>
-                      <Badge variant="outline" className={`text-[10px] px-2 py-0.5 font-semibold ${badgeColor}`}>
+                      <Badge className={`text-[10px] px-2.5 py-1 font-bold rounded-full uppercase tracking-wider border-transparent shadow-none ${badgeStyle}`}>
                         {opp.confidence} CONFIDENCE
                       </Badge>
                     </div>
-                    <CardTitle className="text-sm font-bold leading-snug">
+                    <CardTitle className="text-lg font-bold text-gray-900 leading-snug">
                       {opp.title}
                     </CardTitle>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
+                    <p className="text-sm text-gray-600 font-medium leading-relaxed">
                       {opp.whyItMatters}
                     </p>
-                    <div className="text-[11px] leading-relaxed text-muted-foreground/90 bg-muted/40 rounded border border-border/20 p-2 mt-2">
-                      <span className="font-bold text-foreground block text-[9px] uppercase tracking-wider mb-0.5">Why We Are Confident</span>
-                      {opp.affectedCustomers} customers match this cohort, representing {formatCurrency(opp.historicalSpend)} historical spend.
-                    </div>
                   </CardHeader>
-                  <CardContent className="space-y-4 pt-0 mt-auto">
-                    <div className="border-t border-border/60 pt-3 flex justify-between items-baseline">
+                  <CardContent className="space-y-5 pt-0 mt-auto">
+                    <div className="border-t border-gray-200/60 pt-4 flex justify-between items-baseline">
                       <div>
-                        <span className="text-[10px] text-muted-foreground block">AFFECTED AUDIENCE</span>
-                        <span className="text-xs font-bold text-foreground">{opp.affectedCustomers} Customers</span>
+                        <span className="text-xs font-semibold text-gray-500 block mb-1">AFFECTED AUDIENCE</span>
+                        <span className="text-sm font-bold text-gray-900">{opp.affectedCustomers} Customers</span>
                       </div>
                       <div className="text-right">
-                        <span className="text-[10px] text-muted-foreground block">POTENTIAL RECOVERY</span>
-                        <span className="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">
-                          {formatCurrency(opp.estimatedRevenue)} potential recovery
+                        <span className="text-xs font-semibold text-gray-500 block mb-1">POTENTIAL RECOVERY</span>
+                        <span className={`text-xl font-black tracking-tight ${valueColor}`}>
+                          {formatCurrency(opp.estimatedRevenue)}
                         </span>
                       </div>
                     </div>
                     
-                    <div className="bg-indigo-50/30 dark:bg-indigo-950/10 border border-indigo-100/10 rounded-lg p-2.5 space-y-1">
-                      <span className="text-[9px] uppercase font-bold tracking-wider text-indigo-600 dark:text-indigo-400 block">RECOMMENDED ACTION</span>
-                      <p className="text-[11px] leading-snug font-medium text-foreground">
+                    <div className="bg-white/60 border border-gray-200/50 rounded-xl p-4 space-y-1.5">
+                      <span className="text-xs font-bold tracking-wider text-gray-900 uppercase block mb-1">Recommended Action</span>
+                      <p className="text-sm font-medium text-gray-700 leading-relaxed">
                         {opp.recommendedAction}
                       </p>
                     </div>
 
                     <Link
                       href={`/campaigns/new?goal=${encodeURIComponent(opp.suggestedGoal)}&autoplay=true`}
-                      className="block w-full"
+                      className="block w-full pt-1"
                     >
                       <Button
-                        size="sm"
-                        className="w-full text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white gap-1"
+                        className="w-full text-sm font-semibold bg-white border border-gray-200 hover:bg-gray-50 text-gray-900 shadow-sm rounded-xl py-5 transition-colors gap-2"
                       >
-                        <Sparkles className="h-3.5 w-3.5" />
                         Launch Autopilot
+                        <ArrowUpRight className="h-4 w-4" />
                       </Button>
                     </Link>
                   </CardContent>
@@ -516,45 +509,45 @@ export default function Dashboard() {
       )}
 
       {/* 5. Grid of Tables */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 pt-4">
         {/* Recent Campaigns */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-base font-bold">Recent Campaigns</CardTitle>
-              <CardDescription>Latest campaign drafts and executions</CardDescription>
+        <Card className="bg-white border-gray-200 shadow-none rounded-2xl p-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-6">
+            <div className="space-y-1">
+              <CardTitle className="text-lg font-bold text-gray-900">Recent Campaigns</CardTitle>
+              <CardDescription className="text-sm font-medium text-gray-500">Latest campaign drafts and executions</CardDescription>
             </div>
             <Link href="/campaigns">
-              <Button variant="ghost" size="sm" className="text-xs">
+              <Button className="bg-white border-gray-200 text-gray-700 hover:bg-gray-50 shadow-none rounded-xl text-sm font-semibold px-4">
                 View All
               </Button>
             </Link>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6 pb-6">
             {recentCampaigns.length === 0 ? (
-              <p className="text-xs text-muted-foreground text-center py-6">No campaigns found. Create one above!</p>
+              <p className="text-sm font-medium text-gray-500 text-center py-10">No campaigns found. Create one above!</p>
             ) : (
-              <div className="space-y-4">
+              <div className="flex flex-col">
                 {recentCampaigns.map((camp: any) => {
                   const statusColors: Record<string, string> = {
-                    draft: "bg-muted text-muted-foreground",
-                    sending: "bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400",
-                    sent: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400",
-                    completed: "bg-purple-50 text-purple-700 dark:bg-purple-950/20 dark:text-purple-400",
+                    draft: "bg-gray-100 text-gray-600 border-transparent",
+                    sending: "bg-blue-100 text-blue-700 border-transparent",
+                    sent: "bg-emerald-100 text-emerald-700 border-transparent",
+                    completed: "bg-purple-100 text-purple-700 border-transparent",
                   };
 
                   return (
-                    <div key={camp.id} className="flex items-center justify-between border-b border-border/40 pb-3 last:border-0 last:pb-0">
-                      <div className="flex flex-col">
-                        <Link href={`/campaigns/${camp.id}`} className="text-sm font-semibold hover:underline text-foreground">
+                    <div key={camp.id} className="flex items-center justify-between border-b border-gray-100 py-4 hover:bg-gray-50 px-4 -mx-4 transition-colors last:border-0 rounded-lg">
+                      <div className="flex flex-col gap-1">
+                        <Link href={`/campaigns/${camp.id}`} className="text-sm font-bold text-gray-900 hover:underline">
                           {camp.name}
                         </Link>
-                        <span className="text-[10px] text-muted-foreground mt-0.5">
-                          Segment: {camp.segment.name} • Channel: {camp.channel.toUpperCase()}
+                        <span className="text-xs font-medium text-gray-500">
+                          {camp.segment.name} • {camp.channel.toUpperCase()}
                         </span>
                       </div>
-                      <Badge className={statusColors[camp.status] || "bg-muted"} variant="outline">
-                        {camp.status}
+                      <Badge className={`shadow-none font-bold px-2.5 py-1 ${statusColors[camp.status] || "bg-gray-100"}`}>
+                        {camp.status.toUpperCase()}
                       </Badge>
                     </div>
                   );
@@ -565,39 +558,39 @@ export default function Dashboard() {
         </Card>
 
         {/* Recent Orders */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-base font-bold">Recent Store Orders</CardTitle>
-              <CardDescription>Latest coffee transactions synced in DB</CardDescription>
+        <Card className="bg-white border-gray-200 shadow-none rounded-2xl p-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-6">
+            <div className="space-y-1">
+              <CardTitle className="text-lg font-bold text-gray-900">Recent Store Orders</CardTitle>
+              <CardDescription className="text-sm font-medium text-gray-500">Latest coffee transactions synced in DB</CardDescription>
             </div>
             <Link href="/customers">
-              <Button variant="ghost" size="sm" className="text-xs">
+              <Button className="bg-white border-gray-200 text-gray-700 hover:bg-gray-50 shadow-none rounded-xl text-sm font-semibold px-4">
                 View Customers
               </Button>
             </Link>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6 pb-6">
             {recentOrders.length === 0 ? (
-              <p className="text-xs text-muted-foreground text-center py-6">No orders found.</p>
+              <p className="text-sm font-medium text-gray-500 text-center py-10">No orders found.</p>
             ) : (
-              <div className="space-y-4">
+              <div className="flex flex-col">
                 {recentOrders.map((order: any) => (
-                  <div key={order.id} className="flex items-center justify-between border-b border-border/40 pb-3 last:border-0 last:pb-0">
-                    <div className="flex flex-col">
-                      <span className="text-sm font-semibold text-foreground">
+                  <div key={order.id} className="flex items-center justify-between border-b border-gray-100 py-4 hover:bg-gray-50 px-4 -mx-4 transition-colors last:border-0 rounded-lg">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm font-bold text-gray-900">
                         {order.customer.name}
                       </span>
-                      <span suppressHydrationWarning className="text-[10px] text-muted-foreground mt-0.5">
-                        Location: {order.storeLocation} • {new Date(order.orderDate).toLocaleDateString()}
+                      <span suppressHydrationWarning className="text-xs font-medium text-gray-500">
+                        {order.storeLocation} • {new Date(order.orderDate).toLocaleDateString()}
                       </span>
                     </div>
-                    <div className="flex flex-col items-end">
-                      <span className="text-sm font-bold text-foreground">
+                    <div className="flex flex-col items-end gap-1">
+                      <span className="text-base font-black tracking-tight text-gray-900">
                         ₹{order.totalAmount.toLocaleString()}
                       </span>
                       {order.attributedCampaignId && (
-                        <Badge variant="outline" className="bg-emerald-50/50 text-[9px] text-emerald-700 border-emerald-100 py-0 px-1 mt-0.5">
+                        <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px] font-bold px-2 shadow-none uppercase tracking-wider">
                           Attributed
                         </Badge>
                       )}

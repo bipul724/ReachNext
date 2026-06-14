@@ -30,6 +30,7 @@ export function Header() {
   });
 
   const isCampaignsPage = pathname === "/campaigns";
+  const isCustomersPage = pathname === "/customers";
 
   return (
     <header 
@@ -37,7 +38,7 @@ export function Header() {
       style={{ borderBottom: "1px solid #F1F1F3" }}
     >
       <div className="flex flex-col gap-1">
-        <h1 className={`${isCampaignsPage ? 'text-[32px]' : 'text-2xl'} font-semibold tracking-tight text-[#111827] leading-tight`}>
+        <h1 className="text-[32px] font-bold tracking-tight text-[#111827] leading-tight">
           {title}
         </h1>
         {isCampaignsPage && (
@@ -45,12 +46,20 @@ export function Header() {
             Launch and track customer marketing campaigns
           </p>
         )}
+        {isCustomersPage && (
+          <p className="text-[14px] font-normal text-[#6B7280]">
+            Database of customer subscribers, total spends, and locations.
+          </p>
+        )}
       </div>
 
       <div className="flex items-center gap-4">
         {/* Environment status indicator */}
-        <div className="flex items-center gap-2 rounded-full bg-[#E1F5EE] px-3.5 py-1.5 text-[13px] font-medium text-[#0F6E56]">
-          <span className="h-2 w-2 rounded-full bg-[#0F6E56]" />
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#ECFDF5] border border-[#A7F3D0] rounded-full text-[#047857] text-[13px] font-semibold shadow-none">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
           Live Simulator Linked
         </div>
 
