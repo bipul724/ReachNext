@@ -5,6 +5,7 @@ import { ArrowRight, Sparkles, LayoutDashboard, Target, BarChart3, Send, Zap, Li
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
+import AICRMLogo from "../../components/icons/AICRMLogo";
 
 export default function MarketingLandingPage() {
   return (
@@ -12,8 +13,8 @@ export default function MarketingLandingPage() {
       {/* HEADER / NAV */}
       <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-border/40 bg-background/80 px-6 md:px-12 backdrop-blur-md">
         <Link href="/" className="flex items-center gap-2.5 font-bold tracking-tight">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-            <LayoutDashboard className="h-4 w-4" />
+          <div className="flex h-8 w-8 items-center justify-center">
+            <AICRMLogo className="h-8 w-8" />
           </div>
           <span className="text-lg font-bold tracking-tight text-foreground">ReachNext</span>
         </Link>

@@ -7,10 +7,10 @@ import {
   Users,
   Layers,
   Send,
-  Coffee,
   BarChart3,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
+import AICRMLogo from "../icons/AICRMLogo";
 
 const NAV_ITEMS = [
   {
@@ -47,8 +47,8 @@ export function Sidebar() {
     <aside className="fixed inset-y-0 left-0 z-20 flex w-64 flex-col border-r border-border bg-card/65 backdrop-blur-md">
       <div className="flex h-16 items-center px-6 border-b border-border">
         <Link href="/" className="flex items-center gap-2.5 font-semibold">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md">
-            <Coffee className="h-5 w-5" />
+          <div className="flex h-9 w-9 items-center justify-center">
+            <AICRMLogo className="h-9 w-9" />
           </div>
           <div className="flex flex-col">
             <span className="text-lg font-bold tracking-tight text-foreground">
