@@ -12,6 +12,6 @@ app.use(express.json());
 app.use("/api", sendRoutes);
 
 app.listen(env.PORT, () => {
-  console.log(`🚀 Channel Service simulator listening at http://localhost:${env.PORT}`);
+  console.log(`🚀 Channel Service listening on port ${env.PORT}`);
   console.log(`🔗 Webhook callbacks target: ${env.CRM_WEBHOOK_URL}`);
 });
