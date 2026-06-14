@@ -50,7 +50,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     // --- Compute deterministic facts ---
 
-    const campaignFacts = segment.campaigns.map((c) => {
+    const campaignFacts = segment.campaigns.map((c: typeof segment.campaigns[number]) => {
       const s = (c.stats as Record<string, number>) || {};
       const sent = s.sent || 0;
       const delivered = s.delivered || 0;
@@ -69,15 +69,15 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       };
     });
 
-    const totalConversions = campaignFacts.reduce((sum, c) => sum + c.conversions, 0);
-    const totalRevenue = campaignFacts.reduce((sum, c) => sum + c.revenue, 0);
+    const totalConversions = campaignFacts.reduce((sum: number, c: typeof campaignFacts[number]) => sum + c.conversions, 0);
+    const totalRevenue = campaignFacts.reduce((sum: number, c: typeof campaignFacts[number]) => sum + c.revenue, 0);
     const avgOpenRate =
       campaignFacts.length > 0
-        ? Math.round((campaignFacts.reduce((sum, c) => sum + c.openRate, 0) / campaignFacts.length) * 10) / 10
+        ? Math.round((campaignFacts.reduce((sum: number, c: typeof campaignFacts[number]) => sum + c.openRate, 0) / campaignFacts.length) * 10) / 10
         : 0;
     const avgCtr =
       campaignFacts.length > 0
-        ? Math.round((campaignFacts.reduce((sum, c) => sum + c.ctr, 0) / campaignFacts.length) * 10) / 10
+        ? Math.round((campaignFacts.reduce((sum: number, c: typeof campaignFacts[number]) => sum + c.ctr, 0) / campaignFacts.length) * 10) / 10
         : 0;
 
     const facts: SegmentPerformanceFacts = {

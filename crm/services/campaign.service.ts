@@ -81,7 +81,7 @@ export const CampaignService = {
     }
 
     const getCount = (statuses: string[]) => {
-      return statuses.reduce((sum, s) => sum + (counts[s] || 0), 0);
+      return statuses.reduce((sum: number, s: string) => sum + (counts[s] || 0), 0);
     };
 
     // Cumulative stats for the conversion funnel stages:

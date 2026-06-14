@@ -54,7 +54,7 @@ export const CampaignSender = {
       // 3. Generate personalized messages and prepare communications list
       console.log(`[CampaignSender] Running batch personalization for ${customers.length} customers...`);
       const batchResult = await generateBatchMessages(
-        customers.map(c => ({
+        customers.map((c: typeof customers[number]) => ({
           id: c.id,
           name: c.name,
           city: c.city,
@@ -66,7 +66,7 @@ export const CampaignSender = {
         campaign.channel as any
       );
 
-      const communicationsData = customers.map((customer) => {
+      const communicationsData = customers.map((customer: typeof customers[number]) => {
         const personalisedMessage = batchResult.find(r => r.customerId === customer.id)?.message || 
           this.personalize(campaign.messageTemplate, customer);
 
