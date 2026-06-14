@@ -149,7 +149,7 @@ const METRICS: MetricRow[] = [
     getValue: (s) => `${calculateSuccessScore(s)}/100`,
     getRaw: (s) => calculateSuccessScore(s),
     format: "score",
-    winnerBadgeColor: "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/20 dark:text-purple-400",
+    winnerBadgeColor: "bg-slate-100 text-slate-700 border-slate-200", // Removed purple
     higherIsBetter: true,
   },
 ];
@@ -365,14 +365,14 @@ export default function CampaignComparison() {
   if (isLoading) {
     return (
       <div className="flex h-[70vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-6 text-destructive flex gap-3">
+      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-red-600 flex gap-3">
         <AlertCircle className="h-5 w-5 shrink-0" />
         <div>
           <h3 className="font-bold">Error loading campaigns</h3>
@@ -388,7 +388,7 @@ export default function CampaignComparison() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <Link
           href="/campaigns"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to campaigns
@@ -396,11 +396,11 @@ export default function CampaignComparison() {
       </div>
 
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-          <BarChart3 className="h-6 w-6 text-primary" />
+        <h2 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+          <BarChart3 className="h-6 w-6 text-blue-600" />
           Campaign Comparison
         </h2>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-slate-500">
           Select 2–5 launched campaigns to compare performance side-by-side.
         </p>
       </div>
@@ -409,18 +409,18 @@ export default function CampaignComparison() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-bold flex items-center justify-between">
-            <span>Select Campaigns</span>
-            <Badge variant="outline" className="font-semibold text-[10px] uppercase">
+            <span className="text-slate-900">Select Campaigns</span>
+            <Badge variant="outline" className="font-semibold text-[10px] uppercase text-slate-600">
               {selectedIds.size} / 5 selected
             </Badge>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-slate-500">
             Choose launched campaigns to compare. Draft campaigns are excluded.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {launchedCampaigns.length === 0 ? (
-            <div className="text-center py-8 text-xs text-muted-foreground">
+            <div className="text-center py-8 text-xs text-slate-500">
               No launched campaigns found. Launch campaigns first to compare them.
             </div>
           ) : (
@@ -438,18 +438,18 @@ export default function CampaignComparison() {
                     disabled={isDisabled}
                     className={`flex items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-all duration-200 ${
                       isSelected
-                        ? "border-primary bg-primary/5 ring-1 ring-primary/20"
+                        ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600/20"
                         : isDisabled
                           ? "border-border/50 opacity-40 cursor-not-allowed"
-                          : "border-border hover:border-primary/40 hover:bg-muted/30"
+                          : "border-border hover:border-blue-600/40 hover:bg-slate-50"
                     }`}
                   >
                     {/* Checkbox */}
                     <div
                       className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
                         isSelected
-                          ? "bg-primary border-primary text-primary-foreground"
-                          : "border-muted-foreground/30"
+                          ? "bg-blue-600 border-blue-600 text-white"
+                          : "border-slate-300"
                       }`}
                     >
                       {isSelected && <Check className="h-3 w-3" />}
@@ -457,10 +457,10 @@ export default function CampaignComparison() {
 
                     {/* Campaign info */}
                     <div className="min-w-0 flex-1">
-                      <p className="text-[12px] font-semibold text-foreground truncate">
+                      <p className="text-[12px] font-semibold text-slate-900 truncate">
                         {camp.name}
                       </p>
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="text-[10px] text-slate-500">
                         {camp.channel.toUpperCase()} • {camp.totalRecipients} recipients
                         {revenue > 0 ? ` • ₹${revenue.toLocaleString("en-IN")}` : ""}
                       </p>
@@ -480,16 +480,16 @@ export default function CampaignComparison() {
           {topWinners.revenue && (
             <Card className="border-emerald-200/60 dark:border-emerald-900/30 hover:shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between pb-1.5 pt-4">
-                <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+                <CardTitle className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
                   Highest Revenue
                 </CardTitle>
                 <TrendingUp className="h-4 w-4 text-emerald-500" />
               </CardHeader>
               <CardContent className="pb-4">
-                <div className="text-lg font-extrabold text-foreground">
+                <div className="text-lg font-extrabold text-slate-900">
                   {topWinners.revenue.value}
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-0.5 truncate">
+                <p className="text-[10px] text-slate-500 mt-0.5 truncate">
                   {topWinners.revenue.campaign.name}
                 </p>
               </CardContent>
@@ -500,16 +500,16 @@ export default function CampaignComparison() {
           {topWinners.engagement && (
             <Card className="border-orange-200/60 dark:border-orange-900/30 hover:shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between pb-1.5 pt-4">
-                <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+                <CardTitle className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
                   Highest Open Rate
                 </CardTitle>
                 <MousePointerClick className="h-4 w-4 text-orange-500" />
               </CardHeader>
               <CardContent className="pb-4">
-                <div className="text-lg font-extrabold text-foreground">
+                <div className="text-lg font-extrabold text-slate-900">
                   {topWinners.engagement.value}
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-0.5 truncate">
+                <p className="text-[10px] text-slate-500 mt-0.5 truncate">
                   {topWinners.engagement.campaign.name}
                 </p>
               </CardContent>
@@ -518,18 +518,18 @@ export default function CampaignComparison() {
 
           {/* Best Conversions */}
           {topWinners.conversions && (
-            <Card className="border-purple-200/60 dark:border-purple-900/30 hover:shadow-sm">
+            <Card className="border-slate-200 hover:shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between pb-1.5 pt-4">
-                <CardTitle className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
+                <CardTitle className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
                   Most Conversions
                 </CardTitle>
-                <ShoppingBag className="h-4 w-4 text-purple-500" />
+                <ShoppingBag className="h-4 w-4 text-slate-600" />
               </CardHeader>
               <CardContent className="pb-4">
-                <div className="text-lg font-extrabold text-foreground">
+                <div className="text-lg font-extrabold text-slate-900">
                   {topWinners.conversions.value} orders
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-0.5 truncate">
+                <p className="text-[10px] text-slate-500 mt-0.5 truncate">
                   {topWinners.conversions.campaign.name}
                 </p>
               </CardContent>
@@ -542,31 +542,31 @@ export default function CampaignComparison() {
       {selectedCampaigns.length >= 2 && (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold flex items-center gap-1.5">
-              <Trophy className="h-4.5 w-4.5 text-primary" />
+            <CardTitle className="text-base font-bold flex items-center gap-1.5 text-slate-900">
+              <Trophy className="h-4.5 w-4.5 text-blue-600" />
               Side-by-Side Comparison
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-slate-500">
               {selectedCampaigns.length} campaigns compared.{" "}
-              <span className="text-primary font-medium">★</span> marks the leader in each metric.
+              <span className="text-blue-600 font-medium">★</span> marks the leader in each metric.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border border-border overflow-x-auto">
               <Table>
-                <TableHeader className="bg-muted/30">
+                <TableHeader className="bg-slate-50">
                   <TableRow>
-                    <TableHead className="font-semibold text-xs text-muted-foreground w-[160px]">
+                    <TableHead className="font-semibold text-xs text-slate-500 w-[160px]">
                       Metric
                     </TableHead>
                     {selectedCampaigns.map((camp: any) => (
                       <TableHead
                         key={camp.id}
-                        className="font-semibold text-xs text-foreground text-right"
+                        className="font-semibold text-xs text-slate-900 text-right"
                       >
                         <div className="flex flex-col items-end gap-0.5">
-                          <Link href={`/campaigns/${camp.id}`} target="_blank" className="truncate max-w-[140px] hover:text-primary hover:underline underline-offset-2 transition-colors">{camp.name}</Link>
-                          <span className="text-[9px] text-muted-foreground font-normal uppercase">
+                          <Link href={`/campaigns/${camp.id}`} target="_blank" className="truncate max-w-[140px] hover:text-blue-600 hover:underline underline-offset-2 transition-colors">{camp.name}</Link>
+                          <span className="text-[9px] text-slate-500 font-normal uppercase">
                             {camp.channel}
                           </span>
                         </div>
@@ -580,7 +580,7 @@ export default function CampaignComparison() {
 
                     return (
                       <TableRow key={metric.label}>
-                        <TableCell className="text-xs font-medium text-muted-foreground py-3">
+                        <TableCell className="text-xs font-medium text-slate-500 py-3">
                           {metric.label}
                         </TableCell>
                         {selectedCampaigns.map((camp: any) => {
@@ -595,7 +595,7 @@ export default function CampaignComparison() {
                             >
                               <span
                                 className={`text-xs font-semibold ${
-                                  isWinner ? "text-foreground" : "text-muted-foreground"
+                                  isWinner ? "text-slate-900" : "text-slate-500"
                                 }`}
                               >
                                 {value}
@@ -620,13 +620,13 @@ export default function CampaignComparison() {
 
       {/* AI Marketing Analyst Section */}
       {selectedCampaigns.length >= 2 && (
-        <Card className="border-primary/20 dark:border-primary/10">
+        <Card className="border-blue-100">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold flex items-center gap-2">
-              <Sparkles className="h-4.5 w-4.5 text-primary" />
+            <CardTitle className="text-base font-bold flex items-center gap-2 text-slate-900">
+              <Sparkles className="h-4.5 w-4.5 text-blue-600" />
               AI Marketing Analyst
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-slate-500">
               Get AI-powered insights explaining campaign performance patterns and actionable recommendations.
             </CardDescription>
           </CardHeader>
@@ -636,7 +636,7 @@ export default function CampaignComparison() {
               <Button
                 onClick={() => generateInsights()}
                 disabled={isLoadingInsights}
-                className="gap-2"
+                className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
               >
                 <Sparkles className="h-4 w-4" />
                 Generate AI Insights
@@ -645,11 +645,11 @@ export default function CampaignComparison() {
 
             {/* Loading state */}
             {isLoadingInsights && (
-              <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4">
-                <Loader2 className="h-5 w-5 animate-spin text-primary shrink-0" />
+              <div className="flex items-center gap-3 rounded-lg border border-blue-100 bg-blue-50 p-4">
+                <Loader2 className="h-5 w-5 animate-spin text-blue-600 shrink-0" />
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Analyzing campaigns…</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-sm font-semibold text-slate-900">Analyzing campaigns…</p>
+                  <p className="text-xs text-slate-500 mt-0.5">
                     Our AI analyst is reviewing your comparison data.
                   </p>
                 </div>
@@ -658,12 +658,12 @@ export default function CampaignComparison() {
 
             {/* Error state */}
             {insightsError && !isLoadingInsights && (
-              <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4 space-y-3">
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4 space-y-3">
                 <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                  <AlertCircle className="h-5 w-5 text-red-500 shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-semibold text-destructive">Insight generation failed</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{insightsError}</p>
+                    <p className="text-sm font-semibold text-red-600">Insight generation failed</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{insightsError}</p>
                   </div>
                 </div>
                 <Button
@@ -682,26 +682,26 @@ export default function CampaignComparison() {
             {insights && !isLoadingInsights && (
               <div className="space-y-4">
                 {/* Summary */}
-                <div className="rounded-lg border bg-muted/20 p-4">
-                  <h4 className="text-xs font-bold tracking-wider text-muted-foreground uppercase mb-2">
+                <div className="rounded-lg border bg-slate-50 p-4">
+                  <h4 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-2">
                     Analysis Summary
                   </h4>
-                  <p className="text-sm text-foreground leading-relaxed">
+                  <p className="text-sm text-slate-900 leading-relaxed">
                     {insights.summary}
                   </p>
                 </div>
 
                 {/* Patterns */}
                 {insights.patterns && insights.patterns.length > 0 && (
-                  <div className="rounded-lg border bg-muted/20 p-4">
-                    <h4 className="text-xs font-bold tracking-wider text-muted-foreground uppercase mb-3 flex items-center gap-1.5">
+                  <div className="rounded-lg border bg-slate-50 p-4">
+                    <h4 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-3 flex items-center gap-1.5">
                       <TrendingUp className="h-3.5 w-3.5" />
                       Patterns Identified
                     </h4>
                     <ul className="space-y-2">
                       {insights.patterns.map((pattern, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-foreground">
-                          <span className="text-primary mt-1 shrink-0">•</span>
+                        <li key={i} className="flex items-start gap-2 text-sm text-slate-900">
+                          <span className="text-blue-600 mt-1 shrink-0">•</span>
                           <span className="leading-relaxed">{pattern}</span>
                         </li>
                       ))}
@@ -711,15 +711,15 @@ export default function CampaignComparison() {
 
                 {/* Recommendations */}
                 {insights.recommendations.length > 0 && (
-                  <div className="rounded-lg border bg-muted/20 p-4">
-                    <h4 className="text-xs font-bold tracking-wider text-muted-foreground uppercase mb-3 flex items-center gap-1.5">
+                  <div className="rounded-lg border bg-slate-50 p-4">
+                    <h4 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-3 flex items-center gap-1.5">
                       <Lightbulb className="h-3.5 w-3.5" />
                       Recommendations
                     </h4>
                     <ul className="space-y-2">
                       {insights.recommendations.map((rec, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-foreground">
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-[10px] font-bold mt-0.5">
+                        <li key={i} className="flex items-start gap-2 text-sm text-slate-900">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold mt-0.5">
                             {i + 1}
                           </span>
                           <span className="leading-relaxed">{rec}</span>
@@ -735,7 +735,7 @@ export default function CampaignComparison() {
                     variant="ghost"
                     size="sm"
                     onClick={() => generateInsights(true)}
-                    className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+                    className="gap-1.5 text-xs text-slate-500 hover:text-slate-900"
                   >
                     <RefreshCw className="h-3 w-3" />
                     Regenerate
@@ -745,9 +745,9 @@ export default function CampaignComparison() {
             )}
 
             {/* Confidence Note — always visible */}
-            <div className="flex items-start gap-2.5 rounded-lg border border-emerald-200/60 dark:border-emerald-900/30 bg-emerald-50/50 dark:bg-emerald-950/10 px-4 py-3">
-              <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-              <p className="text-xs text-emerald-800 dark:text-emerald-300 leading-relaxed">
+            <div className="flex items-start gap-2.5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3">
+              <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+              <p className="text-xs text-emerald-800 leading-relaxed">
                 <span className="font-semibold">How this works:</span> Campaign winners are computed from PostgreSQL-backed metrics. AI only interprets validated facts — it never decides rankings or invents numbers.
               </p>
             </div>
@@ -757,13 +757,13 @@ export default function CampaignComparison() {
 
       {/* Prompt when less than 2 selected */}
       {selectedCampaigns.length < 2 && selectedIds.size > 0 && (
-        <div className="rounded-lg border border-dashed p-6 text-center text-xs text-muted-foreground bg-card/45">
-          Select at least <span className="font-semibold text-foreground">2 campaigns</span> to see the comparison table.
+        <div className="rounded-lg border border-dashed p-6 text-center text-xs text-slate-500 bg-white">
+          Select at least <span className="font-semibold text-slate-900">2 campaigns</span> to see the comparison table.
         </div>
       )}
 
       {selectedIds.size === 0 && launchedCampaigns.length > 0 && (
-        <div className="rounded-lg border border-dashed p-6 text-center text-xs text-muted-foreground bg-card/45 space-y-1">
+        <div className="rounded-lg border border-dashed p-6 text-center text-xs text-slate-500 bg-white space-y-1">
           <p className="font-medium">Select campaigns above to begin comparing.</p>
           <p>You can compare up to 5 campaigns side-by-side.</p>
         </div>
