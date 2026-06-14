@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAIService } from "@/lib/ai";
 
@@ -79,8 +79,8 @@ export async function GET() {
     let cohortAOV = 0;
     let totalSpentSum1 = 0;
     if (affectedCustomers1 > 0) {
-      totalSpentSum1 = dormantVips.reduce((sum, c) => sum + c.totalSpent, 0);
-      const totalOrdersSum = dormantVips.reduce((sum, c) => sum + c.totalOrders, 0);
+      totalSpentSum1 = dormantVips.reduce((sum: number, c: typeof dormantVips[number]) => sum + c.totalSpent, 0);
+      const totalOrdersSum = dormantVips.reduce((sum: number, c: typeof dormantVips[number]) => sum + c.totalOrders, 0);
       cohortAOV = totalOrdersSum > 0 ? totalSpentSum1 / totalOrdersSum : 0;
     }
     const estimatedRevenue1 = Math.round(affectedCustomers1 * cohortAOV * 0.15);
@@ -101,12 +101,12 @@ export async function GET() {
       },
     });
 
-    const crossSellTargets = [];
+    const crossSellTargets: typeof loyalCustomers = [];
     for (const customer of loyalCustomers) {
       let boughtBeans = false;
       let boughtEquipment = false;
       for (const order of customer.orders) {
-        const items = (order.items as any[]) || [];
+        const items = (order.items as Array<{ category?: string }>) || [];
         for (const item of items) {
           if (item.category === "beans") {
             boughtBeans = true;
@@ -123,7 +123,7 @@ export async function GET() {
     const affectedCustomers2 = crossSellTargets.length;
     const estimatedRevenue2 = Math.round(affectedCustomers2 * 1200 * 0.10);
     const confidence2 = affectedCustomers2 >= 20 ? "HIGH" : affectedCustomers2 >= 5 ? "MEDIUM" : "LOW";
-    const historicalSpend2 = Math.round(crossSellTargets.reduce((sum, c) => sum + c.totalSpent, 0));
+    const historicalSpend2 = Math.round(crossSellTargets.reduce((sum: number, c: typeof crossSellTargets[number]) => sum + c.totalSpent, 0));
 
     // 3. Channel Optimization calculations
     const inactiveCustomers = await prisma.customer.findMany({
@@ -136,7 +136,7 @@ export async function GET() {
       },
     });
     const affectedCustomers3 = inactiveCustomers.length;
-    const historicalSpend3 = Math.round(inactiveCustomers.reduce((sum, c) => sum + c.totalSpent, 0));
+    const historicalSpend3 = Math.round(inactiveCustomers.reduce((sum: number, c: typeof inactiveCustomers[number]) => sum + c.totalSpent, 0));
 
     // Determine recommended channel from campaign stats
     const launchedCampaigns = await prisma.campaign.findMany({
@@ -153,7 +153,7 @@ export async function GET() {
     const channelConvRateCount: Record<string, number> = {};
 
     for (const c of launchedCampaigns) {
-      const stats = (c.stats as any) || {};
+      const stats = (c.stats as Record<string, number>) || {};
       const sent = stats.sent || 0;
       const converted = stats.convertedOrders || 0;
       if (sent > 0) {
@@ -209,7 +209,7 @@ export async function GET() {
     ];
 
     // ── AI Call with Fallback ──
-    let explanations: any[] = [];
+    let explanations: Array<{ type: string; title: string; whyItMatters: string; recommendedAction: string; suggestedGoal: string }> = [];
     try {
       const prompt = `You are a marketing strategist.
 Below is a list of deterministic customer opportunities discovered in our database:
@@ -256,7 +256,7 @@ Rules:
       explanations = parsed.opportunities;
     } catch (e) {
       console.warn("Failed to generate opportunity explanations using AI. Using fallbacks.", e);
-      explanations = opportunityInputs.map((input: any) => {
+      explanations = opportunityInputs.map((input: OpportunityInput) => {
         const fb = FALLBACK_OPPORTUNITIES[input.type];
         return {
           type: input.type,
@@ -270,7 +270,7 @@ Rules:
 
     // Merge stats and explanations
     const opportunities = opportunityInputs.map((input) => {
-      const expl = explanations.find((e) => e.type === input.type) || FALLBACK_OPPORTUNITIES[input.type];
+      const expl = explanations.find((e: { type: string }) => e.type === input.type) || FALLBACK_OPPORTUNITIES[input.type];
       return {
         type: input.type,
         title: expl.title || FALLBACK_OPPORTUNITIES[input.type].title,
@@ -287,8 +287,8 @@ Rules:
     return NextResponse.json({
       opportunities,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/dashboard/insights error:", error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }
