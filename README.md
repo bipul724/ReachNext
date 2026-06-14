@@ -54,19 +54,19 @@ Includes a dedicated microservice (`channel-service`) that mimics real-world ema
 ## 🏗️ Architecture
 
 ### Product Journey
-![High-Level Product Journey](./assets/reachnext_diagram1_product_journey.svg)
+<img src="./assets/reachnext_diagram1_product_journey.svg" alt="High-Level Product Journey" width="800" />
 
 ### Technical Architecture
-![Technical Architecture](./assets/reachnext_diagram2_technical_architecture.svg)
+<img src="./assets/reachnext_diagram2_technical_architecture.svg" alt="Technical Architecture" width="800" />
 
 ### AI Workflow
-![AI Workflow](./assets/reachnext_diagram3_ai_workflow.svg)
+<img src="./assets/reachnext_diagram3_ai_workflow.svg" alt="AI Workflow" width="800" />
 
 ### Campaign Delivery Lifecycle
-![Campaign Delivery Lifecycle](./assets/reachnext_diagram4_delivery_lifecycle.svg)
+<img src="./assets/reachnext_diagram4_delivery_lifecycle.svg" alt="Campaign Delivery Lifecycle" width="800" />
 
 ### Closed-Loop Marketing Intelligence
-![Closed-Loop Marketing Intelligence](./assets/reachnext_diagram5_closed_loop.svg)
+<img src="./assets/reachnext_diagram5_closed_loop.svg" alt="Closed-Loop Marketing Intelligence" width="800" />
 
 ---
 
