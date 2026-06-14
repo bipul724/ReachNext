@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import AICRMLogo from "../../components/icons/AICRMLogo";
 import { Playfair_Display } from "next/font/google";
 import {
   Target,
@@ -61,12 +62,10 @@ export default function MarketingLandingPage() {
       {/* SECTION 1 — NAV */}
       <header className="border-b border-gray-200 bg-white w-full">
         <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-[22px] h-[22px] rounded-md bg-emerald-50 flex items-center justify-center">
-              <Target className="w-3.5 h-3.5 text-emerald-700" />
-            </div>
-            <span className="text-sm font-medium text-gray-900">ReachNext</span>
-          </div>
+          <Link href="/" className="flex items-center gap-2.5">
+            <AICRMLogo className="h-8 w-8" />
+            <span className={`${playfair.className} text-xl font-bold tracking-tight text-gray-900`}>ReachNext</span>
+          </Link>
           
           <nav className="hidden md:flex items-center gap-6 text-sm text-gray-500">
             <Link href="#features" className="hover:text-gray-900 transition-colors">Features</Link>
