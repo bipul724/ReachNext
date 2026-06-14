@@ -67,7 +67,7 @@ export async function GET(
 
     // Map to response shape
     const now = Date.now();
-    const customers = communications.map((comm) => {
+    const customers = communications.map((comm: typeof communications[number]) => {
       const c = comm.customer;
       const daysSinceLastOrder = c.lastOrderAt
         ? Math.floor((now - new Date(c.lastOrderAt).getTime()) / (1000 * 60 * 60 * 24))
