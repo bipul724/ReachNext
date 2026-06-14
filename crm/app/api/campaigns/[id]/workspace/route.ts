@@ -21,14 +21,16 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
     }
 
-    const stats: any = campaign.stats || {};
-    let agentThoughts: any[] = (campaign.agentThoughts as any[]) || [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const stats: Record<string, any> = (campaign.stats as Record<string, any>) || {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const agentThoughts: any[] = (campaign.agentThoughts as any[]) || [];
 
     const workspace = buildWorkspacePayload(campaign, stats, agentThoughts);
 
     return NextResponse.json({ workspace });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`GET /api/campaigns/[id]/workspace error:`, error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }

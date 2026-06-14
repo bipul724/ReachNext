@@ -5,9 +5,9 @@ export async function GET() {
   try {
     const campaigns = await CampaignService.list();
     return NextResponse.json(campaigns);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/campaigns error:", error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -52,8 +52,8 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(campaign, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("POST /api/campaigns error:", error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }

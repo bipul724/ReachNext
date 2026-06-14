@@ -10,9 +10,9 @@ export async function GET(request: NextRequest) {
 
     const data = await CustomerService.list({ limit, offset, search });
     return NextResponse.json(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/customers error:", error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -45,8 +45,8 @@ export async function POST(request: NextRequest) {
 
     const customer = await CustomerService.upsert(body);
     return NextResponse.json(customer, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("POST /api/customers error:", error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }

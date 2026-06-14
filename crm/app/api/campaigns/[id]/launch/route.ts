@@ -19,8 +19,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       message: `Campaign launched successfully to ${result.sentCount} recipients.`,
       sentCount: result.sentCount,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`POST /api/campaigns/[id]/launch error:`, error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }

@@ -21,10 +21,10 @@ export async function POST(request: Request) {
     const campaignWorkspace = await AgentOrchestrator.generateCampaign(goal);
 
     return NextResponse.json(campaignWorkspace, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in POST /api/campaigns/generate:", error);
     return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
+      { error: error instanceof Error ? error.message : "Internal Server Error" },
       { status: 500 }
     );
   }

@@ -87,10 +87,10 @@ export async function GET(
       targetingRationale: campaign.segment?.naturalLanguageQuery || campaign.segment?.description || null,
       customers,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/campaigns/[id]/audience-preview error:", error);
     return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
+      { error: error instanceof Error ? error.message : "Internal Server Error" },
       { status: 500 }
     );
   }

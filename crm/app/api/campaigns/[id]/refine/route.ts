@@ -39,11 +39,14 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     const intent = classifyRefinementIntent(instruction);
-    const stats: any = campaign.stats || {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const stats: Record<string, any> = (campaign.stats as Record<string, any>) || {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let agentThoughts: any[] = (campaign.agentThoughts as any[]) || [];
     let usedLLM = false;
     let assistantMessage = "";
-    const changes: any = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const changes: Record<string, any> = {};
 
     let updatedChannel = campaign.channel as "email" | "sms" | "whatsapp";
     let updatedOffer = stats.offer || "None";
@@ -74,7 +77,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       }
 
       changes.channel = { before: updatedChannel, after: newChannel };
-      updatedChannel = newChannel as any;
+      updatedChannel = newChannel as "email" | "sms" | "whatsapp";
       explainChannel = `Changed to ${newChannel} as requested by user.`;
       
       const contentRes = await runContentAgent(stats.goal || "", campaign.segment.name, updatedChannel, updatedOffer, {
@@ -163,8 +166,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Agent thoughts bounds handling
     const MAX_REFINEMENT_HISTORY = 15;
-    const originalThoughts = agentThoughts.filter(t => t.step !== "campaign_refinement");
-    const refinementThoughts = agentThoughts.filter(t => t.step === "campaign_refinement");
+    const originalThoughts = agentThoughts.filter((t: any) => t.step !== "campaign_refinement");
+    const refinementThoughts = agentThoughts.filter((t: any) => t.step === "campaign_refinement");
     
     if (refinementThoughts.length > MAX_REFINEMENT_HISTORY) {
       const latestRefinements = refinementThoughts.slice(-MAX_REFINEMENT_HISTORY);
@@ -208,12 +211,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       workspace: finalWorkspace
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`POST /api/campaigns/[id]/refine error:`, error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function buildWorkspacePayload(campaign: any, stats: any, agentThoughts: any[]) {
   return {
     campaignId: campaign.id,

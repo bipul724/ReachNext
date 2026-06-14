@@ -5,9 +5,9 @@ export async function GET() {
   try {
     const segments = await SegmentService.list();
     return NextResponse.json(segments);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/segments error:", error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -49,8 +49,8 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(segment, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("POST /api/segments error:", error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }

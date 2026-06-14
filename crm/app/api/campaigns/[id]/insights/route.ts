@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCampaignInsight, type CampaignInsight } from "@/services/insights.service";
 import type { CampaignStats } from "@/lib/gemini-insights";
@@ -45,7 +45,7 @@ export async function GET(
     };
 
     // Safe extraction of the human-readable marketing goal from campaign stats or segment
-    const goal = (campaign.stats as any)?.goal ?? campaign.segment?.naturalLanguageQuery ?? "";
+    const goal = (campaign.stats as Record<string, unknown>)?.goal as string ?? campaign.segment?.naturalLanguageQuery ?? "";
 
     const insight: CampaignInsight = await getCampaignInsight({
       campaignId: campaign.id,
@@ -65,7 +65,7 @@ export async function GET(
       nextStep: insight.nextStep,
       source: insight.source,
     }, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/campaigns/[id]/insights error:", error);
     return NextResponse.json(
       {

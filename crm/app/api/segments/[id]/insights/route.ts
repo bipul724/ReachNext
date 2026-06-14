@@ -51,7 +51,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     // --- Compute deterministic facts ---
 
     const campaignFacts = segment.campaigns.map((c) => {
-      const s = (c.stats as any) || {};
+      const s = (c.stats as Record<string, number>) || {};
       const sent = s.sent || 0;
       const delivered = s.delivered || 0;
       const opened = s.opened || 0;
@@ -109,10 +109,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const insights = await runSegmentInsightsAgent(facts);
 
     return NextResponse.json({ facts, bestCampaign, insights }, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in GET /api/segments/[id]/insights:", error);
     return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
+      { error: error instanceof Error ? error.message : "Internal Server Error" },
       { status: 500 }
     );
   }

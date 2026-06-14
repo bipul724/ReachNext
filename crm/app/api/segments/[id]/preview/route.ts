@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SegmentService } from "@/services/segment.service";
+import type { SegmentRulesJson } from "@/types";
 
 interface RouteParams {
   params: Promise<{
@@ -16,7 +17,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Segment not found" }, { status: 404 });
     }
 
-    const rules = segment.rules as any;
+    const rules = segment.rules as unknown as SegmentRulesJson;
     const previewCustomers = await SegmentService.getPreviewCustomers(rules, 20);
 
     return NextResponse.json({
@@ -24,8 +25,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       count: segment.customerCount,
       customers: previewCustomers,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`GET /api/segments/[id]/preview error:`, error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
@@ -49,7 +49,7 @@ export async function GET() {
     const totalRevenue = Math.round((orderAgg._sum.totalAmount || 0) * 100) / 100;
 
     // Format location sales chart data
-    const locationSales = locationGroups.map((group) => ({
+    const locationSales = locationGroups.map((group: typeof locationGroups[number]) => ({
       name: group.storeLocation === "online" ? "Online" : group.storeLocation,
       orders: group._count.id,
       sales: Math.round((group._sum.totalAmount || 0) * 100) / 100,
@@ -66,9 +66,9 @@ export async function GET() {
       recentCampaigns,
       recentOrders,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/dashboard/stats error:", error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }
 

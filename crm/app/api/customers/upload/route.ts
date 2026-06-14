@@ -97,10 +97,10 @@ export async function POST(request: Request) {
       message: `Successfully processed ${successCount} customers.`,
       errors,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("POST /api/customers/upload error:", error);
     return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
+      { error: error instanceof Error ? error.message : "Internal Server Error" },
       { status: 500 }
     );
   }

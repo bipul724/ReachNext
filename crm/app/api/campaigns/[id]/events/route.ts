@@ -125,10 +125,10 @@ export async function GET(
     const limitedEvents = events.slice(0, 50);
 
     return NextResponse.json({ events: limitedEvents });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("GET /api/campaigns/[id]/events error:", error);
     return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
+      { error: error instanceof Error ? error.message : "Internal Server Error" },
       { status: 500 }
     );
   }

@@ -32,8 +32,8 @@ export async function POST(request: NextRequest) {
       success: true,
       processed,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("POST /api/webhooks/receipt error:", error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }

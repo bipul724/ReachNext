@@ -17,9 +17,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     return NextResponse.json(campaign);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`GET /api/campaigns/[id] error:`, error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -34,8 +34,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     await CampaignService.delete(id);
     return NextResponse.json({ success: true, message: "Campaign deleted successfully" });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`DELETE /api/campaigns/[id] error:`, error);
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Internal Server Error" }, { status: 500 });
   }
 }
