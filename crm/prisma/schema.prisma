@@ -37,6 +37,7 @@ model Order {
   customer           Customer  @relation(fields: [customerId], references: [id])
   attributedCampaign Campaign? @relation("AttributedOrders", fields: [attributedCampaignId], references: [id])
 
+  @@index([customerId])
   @@map("orders")
 }
 

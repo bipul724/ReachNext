@@ -34,6 +34,12 @@ export async function POST(request: Request) {
     const amountIndex = headers.indexOf("totalamount");
     const itemsIndex = headers.indexOf("items");
     const locationIndex = headers.indexOf("storelocation");
+    
+    // Extract orderdate or date if provided in the CSV
+    const dateIndex =
+      headers.indexOf("orderdate") !== -1
+        ? headers.indexOf("orderdate")
+        : headers.indexOf("date");
 
     if (emailIndex === -1 || amountIndex === -1) {
       return NextResponse.json(
@@ -42,68 +48,103 @@ export async function POST(request: Request) {
       );
     }
 
-    let successCount = 0;
-    const errors: string[] = [];
-
-    // Parse Data Rows
+    // Step 1: Parse rows and extract data
+    const rawData = [];
     for (let i = 1; i < lines.length; i++) {
       const row = parseCSVRow(lines[i]);
-      if (row.length < headers.length) continue; // skip incomplete rows
+      if (row.length < headers.length) continue;
 
       const email = row[emailIndex];
       const amountStr = row[amountIndex];
       const itemsStr = itemsIndex !== -1 ? row[itemsIndex] : "";
       const location = locationIndex !== -1 ? row[locationIndex] : "online";
-
+      const dateStr = dateIndex !== -1 ? row[dateIndex] : "";
+      
       const totalAmount = parseFloat(amountStr);
 
-      if (!email || isNaN(totalAmount)) {
-        errors.push(`Row ${i + 1}: Missing email or invalid totalAmount.`);
-        continue;
-      }
-
-      // 1. Look up customer by email to find customerId
-      const customer = await prisma.customer.findUnique({
-        where: { email },
-        select: { id: true },
-      });
-
-      if (!customer) {
-        errors.push(`Row ${i + 1} (${email}): Customer not found in database. Create the customer profile first.`);
-        continue;
-      }
-
-      // Parse items JSON safely or set default
-      let items = [];
-      try {
-        if (itemsStr) {
-          items = JSON.parse(itemsStr);
-        } else {
-          items = [{ name: "Coffee purchase", qty: 1, price: totalAmount, category: "Coffee" }];
-        }
-      } catch {
-        items = [{ name: "Coffee purchase", qty: 1, price: totalAmount, category: "Coffee" }];
-      }
-
-      try {
-        // Use OrderService.create to handle transaction-based campaign attribution, customer stat updates, and campaign revenue aggregates automatically!
-        await OrderService.create({
-          customerId: customer.id,
-          orderDate: new Date(),
-          totalAmount,
-          items,
-          storeLocation: location,
-        });
-        successCount++;
-      } catch (err: any) {
-        errors.push(`Row ${i + 1} (${email}): Failed to save order - ${err.message}`);
+      if (email && !isNaN(totalAmount)) {
+        rawData.push({ email, totalAmount, itemsStr, location, dateStr });
       }
     }
 
+    // Step 2: Preload Customers Once
+    const emails = [...new Set(rawData.map((r) => r.email))];
+
+    const customers = await prisma.customer.findMany({
+      where: {
+        email: {
+          in: emails,
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+      },
+    });
+
+    const customerMap = new Map(
+      customers.map((c) => [c.email, c.id])
+    );
+
+    // Step 3: Build the Full Order Payload
+    const orderData = rawData.map((row) => {
+      let items = [];
+      try {
+        if (row.itemsStr) {
+          items = JSON.parse(row.itemsStr);
+        } else {
+          items = [{ name: "Coffee purchase", qty: 1, price: row.totalAmount, category: "Coffee" }];
+        }
+      } catch {
+        items = [{ name: "Coffee purchase", qty: 1, price: row.totalAmount, category: "Coffee" }];
+      }
+
+      // Parse the actual CSV order date field
+      let parsedDate = new Date();
+      if (row.dateStr) {
+        const d = new Date(row.dateStr);
+        if (!isNaN(d.getTime())) {
+          parsedDate = d;
+        }
+      }
+
+      return {
+        customerId: customerMap.get(row.email) as string,
+        orderDate: parsedDate,
+        totalAmount: row.totalAmount,
+        items,
+        storeLocation: row.location,
+      };
+    }).filter((order) => order.customerId !== undefined); // Drop rows whose customers cannot be resolved
+
+    if (orderData.length === 0) {
+      return NextResponse.json(
+        { error: "No valid orders found or no matching customers." },
+        { status: 400 }
+      );
+    }
+
+    // Step 4: Replace Per-Row Inserts with chunked bulk inserts
+    const CHUNK_SIZE = 1000;
+    for (let i = 0; i < orderData.length; i += CHUNK_SIZE) {
+      const chunk = orderData.slice(i, i + CHUNK_SIZE);
+
+      await prisma.order.createMany({
+        data: chunk,
+      });
+    }
+
+    // Step 6: Recompute Customer Stats Once
+    const affectedCustomerIds = [
+      ...new Set(orderData.map((o) => o.customerId)),
+    ];
+
+    await OrderService.recomputeCustomerStats(affectedCustomerIds);
+
     return NextResponse.json({
       success: true,
-      message: `Successfully processed ${successCount} orders.`,
-      errors,
+      message: `Successfully processed ${orderData.length} orders.`,
+      errors: [], 
     });
   } catch (error: unknown) {
     console.error("POST /api/orders/upload error:", error);

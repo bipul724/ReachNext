@@ -127,4 +127,42 @@ export const OrderService = {
       return order;
     });
   },
+  async recomputeCustomerStats(customerIds: string[]) {
+    // 1. Single groupBy query to calculate aggregates for all affected customers
+    const stats = await prisma.order.groupBy({
+      by: ["customerId"],
+      where: {
+        customerId: {
+          in: customerIds,
+        },
+      },
+      _count: {
+        id: true,
+      },
+      _sum: {
+        totalAmount: true,
+      },
+      _max: {
+        orderDate: true,
+      },
+    });
+
+    // 2. Perform updates sequentially in batches of 50
+    const UPDATE_BATCH_SIZE = 50;
+    for (let i = 0; i < stats.length; i += UPDATE_BATCH_SIZE) {
+      const batch = stats.slice(i, i + UPDATE_BATCH_SIZE);
+      await Promise.all(
+        batch.map((stat) =>
+          prisma.customer.update({
+            where: { id: stat.customerId },
+            data: {
+              totalOrders: stat._count.id,
+              totalSpent: stat._sum.totalAmount ? Math.round(stat._sum.totalAmount * 100) / 100 : 0,
+              lastOrderAt: stat._max.orderDate,
+            },
+          })
+        )
+      );
+    }
+  },
 };
