@@ -501,7 +501,7 @@ export default function Dashboard() {
                     >
                       <Button
                         size="sm"
-                        className="w-full text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white gap-1"
+                        className="w-full text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white gap-1"
                       >
                         <Sparkles className="h-3.5 w-3.5" />
                         Launch Autopilot

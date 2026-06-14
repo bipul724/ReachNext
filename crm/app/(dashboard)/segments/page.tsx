@@ -94,7 +94,7 @@ export default function Segments() {
                       </TableCell>
                       <TableCell className="py-4">
                         {seg.naturalLanguageQuery ? (
-                          <Badge variant="secondary" className="flex items-center gap-1 w-fit text-[9px] font-bold bg-blue-50 text-blue-700 border-blue-100 py-0 px-1.5">
+                          <Badge variant="secondary" className="flex items-center gap-1 w-fit text-[9px] font-bold bg-emerald-50 text-emerald-700 border-emerald-100 py-0 px-1.5">
                             <Sparkles className="h-2.5 w-2.5" />
                             AI Natural Language
                           </Badge>
