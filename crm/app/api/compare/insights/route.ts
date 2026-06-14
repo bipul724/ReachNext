@@ -3,7 +3,12 @@ import { runCompareInsightsAgent, ComparisonFacts } from "@/ai/compare";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
     const facts: ComparisonFacts | undefined = body?.facts;
 
     // --- Validate request shape ---

@@ -26,6 +26,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
+    
+    const segment = await SegmentService.getById(id);
+    if (!segment) {
+      return NextResponse.json({ error: "Segment not found" }, { status: 404 });
+    }
+
     await SegmentService.delete(id);
     return NextResponse.json({ success: true, message: "Segment deleted successfully" });
   } catch (error: any) {

@@ -26,6 +26,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
+    
+    const campaign = await CampaignService.getById(id);
+    if (!campaign) {
+      return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
+    }
+
     await CampaignService.delete(id);
     return NextResponse.json({ success: true, message: "Campaign deleted successfully" });
   } catch (error: any) {

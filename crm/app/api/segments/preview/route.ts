@@ -3,7 +3,12 @@ import { SegmentService } from "@/services/segment.service";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
     const { rules } = body;
 
     if (!rules) {

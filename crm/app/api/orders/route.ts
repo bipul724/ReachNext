@@ -17,7 +17,12 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
     const { customerId, totalAmount, items, orderDate, storeLocation } = body;
 
     if (!customerId || totalAmount === undefined || !items) {
@@ -25,6 +30,21 @@ export async function POST(request: NextRequest) {
         { error: "Missing required fields: customerId, totalAmount, items" },
         { status: 400 }
       );
+    }
+    if (typeof customerId !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'customerId' must be a string." }, { status: 400 });
+    }
+    if (typeof totalAmount !== "number" && typeof totalAmount !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'totalAmount' must be a number or string." }, { status: 400 });
+    }
+    if (typeof items !== "object" || items === null) {
+      return NextResponse.json({ error: "Invalid field type: 'items' must be an array or object." }, { status: 400 });
+    }
+    if (orderDate !== undefined && orderDate !== null && typeof orderDate !== "string" && typeof orderDate !== "number") {
+      return NextResponse.json({ error: "Invalid field type: 'orderDate' must be a string or number." }, { status: 400 });
+    }
+    if (storeLocation !== undefined && storeLocation !== null && typeof storeLocation !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'storeLocation' must be a string." }, { status: 400 });
     }
 
     const order = await OrderService.create({

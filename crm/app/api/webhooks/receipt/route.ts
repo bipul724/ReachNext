@@ -3,7 +3,12 @@ import { ReceiptService } from "@/services/receipt.service";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
     const { communicationId, status, timestamp } = body;
 
     if (!communicationId || !status || !timestamp) {

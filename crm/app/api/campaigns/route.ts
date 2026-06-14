@@ -13,7 +13,12 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
     const { name, segmentId, channel, messageTemplate, createdBy } = body;
 
     if (!name || !segmentId || !channel || !messageTemplate) {
@@ -21,6 +26,21 @@ export async function POST(request: NextRequest) {
         { error: "Missing required fields: name, segmentId, channel, messageTemplate" },
         { status: 400 }
       );
+    }
+    if (typeof name !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'name' must be a string." }, { status: 400 });
+    }
+    if (typeof segmentId !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'segmentId' must be a string." }, { status: 400 });
+    }
+    if (typeof channel !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'channel' must be a string." }, { status: 400 });
+    }
+    if (typeof messageTemplate !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'messageTemplate' must be a string." }, { status: 400 });
+    }
+    if (createdBy !== undefined && createdBy !== null && typeof createdBy !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'createdBy' must be a string." }, { status: 400 });
     }
 
     const campaign = await CampaignService.create({

@@ -3,7 +3,12 @@ import { getAdaptiveRecommendations } from "@/ai/adaptive-recommendation";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
     const { goal } = body;
 
     if (!goal || typeof goal !== "string") {

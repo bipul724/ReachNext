@@ -13,7 +13,13 @@ interface RouteParams {
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const { instruction } = await request.json();
+    let payload;
+    try {
+      payload = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
+    const { instruction } = payload || {};
 
     if (!instruction) {
       return NextResponse.json({ error: "Instruction is required" }, { status: 400 });

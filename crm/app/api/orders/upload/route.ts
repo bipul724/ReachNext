@@ -5,7 +5,13 @@ import { parseCSVRow } from "@/lib/csv-parser";
 
 export async function POST(request: Request) {
   try {
-    const { csvText } = await request.json();
+    let payload;
+    try {
+      payload = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
+    const { csvText } = payload || {};
 
     if (!csvText || typeof csvText !== "string") {
       return NextResponse.json(

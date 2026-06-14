@@ -3,7 +3,13 @@ import { runSegmentationAgent } from "@/ai/segmentation";
 
 export async function POST(request: Request) {
   try {
-    const { prompt } = await request.json();
+    let payload;
+    try {
+      payload = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
+    const { prompt } = payload || {};
 
     if (!prompt || typeof prompt !== "string") {
       return NextResponse.json(

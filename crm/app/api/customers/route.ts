@@ -18,9 +18,29 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
     if (!body.name || !body.email) {
       return NextResponse.json({ error: "Missing required fields: name, email" }, { status: 400 });
+    }
+    if (typeof body.name !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'name' must be a string." }, { status: 400 });
+    }
+    if (typeof body.email !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'email' must be a string." }, { status: 400 });
+    }
+    if (body.phone !== undefined && body.phone !== null && typeof body.phone !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'phone' must be a string." }, { status: 400 });
+    }
+    if (body.city !== undefined && body.city !== null && typeof body.city !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'city' must be a string." }, { status: 400 });
+    }
+    if (body.tags !== undefined && body.tags !== null && !Array.isArray(body.tags)) {
+      return NextResponse.json({ error: "Invalid field type: 'tags' must be an array." }, { status: 400 });
     }
 
     const customer = await CustomerService.upsert(body);

@@ -13,11 +13,31 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
+    }
     const { name, description, rules, naturalLanguageQuery, createdBy } = body;
 
     if (!name || !rules) {
       return NextResponse.json({ error: "Missing required fields: name, rules" }, { status: 400 });
+    }
+    if (typeof name !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'name' must be a string." }, { status: 400 });
+    }
+    if (typeof rules !== "object" || Array.isArray(rules) || rules === null) {
+      return NextResponse.json({ error: "Invalid field type: 'rules' must be an object." }, { status: 400 });
+    }
+    if (description !== undefined && description !== null && typeof description !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'description' must be a string." }, { status: 400 });
+    }
+    if (naturalLanguageQuery !== undefined && naturalLanguageQuery !== null && typeof naturalLanguageQuery !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'naturalLanguageQuery' must be a string." }, { status: 400 });
+    }
+    if (createdBy !== undefined && createdBy !== null && typeof createdBy !== "string") {
+      return NextResponse.json({ error: "Invalid field type: 'createdBy' must be a string." }, { status: 400 });
     }
 
     const segment = await SegmentService.create({
