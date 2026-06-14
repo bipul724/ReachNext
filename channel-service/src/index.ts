@@ -9,6 +9,12 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.get("/", (_req, res) => {
+  res.json({
+    message: "ReachNext Channel Service is running 🚀",
+  });
+});
+
 app.use("/api", sendRoutes);
 
 app.listen(env.PORT, () => {
