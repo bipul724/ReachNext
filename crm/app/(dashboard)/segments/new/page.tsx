@@ -344,7 +344,7 @@ export default function NewSegment() {
               {previewCustomers.length > 0 && (
                 <div className="space-y-2">
                   <span className="text-xs font-semibold text-muted-foreground">Sample Profiles:</span>
-                  <div className="rounded-md border border-border overflow-hidden text-xs">
+                  <div className="rounded-md border border-border overflow-x-auto text-xs">
                     <Table>
                       <TableHeader className="bg-muted/20">
                         <TableRow>

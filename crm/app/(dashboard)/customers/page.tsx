@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useCustomers } from "../../../hooks/use-customers";
+import { useDebounce } from "../../../hooks/use-debounce";
 import {
   Table,
   TableBody,
@@ -39,12 +40,13 @@ import { toast } from "sonner";
 export default function Customers() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
   const [csvType, setCsvType] = useState<"customers" | "orders">("customers");
   const [csvText, setCsvText] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const { data, isLoading, mutate } = useCustomers(page, search);
+  const { data, isLoading, mutate } = useCustomers(page, debouncedSearch);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -234,7 +236,7 @@ export default function Customers() {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="rounded-md border border-border overflow-hidden">
+              <div className="rounded-md border border-border overflow-x-auto">
                 <Table>
                   <TableHeader className="bg-muted/30">
                     <TableRow>

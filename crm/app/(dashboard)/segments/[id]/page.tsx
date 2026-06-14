@@ -452,7 +452,7 @@ export default function SegmentDetailPage({
               </div>
 
               {/* Campaign Breakdown Table */}
-              <div className="rounded-md border border-border overflow-hidden">
+              <div className="rounded-md border border-border overflow-x-auto">
                 <Table>
                   <TableHeader className="bg-muted/30">
                     <TableRow>
