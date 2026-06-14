@@ -11,12 +11,12 @@ export default function MarketingLandingPage() {
     <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/10">
       {/* HEADER / NAV */}
       <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-border/40 bg-background/80 px-6 md:px-12 backdrop-blur-md">
-        <div className="flex items-center gap-2.5 font-bold tracking-tight">
+        <Link href="/" className="flex items-center gap-2.5 font-bold tracking-tight">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
             <LayoutDashboard className="h-4 w-4" />
           </div>
-          CRM
-        </div>
+          <span className="text-lg font-bold tracking-tight text-foreground">ReachNext</span>
+        </Link>
         <nav className="flex items-center gap-4">
           <Link href="/dashboard">
             <Button size="sm" className="font-semibold shadow-sm">

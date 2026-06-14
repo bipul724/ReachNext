@@ -46,12 +46,12 @@ export function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-20 flex w-64 flex-col border-r border-border bg-card/65 backdrop-blur-md">
       <div className="flex h-16 items-center px-6 border-b border-border">
-        <Link href="/dashboard" className="flex items-center gap-2.5 font-semibold">
+        <Link href="/" className="flex items-center gap-2.5 font-semibold">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md">
             <Coffee className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-extrabold tracking-wider text-foreground uppercase">
+            <span className="text-lg font-bold tracking-tight text-foreground">
               ReachNext
             </span>
           </div>
