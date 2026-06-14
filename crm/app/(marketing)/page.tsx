@@ -66,11 +66,6 @@ export default function MarketingLandingPage() {
             <AICRMLogo className="h-9 w-9" />
             <span className={`${playfair.className} text-2xl font-bold tracking-tight text-gray-900`}>ReachNext</span>
           </Link>
-          
-          <nav className="hidden md:flex items-center gap-8 text-base text-gray-500">
-            <Link href="#features" className="hover:text-gray-900 transition-colors">Features</Link>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-gray-900 transition-colors">GitHub</a>
-          </nav>
 
           <div>
             <Link href="/dashboard" className="bg-gray-900 text-white text-base font-medium px-7 py-3 rounded-md hover:bg-gray-800 transition-colors">
