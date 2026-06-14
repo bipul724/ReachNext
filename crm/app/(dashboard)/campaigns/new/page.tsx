@@ -550,14 +550,14 @@ function NewCampaignContent() {
                       <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Confidence</span>
                       <div className="flex items-center gap-1.5 font-sans font-medium text-sm text-green-600 dark:text-green-400">
                         <span className="h-2 w-2 rounded-full bg-green-500 shrink-0"></span>
-                        {workspace.adaptiveInsights.confidenceScore}%
+                        {workspace.adaptiveInsights.confidence}
                       </div>
                     </div>
                     <div className="bg-muted rounded-lg border border-border p-3 flex flex-col gap-1">
                       <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Match Basis</span>
                       <div className="flex items-center gap-1.5 font-sans font-medium text-sm text-foreground">
                         <Activity className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                        {workspace.adaptiveInsights.similarCampaignsAnalyzed} Campaigns
+                        {workspace.adaptiveInsights.sampleSize} Campaigns
                       </div>
                     </div>
                   </div>

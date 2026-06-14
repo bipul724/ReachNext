@@ -54,9 +54,10 @@ interface Opportunity {
 }
 
 export default function Dashboard() {
-  const { data, error, isLoading } = useSWR("/api/dashboard/stats", fetcher);
+  const { data: statsData, error: statsError, isLoading: statsLoading } = useSWR("/api/dashboard/stats", fetcher);
+  const { data: insightsData, error: insightsError, isLoading: insightsLoading } = useSWR("/api/dashboard/insights", fetcher);
 
-  if (isLoading) {
+  if (statsLoading) {
     return (
       <div className="flex h-[70vh] flex-col items-center justify-center gap-4 animate-in fade-in duration-1000">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -65,16 +66,17 @@ export default function Dashboard() {
     );
   }
 
-  if (error) {
+  if (statsError) {
     return (
       <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-6 text-destructive">
         <h3 className="font-bold">Error loading stats</h3>
-        <p className="text-sm mt-1">{error.message || "Please check your network and database connections."}</p>
+        <p className="text-sm mt-1">{statsError.message || "Please check your network and database connections."}</p>
       </div>
     );
   }
 
-  const { summary, locationSales, recentCampaigns, recentOrders, opportunities } = data;
+  const { summary, locationSales, recentCampaigns, recentOrders } = statsData;
+  const opportunities = insightsData?.opportunities || [];
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -104,7 +106,41 @@ export default function Dashboard() {
       </div>
 
       {/* Revenue Opportunity Copilot */}
-      {opportunities && opportunities.length > 0 && (
+      {insightsLoading ? (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold tracking-tight text-foreground flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-indigo-500 animate-pulse" />
+              Revenue Opportunity Copilot
+            </h2>
+            <Badge variant="outline" className="border-indigo-200 text-indigo-700 bg-indigo-50/50 animate-pulse">
+              Generating Insights...
+            </Badge>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="h-64 border-indigo-100/40 flex flex-col justify-between">
+                <CardHeader className="pb-3 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="h-3 w-20 bg-muted rounded animate-pulse"></div>
+                    <div className="h-4 w-24 bg-muted rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="h-4 w-3/4 bg-muted rounded animate-pulse mt-2"></div>
+                  <div className="h-12 w-full bg-muted rounded animate-pulse mt-2"></div>
+                </CardHeader>
+                <CardContent className="mt-auto space-y-4 pt-0">
+                  <div className="h-10 w-full bg-muted rounded animate-pulse"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      ) : insightsError ? (
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-6 text-destructive">
+          <h3 className="font-bold">Error loading AI Insights</h3>
+          <p className="text-sm mt-1">{insightsError.message || "Failed to generate insights."}</p>
+        </div>
+      ) : opportunities && opportunities.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold tracking-tight text-foreground flex items-center gap-2">
