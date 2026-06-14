@@ -34,7 +34,7 @@ model Order {
   attributedCampaignId String?
   createdAt            DateTime @default(now())
 
-  customer          Customer  @relation(fields: [customerId], references: [id])
+  customer           Customer  @relation(fields: [customerId], references: [id])
   attributedCampaign Campaign? @relation("AttributedOrders", fields: [attributedCampaignId], references: [id])
 
   @@map("orders")
@@ -70,9 +70,9 @@ model Campaign {
   completedAt     DateTime?
   createdAt       DateTime  @default(now())
 
-  segment          Segment          @relation(fields: [segmentId], references: [id])
+  segment          Segment         @relation(fields: [segmentId], references: [id])
   communications   Communication[]
-  attributedOrders Order[]          @relation("AttributedOrders")
+  attributedOrders Order[]         @relation("AttributedOrders")
 
   @@map("campaigns")
 }
