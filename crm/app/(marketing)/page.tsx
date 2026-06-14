@@ -61,20 +61,19 @@ export default function MarketingLandingPage() {
 
       {/* SECTION 1 — NAV */}
       <header className="border-b border-gray-200 bg-white w-full">
-        <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <AICRMLogo className="h-8 w-8" />
-            <span className={`${playfair.className} text-xl font-bold tracking-tight text-gray-900`}>ReachNext</span>
+        <div className="max-w-6xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <AICRMLogo className="h-9 w-9" />
+            <span className={`${playfair.className} text-2xl font-bold tracking-tight text-gray-900`}>ReachNext</span>
           </Link>
           
-          <nav className="hidden md:flex items-center gap-6 text-sm text-gray-500">
+          <nav className="hidden md:flex items-center gap-8 text-base text-gray-500">
             <Link href="#features" className="hover:text-gray-900 transition-colors">Features</Link>
-            <Link href="/docs/architecture" className="hover:text-gray-900 transition-colors">Architecture</Link>
             <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-gray-900 transition-colors">GitHub</a>
           </nav>
 
           <div>
-            <Link href="/dashboard" className="bg-gray-900 text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-gray-800 transition-colors">
+            <Link href="/dashboard" className="bg-gray-900 text-white text-base font-medium px-7 py-3 rounded-md hover:bg-gray-800 transition-colors">
               Open dashboard &rarr;
             </Link>
           </div>
@@ -83,10 +82,10 @@ export default function MarketingLandingPage() {
 
       <main>
         {/* SECTION 2 — HERO */}
-        <section className="grid md:grid-cols-2 gap-12 items-start px-6 pt-16 pb-14 max-w-7xl mx-auto">
+        <section className="grid md:grid-cols-2 gap-10 lg:gap-12 items-start px-6 lg:px-8 pt-20 pb-16 max-w-6xl mx-auto">
           {/* LEFT COLUMN */}
           <div>
-            <div className="inline-flex items-center gap-1.5 border border-gray-200 rounded-full px-3 py-1 text-[11px] uppercase tracking-wider text-gray-500 mb-6">
+            <div className="inline-flex items-center gap-1.5 border border-gray-200 rounded-full px-3 py-1 text-xs uppercase tracking-wider text-gray-500 mb-6">
               <div className="w-[5px] h-[5px] rounded-full bg-emerald-500 animate-pulse-dot" />
               AI-native marketing CRM
             </div>
@@ -104,17 +103,14 @@ export default function MarketingLandingPage() {
               <Link href="/dashboard" className="bg-gray-900 text-white text-sm font-medium px-6 py-3 rounded-md hover:bg-gray-800 transition-colors">
                 Open dashboard &rarr;
               </Link>
-              <Link href="/docs/architecture" className="border border-gray-300 text-gray-900 bg-transparent text-sm font-medium px-6 py-3 rounded-md hover:bg-gray-50 transition-colors">
-                View architecture
-              </Link>
             </div>
           </div>
 
           {/* RIGHT COLUMN */}
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-5">
             <div className="bg-white border border-gray-200 rounded-lg p-4 mb-3">
-              <div className="text-[9px] uppercase tracking-wider text-gray-400 mb-1">YOUR GOAL</div>
-              <div className="text-xs font-medium italic text-gray-900">
+              <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-1">YOUR GOAL</div>
+              <div className="text-sm font-medium italic text-gray-900">
                 &quot;Win back premium customers who haven&apos;t ordered in 45 days&quot;
               </div>
             </div>
@@ -126,8 +122,8 @@ export default function MarketingLandingPage() {
                   <Check className="w-2.5 h-2.5 text-emerald-700" strokeWidth={3} />
                 </div>
                 <div>
-                  <div className="text-sm text-gray-900 font-medium">Intent parsed</div>
-                  <div className="text-xs text-gray-500">Win-back · premium segment · 45-day recency</div>
+                  <div className="text-base text-gray-900 font-medium">Intent parsed</div>
+                  <div className="text-sm text-gray-500">Win-back · premium segment · 45-day recency</div>
                 </div>
               </div>
 
@@ -137,8 +133,8 @@ export default function MarketingLandingPage() {
                   <Check className="w-2.5 h-2.5 text-emerald-700" strokeWidth={3} />
                 </div>
                 <div>
-                  <div className="text-sm text-gray-900 font-medium">Segment rules generated</div>
-                  <div className="text-xs text-gray-500">totalSpent &gt; ₹5,000 · lastOrderAt &gt; 45d ago</div>
+                  <div className="text-base text-gray-900 font-medium">Segment rules generated</div>
+                  <div className="text-sm text-gray-500">totalSpent &gt; ₹5,000 · lastOrderAt &gt; 45d ago</div>
                 </div>
               </div>
 
@@ -148,8 +144,8 @@ export default function MarketingLandingPage() {
                   <Check className="w-2.5 h-2.5 text-emerald-700" strokeWidth={3} />
                 </div>
                 <div>
-                  <div className="text-sm text-gray-900 font-medium">Audience preview: 142 customers</div>
-                  <div className="text-xs text-gray-500">Avg LTV ₹8,640 · High confidence</div>
+                  <div className="text-base text-gray-900 font-medium">Audience preview: 142 customers</div>
+                  <div className="text-sm text-gray-500">Avg LTV ₹8,640 · High confidence</div>
                 </div>
               </div>
 
@@ -167,7 +163,7 @@ export default function MarketingLandingPage() {
                   <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-white border border-gray-200 shrink-0" />
                 )}
                 <div>
-                  <div className={`text-sm font-medium ${activeStep >= 4 ? 'text-gray-900' : 'text-gray-400'}`}>
+                  <div className={`text-base font-medium ${activeStep >= 4 ? 'text-gray-900' : 'text-gray-400'}`}>
                     {activeStep === 4 ? (
                       <>Drafting WhatsApp message<span className="animate-blink">_</span></>
                     ) : activeStep > 4 ? (
@@ -177,10 +173,10 @@ export default function MarketingLandingPage() {
                     )}
                   </div>
                   {activeStep <= 4 && activeStep >= 4 && (
-                    <div className="text-xs text-gray-500">Personalizing tone for premium tier</div>
+                    <div className="text-sm text-gray-500">Personalizing tone for premium tier</div>
                   )}
                   {activeStep > 4 && (
-                    <div className="text-xs text-gray-500">Personalized offer with ₹200 discount hook</div>
+                    <div className="text-sm text-gray-500">Personalized offer with ₹200 discount hook</div>
                   )}
                 </div>
               </div>
@@ -199,7 +195,7 @@ export default function MarketingLandingPage() {
                   <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-white border border-gray-200 shrink-0" />
                 )}
                 <div>
-                  <div className={`text-sm font-medium ${activeStep >= 5 ? 'text-gray-900' : 'text-gray-400'}`}>
+                  <div className={`text-base font-medium ${activeStep >= 5 ? 'text-gray-900' : 'text-gray-400'}`}>
                     {activeStep === 5 ? (
                       <>Personalizing 142 messages<span className="animate-blink">_</span></>
                     ) : (
@@ -223,7 +219,7 @@ export default function MarketingLandingPage() {
                   <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-white border border-gray-200 shrink-0" />
                 )}
                 <div>
-                  <div className={`text-sm font-medium ${activeStep >= 6 ? 'text-gray-900' : 'text-gray-400'}`}>
+                  <div className={`text-base font-medium ${activeStep >= 6 ? 'text-gray-900' : 'text-gray-400'}`}>
                     {activeStep === 6 ? (
                       <>Dispatching to channel service<span className="animate-blink">_</span></>
                     ) : activeStep > 6 ? (
@@ -240,8 +236,8 @@ export default function MarketingLandingPage() {
         </section>
 
         {/* SECTION 3 — DELIVERY LIFECYCLE STRIP */}
-        <section className="w-full bg-gray-50 border-t border-b border-gray-200 py-6 px-6 overflow-x-auto">
-          <div className="max-w-7xl mx-auto flex items-center justify-between min-w-[700px]">
+        <section className="px-6 lg:px-8 max-w-6xl mx-auto mb-16 mt-8 overflow-x-auto">
+          <div className="w-full bg-gray-50 border border-gray-200 rounded-2xl shadow-sm py-8 px-6 lg:px-10 flex items-center justify-between min-w-[700px]">
             {[
               { label: "Queued", val: "4,209" },
               { label: "Sent", val: "4,189", badge: "99.5%" },
@@ -253,18 +249,18 @@ export default function MarketingLandingPage() {
             ].map((state, i, arr) => (
               <React.Fragment key={state.label}>
                 <div className="flex flex-col">
-                  <div className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">{state.label}</div>
+                  <div className="text-xs uppercase tracking-wider text-gray-500 mb-1">{state.label}</div>
                   <div className="flex items-end gap-2">
                     <div className={`${playfair.className} text-2xl font-medium text-gray-900`}>{state.val}</div>
                     {state.badge && (
-                      <div className="bg-emerald-50 text-emerald-700 text-[9px] font-medium px-1.5 py-0.5 rounded mb-1">
+                      <div className="bg-emerald-50 text-emerald-700 text-[11px] font-medium px-1.5 py-0.5 rounded mb-1">
                         {state.badge}
                       </div>
                     )}
                   </div>
                 </div>
                 {i < arr.length - 1 && (
-                  <div className="text-gray-300 text-xs px-2">&rarr;</div>
+                  <div className="text-gray-300 text-sm px-2">&rarr;</div>
                 )}
               </React.Fragment>
             ))}
@@ -272,8 +268,8 @@ export default function MarketingLandingPage() {
         </section>
 
         {/* SECTION 4 — FEATURE GRID */}
-        <section id="features" className="px-6 py-12 max-w-7xl mx-auto">
-          <div className="text-[9px] uppercase tracking-widest text-gray-500 mb-4">
+        <section id="features" className="px-6 lg:px-8 py-12 max-w-6xl mx-auto">
+          <div className="text-xs uppercase tracking-widest text-gray-500 mb-4 font-semibold">
             WHAT&apos;S ACTUALLY BUILT
           </div>
           
@@ -281,8 +277,8 @@ export default function MarketingLandingPage() {
             <div className="p-6 flex flex-col gap-4">
               <Brain className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-base font-semibold text-gray-900 mb-2">AI campaign agent</div>
-                <div className="text-sm text-gray-500 leading-relaxed">
+                <div className="text-lg font-semibold text-gray-900 mb-2">AI campaign agent</div>
+                <div className="text-base text-gray-500 leading-relaxed">
                   Natural language &rarr; segment rules &rarr; personalized copy &rarr; launch. One flow via agent-orchestrator.
                 </div>
               </div>
@@ -291,8 +287,8 @@ export default function MarketingLandingPage() {
             <div className="p-6 flex flex-col gap-4">
               <ArrowLeftRight className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-base font-semibold text-gray-900 mb-2">Async delivery loop</div>
-                <div className="text-sm text-gray-500 leading-relaxed">
+                <div className="text-lg font-semibold text-gray-900 mb-2">Async delivery loop</div>
+                <div className="text-base text-gray-500 leading-relaxed">
                   CRM dispatches to channel simulator; webhooks call back and update each message through 7 states.
                 </div>
               </div>
@@ -301,8 +297,8 @@ export default function MarketingLandingPage() {
             <div className="p-6 flex flex-col gap-4">
               <Telescope className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-base font-semibold text-gray-900 mb-2">Opportunity copilot</div>
-                <div className="text-sm text-gray-500 leading-relaxed">
+                <div className="text-lg font-semibold text-gray-900 mb-2">Opportunity copilot</div>
+                <div className="text-base text-gray-500 leading-relaxed">
                   Scans customer base for dormant high-value segments. Surfaces recovery potential with confidence scores.
                 </div>
               </div>
@@ -312,8 +308,8 @@ export default function MarketingLandingPage() {
             <div className="p-6 flex flex-col gap-4 border-t border-gray-200 md:col-start-1">
               <Play className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-base font-semibold text-gray-900 mb-2">Campaign replay</div>
-                <div className="text-sm text-gray-500 leading-relaxed">
+                <div className="text-lg font-semibold text-gray-900 mb-2">Campaign replay</div>
+                <div className="text-base text-gray-500 leading-relaxed">
                   Scrub back through a campaign&apos;s delivery timeline. Watch every message state transition in sequence.
                 </div>
               </div>
@@ -322,8 +318,8 @@ export default function MarketingLandingPage() {
             <div className="p-6 flex flex-col gap-4 border-t border-gray-200">
               <GitCompare className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-base font-semibold text-gray-900 mb-2">AI campaign compare</div>
-                <div className="text-sm text-gray-500 leading-relaxed">
+                <div className="text-lg font-semibold text-gray-900 mb-2">AI campaign compare</div>
+                <div className="text-base text-gray-500 leading-relaxed">
                   Select two campaigns for AI-powered diff — which segment, channel, and copy combination won.
                 </div>
               </div>
@@ -332,8 +328,8 @@ export default function MarketingLandingPage() {
             <div className="p-6 flex flex-col gap-4 border-t border-gray-200">
               <SlidersHorizontal className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-base font-semibold text-gray-900 mb-2">Segment engine</div>
-                <div className="text-sm text-gray-500 leading-relaxed">
+                <div className="text-lg font-semibold text-gray-900 mb-2">Segment engine</div>
+                <div className="text-base text-gray-500 leading-relaxed">
                   Rule-based or natural language. Filter by spend, recency, city, tags — or just describe who you want.
                 </div>
               </div>
@@ -342,18 +338,18 @@ export default function MarketingLandingPage() {
         </section>
 
         {/* SECTION 5 — REVENUE OPPORTUNITY COPILOT */}
-        <section className="border-t border-gray-200 px-6 py-20">
-          <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <section className="border-t border-gray-200 py-20">
+          <div className="max-w-6xl mx-auto px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
             {/* LEFT */}
             <div>
-              <div className="inline-block bg-emerald-50 text-emerald-700 text-[11px] uppercase font-bold tracking-wider px-3 py-1.5 rounded mb-6">
+              <div className="inline-block bg-emerald-50 text-emerald-700 text-xs uppercase font-bold tracking-wider px-3 py-1.5 rounded mb-6">
                 Revenue Opportunity Copilot
               </div>
               <h2 className={`${playfair.className} text-5xl lg:text-6xl font-black leading-tight text-gray-900 mb-6`}>
                 It finds the money<br />
                 <span className="italic text-emerald-700">already in your data.</span>
               </h2>
-              <p className="text-base text-gray-500 leading-relaxed max-w-md">
+              <p className="text-lg text-gray-500 leading-relaxed max-w-md">
                 The adaptive recommendation engine scans your customer base for high-confidence recovery opportunities — dormant premium buyers, lapsing segments, untouched high-spenders — before you think to look.
               </p>
             </div>
@@ -361,16 +357,16 @@ export default function MarketingLandingPage() {
             {/* RIGHT */}
             <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8">
               <div className="flex justify-between items-start mb-6">
-                <div className="bg-emerald-50 text-emerald-700 text-[11px] uppercase font-bold tracking-wider px-2 py-1 rounded">
+                <div className="bg-emerald-50 text-emerald-700 text-xs uppercase font-bold tracking-wider px-2 py-1 rounded">
                   High Confidence
                 </div>
                 <div className="text-right">
-                  <div className="text-[11px] uppercase tracking-wider text-gray-500 mb-1">Potential recovery</div>
-                  <div className={`${playfair.className} text-3xl font-bold text-gray-900`}>₹12.5L</div>
+                  <div className="text-xs uppercase tracking-wider text-gray-500 mb-1">Potential recovery</div>
+                  <div className={`${playfair.className} text-4xl font-bold text-gray-900`}>₹12.5L</div>
                 </div>
               </div>
               
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Win back churning premium customers</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Win back churning premium customers</h3>
               <p className="text-base text-gray-500 leading-relaxed mb-8">
                 142 premium customers haven&apos;t ordered in 45+ days. A personalized offer is highly likely to convert.
               </p>
@@ -381,7 +377,7 @@ export default function MarketingLandingPage() {
                   style={{ width: `${progressWidth}%` }}
                 />
               </div>
-              <div className="flex justify-between items-center text-xs">
+              <div className="flex justify-between items-center text-sm font-medium">
                 <span className="text-gray-500">Confidence score</span>
                 <span className="text-emerald-700 font-bold">87%</span>
               </div>
@@ -390,8 +386,8 @@ export default function MarketingLandingPage() {
         </section>
 
         {/* SECTION 6 — CTA */}
-        <section className="bg-gray-50 border-t border-gray-200 px-6 py-16 text-center">
-          <div className="max-w-7xl mx-auto">
+        <section className="bg-gray-50 border-t border-gray-200 py-16 text-center">
+          <div className="max-w-6xl mx-auto px-6 lg:px-8">
             <h2 className={`${playfair.className} text-4xl lg:text-5xl font-black leading-tight text-gray-900 mb-4`}>
               Intent &rarr; segment &rarr; deliver &rarr; convert.<br />
               <span className="italic text-emerald-700">The full loop. Live.</span>
@@ -402,9 +398,6 @@ export default function MarketingLandingPage() {
             <div className="flex justify-center items-center gap-3">
               <Link href="/dashboard" className="bg-gray-900 text-white text-sm font-medium px-6 py-3 rounded-md hover:bg-gray-800 transition-colors">
                 Open dashboard &rarr;
-              </Link>
-              <Link href="/docs/architecture" className="border border-gray-300 text-gray-900 bg-transparent text-sm font-medium px-6 py-3 rounded-md hover:bg-gray-50 transition-colors">
-                View architecture
               </Link>
             </div>
           </div>
