@@ -82,7 +82,7 @@ export default function MarketingLandingPage() {
                 <div className="w-3 h-3 rounded-full bg-border/80" />
               </div>
               <div className="mx-auto h-6 w-64 rounded-md bg-background border border-border/50 flex items-center justify-center">
-                <span className="text-[10px] text-muted-foreground font-medium">crm.yourbusiness.com/dashboard</span>
+                <span className="text-[10px] text-muted-foreground font-medium">reachnext.yourbusiness.com/dashboard</span>
               </div>
             </div>
             
@@ -236,7 +236,7 @@ export default function MarketingLandingPage() {
       {/* FOOTER */}
       <footer className="border-t border-border/40 py-8 text-center">
         <p className="text-xs font-medium text-muted-foreground">
-          © {new Date().getFullYear()} CRM. All rights reserved.
+          © {new Date().getFullYear()} ReachNext. All rights reserved.
         </p>
       </footer>
     </div>

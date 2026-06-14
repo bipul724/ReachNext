@@ -47,7 +47,7 @@ export async function generateBatchMessages(
     
     const fallbackCity = customer.city || "your city";
     const numMatch = offer.match(/\d+/);
-    const couponCode = numMatch ? `CRM${numMatch[0]}` : "CRM15";
+    const couponCode = numMatch ? `NEXT${numMatch[0]}` : "NEXT15";
 
     // Replaces placeholders in the actual user template if present, or uses a high-quality fallback
     let message = template
@@ -61,7 +61,7 @@ export async function generateBatchMessages(
       if (channel === "email") {
         message = `Hey ${customer.name}, we hope you are doing well in ${fallbackCity}! We wanted to share a special reward with you. Use code ${couponCode} for ${offer} on your next order.`;
       } else {
-        message = `Hey ${customer.name}, enjoy ${offer} at CRM in ${fallbackCity}! Code: ${couponCode}. Order now: crm.co`;
+        message = `Hey ${customer.name}, enjoy ${offer} at ReachNext in ${fallbackCity}! Code: ${couponCode}. Order now: reachnext.co`;
       }
     }
 

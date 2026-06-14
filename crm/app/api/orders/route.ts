@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     const order = await OrderService.create({
       customerId,
-      totalAmount: parseFloat(totalAmount),
+      totalAmount: typeof totalAmount === "string" ? parseFloat(totalAmount) : totalAmount,
       items,
       orderDate: orderDate || new Date(),
       storeLocation,

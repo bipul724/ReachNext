@@ -150,26 +150,26 @@ export function localParseGoal(goal: string): LocalParsedResult {
   let subject = "";
   let body = "";
   const numMatch = offer.match(/\d+/);
-  const offerCoupon = numMatch ? `CRM${numMatch[0]}` : "CRMLOVE";
+  const offerCoupon = numMatch ? `NEXT${numMatch[0]}` : "NEXTLOVE";
 
   if (channel === "email") {
     if (dormancyDays >= 30) {
-      subject = `We miss you at CRM! ❤️`;
+      subject = `We miss you at ReachNext! ❤️`;
       body = `Hey [Name], we've missed seeing you around! Your favorite products are waiting for you. Come back this week and enjoy ${offer} on us. Just use coupon code ${offerCoupon} at checkout. See you soon!`;
     } else if (/VIP/i.test(cleanGoal) || spendAmount > 5000) {
-      subject = `A special thanks from CRM 🌟`;
+      subject = `A special thanks from ReachNext 🌟`;
       body = `Hey [Name], you're one of our most valued customers! As a token of our appreciation, here is a ${offer} for your next visit. We can't wait to serve you again soon!`;
     } else {
-      subject = `Fresh news from CRM ☕`;
+      subject = `Fresh news from ReachNext ☕`;
       body = `Hey [Name], we've got some delicious new products in stock! Drop by or order online today to try them out. Thank you for being a part of our family!`;
     }
   } else {
     if (dormancyDays >= 30) {
-      body = `Hey [Name], we miss you! Enjoy ${offer} on your next order at CRM. Use code ${offerCoupon}. Order now: crm.co`;
+      body = `Hey [Name], we miss you! Enjoy ${offer} on your next order at ReachNext. Use code ${offerCoupon}. Order now: reachnext.co`;
     } else if (/VIP/i.test(cleanGoal) || spendAmount > 5000) {
-      body = `Hey [Name], thanks for being a VIP at CRM! Enjoy your ${offer} on us. Code: ${offerCoupon}. crm.co`;
+      body = `Hey [Name], thanks for being a VIP at ReachNext! Enjoy your ${offer} on us. Code: ${offerCoupon}. reachnext.co`;
     } else {
-      body = `Hey [Name], fresh products are waiting for you at CRM! Try our new seasonal items today. crm.co`;
+      body = `Hey [Name], fresh products are waiting for you at ReachNext! Try our new seasonal items today. reachnext.co`;
     }
   }
 

@@ -270,7 +270,7 @@ function NewCampaignContent() {
             <span className="font-sans font-medium text-sm">Campaign Autopilot Workspace</span>
           </div>
           <p className="text-sm text-muted-foreground">
-            Input your marketing goal in plain English. The CRM agent pipeline will construct the segment filters, sizing, channel strategy, and promos automatically.
+            Input your marketing goal in plain English. The ReachNext agent pipeline will construct the segment filters, sizing, channel strategy, and promos automatically.
           </p>
           <div className="flex flex-col gap-3">
             <div className="space-y-1.5">
@@ -337,7 +337,7 @@ function NewCampaignContent() {
           </div>
           <div className="flex flex-col gap-1">
             <span className="font-sans font-medium text-sm">Coordinating AI Agents</span>
-            <span className="text-sm text-muted-foreground">The CRM orchestrator is building your campaign draft.</span>
+            <span className="text-sm text-muted-foreground">The ReachNext orchestrator is building your campaign draft.</span>
           </div>
           <div className="flex flex-col gap-3 text-left bg-muted/30 border border-border rounded-lg p-4 max-w-lg mx-auto w-full">
             {loadingSteps.map((step, idx) => {

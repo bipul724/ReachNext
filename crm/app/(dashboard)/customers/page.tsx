@@ -134,7 +134,7 @@ export default function Customers() {
                 Ingest CSV Dataset
               </DialogTitle>
               <DialogDescription>
-                Paste your spreadsheet contents below to dynamically populate your CRM database.
+                Paste your spreadsheet contents below to dynamically populate your ReachNext database.
               </DialogDescription>
             </DialogHeader>
 

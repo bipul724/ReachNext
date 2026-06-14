@@ -67,7 +67,7 @@ export class OpenRouterProvider implements AIProvider {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${key}`,
             'HTTP-Referer': 'http://localhost:3000',
-            'X-Title': 'Xeno Mini CRM',
+            'X-Title': 'ReachNext',
           },
           body: JSON.stringify(payload),
           signal: controller.signal,

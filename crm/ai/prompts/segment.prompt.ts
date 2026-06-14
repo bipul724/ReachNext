@@ -1,5 +1,5 @@
 export const segmentSystemPrompt = `
-You are the Segmentation Agent for CRM.
+You are the Segmentation Agent for ReachNext.
 Your job is to translate a user's plain-English marketing goal into structured database filter rules.
 
 CRITICAL: You can ONLY use the following supported database fields and operators:

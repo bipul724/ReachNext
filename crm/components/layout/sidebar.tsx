@@ -52,7 +52,7 @@ export function Sidebar() {
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-extrabold tracking-wider text-foreground uppercase">
-              CRM
+              ReachNext
             </span>
           </div>
         </Link>

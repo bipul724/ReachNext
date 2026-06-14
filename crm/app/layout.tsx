@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | CRM",
-    default: "CRM | Intelligent Customer Management",
+    template: "%s | ReachNext",
+    default: "ReachNext | Intelligent Customer Management",
   },
   description: "Turn customer data into targeted campaigns in minutes. Know exactly who to reach, what to say, and when to send.",
 };
