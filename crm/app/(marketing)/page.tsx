@@ -1,245 +1,417 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Sparkles, LayoutDashboard, Target, BarChart3, Send, Zap, LineChart, CheckCircle2, BarChart2 } from "lucide-react";
-import { Button } from "../../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
-import AICRMLogo from "../../components/icons/AICRMLogo";
+import { Playfair_Display } from "next/font/google";
+import {
+  Target,
+  Brain,
+  ArrowLeftRight,
+  Telescope,
+  Play,
+  GitCompare,
+  SlidersHorizontal,
+  Check,
+  Loader2,
+} from "lucide-react";
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["700", "800", "900"],
+});
 
 export default function MarketingLandingPage() {
+  const [activeStep, setActiveStep] = useState(4);
+  const [progressWidth, setProgressWidth] = useState(0);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setActiveStep(5), 3500);
+    const t2 = setTimeout(() => setActiveStep(6), 6500);
+    const t3 = setTimeout(() => setActiveStep(7), 9000);
+
+    const progressTimer = setTimeout(() => setProgressWidth(87), 700);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(progressTimer);
+    };
+  }, []);
+
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/10">
-      {/* HEADER / NAV */}
-      <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-border/40 bg-background/80 px-6 md:px-12 backdrop-blur-md">
-        <Link href="/" className="flex items-center gap-2.5 font-bold tracking-tight">
-          <div className="flex h-8 w-8 items-center justify-center">
-            <AICRMLogo className="h-8 w-8" />
-          </div>
-          <span className="text-lg font-bold tracking-tight text-foreground">ReachNext</span>
-        </Link>
-        <nav className="flex items-center gap-4">
-          <Link href="/dashboard">
-            <Button size="sm" className="font-semibold shadow-sm">
-              Open Dashboard
-            </Button>
-          </Link>
-        </nav>
-      </header>
+    <div className="min-h-screen bg-white text-gray-900 font-sans">
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.2; }
+        }
+        .animate-pulse-dot {
+          animation: pulse-dot 2s infinite;
+        }
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+        .animate-blink {
+          animation: blink 0.5s infinite;
+        }
+      `}} />
 
-      <main className="flex-1">
-        {/* HERO SECTION */}
-        <section className="px-6 py-24 md:px-12 md:py-32 lg:py-40 max-w-5xl mx-auto flex flex-col items-center text-center space-y-8">
-          <Badge variant="outline" className="px-3 py-1 text-xs font-medium border-border/50 text-muted-foreground bg-muted/20">
-            Intelligent Customer Management
-          </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.1]">
-            Turn customer data into <br className="hidden md:block" /> targeted campaigns in minutes.
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
-            Know exactly who to reach, what to say, and when to send. A minimal, outcome-driven CRM that helps growing businesses run highly personalized marketing without a dedicated team.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-            <Link href="/dashboard">
-              <Button size="lg" className="font-semibold h-12 px-8 shadow-sm group">
-                Open Dashboard
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
-            <Link href="#how-it-works">
-              <Button variant="outline" size="lg" className="font-semibold h-12 px-8">
-                See How It Works
-              </Button>
-            </Link>
-          </div>
-        </section>
-
-        {/* TRUST SECTION */}
-        <section className="border-y border-border/40 bg-muted/20 py-8">
-          <div className="max-w-5xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-16 text-sm font-medium text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-primary/60" />
-              <span>Built for growing businesses</span>
+      {/* SECTION 1 — NAV */}
+      <header className="border-b border-gray-200 bg-white w-full">
+        <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-[22px] h-[22px] rounded-md bg-emerald-50 flex items-center justify-center">
+              <Target className="w-3.5 h-3.5 text-emerald-700" />
             </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-primary/60" />
-              <span>Designed around real workflows</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-primary/60" />
-              <span>Focused on practical outcomes</span>
-            </div>
-          </div>
-        </section>
-
-        {/* PRODUCT SNAPSHOT */}
-        <section className="px-6 py-24 md:px-12 max-w-6xl mx-auto">
-          <div className="rounded-xl border border-border/50 bg-card shadow-2xl shadow-primary/5 overflow-hidden flex flex-col">
-            {/* Browser Header */}
-            <div className="h-12 border-b border-border/50 bg-muted/30 flex items-center px-4 gap-2">
-              <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-border/80" />
-                <div className="w-3 h-3 rounded-full bg-border/80" />
-                <div className="w-3 h-3 rounded-full bg-border/80" />
-              </div>
-              <div className="mx-auto h-6 w-64 rounded-md bg-background border border-border/50 flex items-center justify-center">
-                <span className="text-[10px] text-muted-foreground font-medium">reachnext.yourbusiness.com/dashboard</span>
-              </div>
-            </div>
-            
-            {/* Dashboard UI Preview (Static Representation of existing UI) */}
-            <div className="p-8 bg-muted/10 grid gap-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold tracking-tight">Dashboard Overview</h2>
-                <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                  <span>Live Environment</span>
-                </div>
-              </div>
-              
-              <div className="grid gap-4 md:grid-cols-4">
-                {[
-                  { label: "Total Revenue", val: "₹12.5L", icon: LineChart },
-                  { label: "Target Shoppers", val: "4,209", icon: Target },
-                  { label: "Campaigns", val: "12", icon: Send },
-                  { label: "Sales Conversions", val: "842", icon: BarChart2 }
-                ].map((stat, i) => (
-                  <Card key={i} className="shadow-none border-border/50">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                      <CardTitle className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-                        {stat.label}
-                      </CardTitle>
-                      <stat.icon className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">{stat.val}</div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              <div className="grid gap-6 md:grid-cols-3 mt-4">
-                <Card className="md:col-span-2 shadow-none border-border/50">
-                  <CardHeader>
-                    <CardTitle className="text-base font-bold">Revenue Opportunity Copilot</CardTitle>
-                    <CardDescription>AI-Optimized Suggestions</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="rounded-lg border border-border/50 bg-background p-4 space-y-3">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <Badge variant="outline" className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200">HIGH CONFIDENCE</Badge>
-                          <h4 className="font-bold text-sm mt-2">Win-back Churning Premium Customers</h4>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-xs text-muted-foreground">POTENTIAL RECOVERY</span>
-                          <p className="font-bold text-sm text-indigo-600">₹1.2L</p>
-                        </div>
-                      </div>
-                      <p className="text-xs text-muted-foreground">142 premium customers haven&apos;t purchased in 45 days. A personalized offer is highly likely to convert.</p>
-                      <Button size="sm" className="w-full text-xs font-bold mt-2">
-                        <Sparkles className="h-3 w-3 mr-2" /> Launch Autopilot
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card className="shadow-none border-border/50">
-                  <CardHeader>
-                    <CardTitle className="text-base font-bold">Recent Activity</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                          <Send className="h-3 w-3 text-muted-foreground" />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-xs font-bold">Weekend Promo Sent</span>
-                          <span className="text-[10px] text-muted-foreground">2 hours ago</span>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FEATURES SECTION */}
-        <section className="px-6 py-24 md:px-12 max-w-5xl mx-auto bg-background">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl font-bold tracking-tight">Everything you need. Nothing you don&apos;t.</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">Core capabilities designed specifically for generating reliable outcomes.</p>
+            <span className="text-sm font-medium text-gray-900">ReachNext</span>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <nav className="hidden md:flex items-center gap-6 text-sm text-gray-500">
+            <Link href="#features" className="hover:text-gray-900 transition-colors">Features</Link>
+            <Link href="/docs/architecture" className="hover:text-gray-900 transition-colors">Architecture</Link>
+            <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-gray-900 transition-colors">GitHub</a>
+          </nav>
+
+          <div>
+            <Link href="/dashboard" className="bg-gray-900 text-white text-xs font-medium px-4 py-1.5 rounded-md hover:bg-gray-800 transition-colors">
+              Open dashboard &rarr;
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        {/* SECTION 2 — HERO */}
+        <section className="grid md:grid-cols-2 gap-12 items-start px-6 pt-16 pb-14 max-w-7xl mx-auto">
+          {/* LEFT COLUMN */}
+          <div>
+            <div className="inline-flex items-center gap-1.5 border border-gray-200 rounded-full px-3 py-1 text-[11px] uppercase tracking-wider text-gray-500 mb-6">
+              <div className="w-[5px] h-[5px] rounded-full bg-emerald-500 animate-pulse-dot" />
+              AI-native marketing CRM
+            </div>
+
+            <h1 className={`${playfair.className} text-5xl lg:text-6xl font-black leading-tight tracking-tight text-gray-900 mb-4`}>
+              Describe a goal.<br />
+              <span className="italic text-emerald-700">The AI agent builds the campaign.</span>
+            </h1>
+
+            <p className="text-base text-gray-500 leading-relaxed mb-5 max-w-lg">
+              One orchestrated flow: parse intent &rarr; segment audience &rarr; personalize every message &rarr; dispatch across WhatsApp, SMS & Email &rarr; track async delivery from queued to converted.
+            </p>
+
+            <div className="flex items-center gap-3">
+              <Link href="/dashboard" className="bg-gray-900 text-white text-sm font-medium px-6 py-3 rounded-md hover:bg-gray-800 transition-colors">
+                Open dashboard &rarr;
+              </Link>
+              <Link href="/docs/architecture" className="border border-gray-300 text-gray-900 bg-transparent text-sm font-medium px-6 py-3 rounded-md hover:bg-gray-50 transition-colors">
+                View architecture
+              </Link>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+            <div className="bg-white border border-gray-200 rounded-lg p-4 mb-3">
+              <div className="text-[9px] uppercase tracking-wider text-gray-400 mb-1">YOUR GOAL</div>
+              <div className="text-xs font-medium italic text-gray-900">
+                &quot;Win back premium customers who haven&apos;t ordered in 45 days&quot;
+              </div>
+            </div>
+
+            <div className="space-y-5 px-1">
+              {/* Step 1 */}
+              <div className="flex items-start gap-3">
+                <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                  <Check className="w-2.5 h-2.5 text-emerald-700" strokeWidth={3} />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-900 font-medium">Intent parsed</div>
+                  <div className="text-xs text-gray-500">Win-back · premium segment · 45-day recency</div>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="flex items-start gap-3">
+                <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                  <Check className="w-2.5 h-2.5 text-emerald-700" strokeWidth={3} />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-900 font-medium">Segment rules generated</div>
+                  <div className="text-xs text-gray-500">totalSpent &gt; ₹5,000 · lastOrderAt &gt; 45d ago</div>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="flex items-start gap-3">
+                <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                  <Check className="w-2.5 h-2.5 text-emerald-700" strokeWidth={3} />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-900 font-medium">Audience preview: 142 customers</div>
+                  <div className="text-xs text-gray-500">Avg LTV ₹8,640 · High confidence</div>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="flex items-start gap-3">
+                {activeStep === 4 ? (
+                  <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 opacity-80 animate-pulse">
+                    <Loader2 className="w-2.5 h-2.5 text-emerald-700 animate-spin" strokeWidth={3} />
+                  </div>
+                ) : activeStep > 4 ? (
+                  <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                    <Check className="w-2.5 h-2.5 text-emerald-700" strokeWidth={3} />
+                  </div>
+                ) : (
+                  <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-white border border-gray-200 shrink-0" />
+                )}
+                <div>
+                  <div className={`text-sm font-medium ${activeStep >= 4 ? 'text-gray-900' : 'text-gray-400'}`}>
+                    {activeStep === 4 ? (
+                      <>Drafting WhatsApp message<span className="animate-blink">_</span></>
+                    ) : activeStep > 4 ? (
+                      'WhatsApp message drafted'
+                    ) : (
+                      'Drafting WhatsApp message'
+                    )}
+                  </div>
+                  {activeStep <= 4 && activeStep >= 4 && (
+                    <div className="text-xs text-gray-500">Personalizing tone for premium tier</div>
+                  )}
+                  {activeStep > 4 && (
+                    <div className="text-xs text-gray-500">Personalized offer with ₹200 discount hook</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Step 5 */}
+              <div className="flex items-start gap-3">
+                {activeStep === 5 ? (
+                  <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 opacity-80 animate-pulse">
+                    <Loader2 className="w-2.5 h-2.5 text-emerald-700 animate-spin" strokeWidth={3} />
+                  </div>
+                ) : activeStep > 5 ? (
+                  <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                    <Check className="w-2.5 h-2.5 text-emerald-700" strokeWidth={3} />
+                  </div>
+                ) : (
+                  <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-white border border-gray-200 shrink-0" />
+                )}
+                <div>
+                  <div className={`text-sm font-medium ${activeStep >= 5 ? 'text-gray-900' : 'text-gray-400'}`}>
+                    {activeStep === 5 ? (
+                      <>Personalizing 142 messages<span className="animate-blink">_</span></>
+                    ) : (
+                      '142 messages personalized'
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 6 */}
+              <div className="flex items-start gap-3">
+                {activeStep === 6 ? (
+                  <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 opacity-80 animate-pulse">
+                    <Loader2 className="w-2.5 h-2.5 text-emerald-700 animate-spin" strokeWidth={3} />
+                  </div>
+                ) : activeStep > 6 ? (
+                  <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                    <Check className="w-2.5 h-2.5 text-emerald-700" strokeWidth={3} />
+                  </div>
+                ) : (
+                  <div className="w-[15px] h-[15px] mt-0.5 rounded-full bg-white border border-gray-200 shrink-0" />
+                )}
+                <div>
+                  <div className={`text-sm font-medium ${activeStep >= 6 ? 'text-gray-900' : 'text-gray-400'}`}>
+                    {activeStep === 6 ? (
+                      <>Dispatching to channel service<span className="animate-blink">_</span></>
+                    ) : activeStep > 6 ? (
+                      'Campaign live — tracking 142 deliveries'
+                    ) : (
+                      'Dispatching to channel service'
+                    )}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3 — DELIVERY LIFECYCLE STRIP */}
+        <section className="w-full bg-gray-50 border-t border-b border-gray-200 py-6 px-6 overflow-x-auto">
+          <div className="max-w-7xl mx-auto flex items-center justify-between min-w-[700px]">
             {[
-              { title: "AI Campaign Autopilot", desc: "Draft high-converting messages and recommend optimal channels automatically.", icon: Sparkles },
-              { title: "Customer Segmentation", desc: "Group your audience based on real purchase behavior and interaction history.", icon: Target },
-              { title: "Revenue Insights", desc: "Track exactly how much revenue each campaign and segment generates.", icon: LineChart },
-              { title: "Multi-Channel Outreach", desc: "Reach customers seamlessly across Email, SMS, and WhatsApp.", icon: Send },
-              { title: "Opportunity Detection", desc: "Let the system identify churn risks and upsell opportunities before you do.", icon: Zap },
-              { title: "Performance Analytics", desc: "Monitor delivery rates, open rates, and conversion metrics in real-time.", icon: BarChart3 },
-            ].map((feature, i) => (
-              <Card key={i} className="bg-card hover:bg-muted/10 transition-colors border-border/40 shadow-sm">
-                <CardHeader>
-                  <feature.icon className="h-5 w-5 mb-2 text-primary" />
-                  <CardTitle className="text-base font-bold">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
-                </CardContent>
-              </Card>
+              { label: "Queued", val: "4,209" },
+              { label: "Sent", val: "4,189", badge: "99.5%" },
+              { label: "Delivered", val: "3,982", badge: "95.1%" },
+              { label: "Opened", val: "1,831", badge: "46.0%" },
+              { label: "Read", val: "1,642", badge: "89.7%" },
+              { label: "Clicked", val: "384", badge: "23.4%" },
+              { label: "Converted", val: "127", badge: "33.1%" },
+            ].map((state, i, arr) => (
+              <React.Fragment key={state.label}>
+                <div className="flex flex-col">
+                  <div className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">{state.label}</div>
+                  <div className="flex items-end gap-2">
+                    <div className={`${playfair.className} text-2xl font-medium text-gray-900`}>{state.val}</div>
+                    {state.badge && (
+                      <div className="bg-emerald-50 text-emerald-700 text-[9px] font-medium px-1.5 py-0.5 rounded mb-1">
+                        {state.badge}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {i < arr.length - 1 && (
+                  <div className="text-gray-300 text-xs px-2">&rarr;</div>
+                )}
+              </React.Fragment>
             ))}
           </div>
         </section>
 
-        {/* HOW IT WORKS */}
-        <section id="how-it-works" className="px-6 py-24 md:px-12 bg-muted/30 border-y border-border/40">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold tracking-tight text-center mb-16">How it works</h2>
-            
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { step: "01", title: "Connect customer data", desc: "Securely sync your existing point-of-sale or e-commerce transaction data." },
-                { step: "02", title: "Identify opportunities", desc: "Our system analyzes purchase patterns to surface high-value segments." },
-                { step: "03", title: "Launch campaigns", desc: "Review AI-drafted messaging and deploy across multiple channels instantly." },
-              ].map((item, i) => (
-                <div key={i} className="flex flex-col space-y-3 relative group">
-                  <div className="text-4xl font-extrabold text-muted-foreground/20 group-hover:text-primary/20 transition-colors">{item.step}</div>
-                  <h3 className="text-lg font-bold">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+        {/* SECTION 4 — FEATURE GRID */}
+        <section id="features" className="px-6 py-12 max-w-7xl mx-auto">
+          <div className="text-[9px] uppercase tracking-widest text-gray-500 mb-4">
+            WHAT&apos;S ACTUALLY BUILT
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200 border border-gray-200 rounded-xl overflow-hidden bg-white">
+            <div className="p-6 flex flex-col gap-3">
+              <Brain className="w-5 h-5 text-gray-900" />
+              <div>
+                <div className="text-sm font-semibold text-gray-900 mb-1">AI campaign agent</div>
+                <div className="text-xs text-gray-500 leading-6">
+                  Natural language &rarr; segment rules &rarr; personalized copy &rarr; launch. One flow via agent-orchestrator.
                 </div>
-              ))}
+              </div>
+            </div>
+            
+            <div className="p-6 flex flex-col gap-3">
+              <ArrowLeftRight className="w-5 h-5 text-gray-900" />
+              <div>
+                <div className="text-sm font-semibold text-gray-900 mb-1">Async delivery loop</div>
+                <div className="text-xs text-gray-500 leading-6">
+                  CRM dispatches to channel simulator; webhooks call back and update each message through 7 states.
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 flex flex-col gap-3">
+              <Telescope className="w-5 h-5 text-gray-900" />
+              <div>
+                <div className="text-sm font-semibold text-gray-900 mb-1">Opportunity copilot</div>
+                <div className="text-xs text-gray-500 leading-6">
+                  Scans customer base for dormant high-value segments. Surfaces recovery potential with confidence scores.
+                </div>
+              </div>
+            </div>
+            
+            {/* Break for desktop grid, but divide-y handles rows. We need border-t on the second row. */}
+            <div className="p-6 flex flex-col gap-3 border-t border-gray-200 md:col-start-1">
+              <Play className="w-5 h-5 text-gray-900" />
+              <div>
+                <div className="text-sm font-semibold text-gray-900 mb-1">Campaign replay</div>
+                <div className="text-xs text-gray-500 leading-6">
+                  Scrub back through a campaign&apos;s delivery timeline. Watch every message state transition in sequence.
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 flex flex-col gap-3 border-t border-gray-200">
+              <GitCompare className="w-5 h-5 text-gray-900" />
+              <div>
+                <div className="text-sm font-semibold text-gray-900 mb-1">AI campaign compare</div>
+                <div className="text-xs text-gray-500 leading-6">
+                  Select two campaigns for AI-powered diff — which segment, channel, and copy combination won.
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 flex flex-col gap-3 border-t border-gray-200">
+              <SlidersHorizontal className="w-5 h-5 text-gray-900" />
+              <div>
+                <div className="text-sm font-semibold text-gray-900 mb-1">Segment engine</div>
+                <div className="text-xs text-gray-500 leading-6">
+                  Rule-based or natural language. Filter by spend, recency, city, tags — or just describe who you want.
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* FINAL CTA */}
-        <section className="px-6 py-32 md:px-12 max-w-4xl mx-auto text-center space-y-8">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
-            See what opportunities already exist in your customer data.
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Log in to your workspace and launch your first targeted campaign today.
-          </p>
-          <div className="pt-4">
-            <Link href="/dashboard">
-              <Button size="lg" className="font-semibold h-14 px-10 text-lg shadow-sm">
-                Open Dashboard
-              </Button>
-            </Link>
+        {/* SECTION 5 — REVENUE OPPORTUNITY COPILOT */}
+        <section className="border-t border-gray-200 px-6 py-8">
+          <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+            {/* LEFT */}
+            <div>
+              <div className="inline-block bg-emerald-50 text-emerald-700 text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded mb-4">
+                Revenue Opportunity Copilot
+              </div>
+              <h2 className={`${playfair.className} text-4xl lg:text-5xl font-black leading-tight text-gray-900 mb-4`}>
+                It finds the money<br />
+                <span className="italic text-emerald-700">already in your data.</span>
+              </h2>
+              <p className="text-sm text-gray-500 leading-relaxed max-w-sm">
+                The adaptive recommendation engine scans your customer base for high-confidence recovery opportunities — dormant premium buyers, lapsing segments, untouched high-spenders — before you think to look.
+              </p>
+            </div>
+
+            {/* RIGHT */}
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+              <div className="flex justify-between items-start mb-4">
+                <div className="bg-emerald-50 text-emerald-700 text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded">
+                  High Confidence
+                </div>
+                <div className="text-right">
+                  <div className="text-[9px] uppercase tracking-wider text-gray-500 mb-0.5">Potential recovery</div>
+                  <div className={`${playfair.className} text-xl font-bold text-gray-900`}>₹12.5L</div>
+                </div>
+              </div>
+              
+              <h3 className="text-sm font-bold text-gray-900 mb-1">Win back churning premium customers</h3>
+              <p className="text-sm text-gray-500 leading-relaxed mb-6">
+                142 premium customers haven&apos;t ordered in 45+ days. A personalized offer is highly likely to convert.
+              </p>
+
+              <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2 overflow-hidden">
+                <div 
+                  className="bg-emerald-500 h-1.5 rounded-full transition-all duration-[1500ms] ease-out" 
+                  style={{ width: `${progressWidth}%` }}
+                />
+              </div>
+              <div className="flex justify-between items-center text-[9px]">
+                <span className="text-gray-500">Confidence score</span>
+                <span className="text-emerald-700 font-bold">87%</span>
+              </div>
+            </div>
           </div>
         </section>
-      </main>
 
-      {/* FOOTER */}
-      <footer className="border-t border-border/40 py-8 text-center">
-        <p className="text-xs font-medium text-muted-foreground">
-          © {new Date().getFullYear()} ReachNext. All rights reserved.
-        </p>
-      </footer>
+        {/* SECTION 6 — CTA */}
+        <section className="bg-gray-50 border-t border-gray-200 px-6 py-16 text-center">
+          <div className="max-w-7xl mx-auto">
+            <h2 className={`${playfair.className} text-4xl lg:text-5xl font-black leading-tight text-gray-900 mb-4`}>
+              Intent &rarr; segment &rarr; deliver &rarr; convert.<br />
+              <span className="italic text-emerald-700">The full loop. Live.</span>
+            </h2>
+            <p className="text-base text-gray-500 mb-6">
+              Open the dashboard or read the architecture doc.
+            </p>
+            <div className="flex justify-center items-center gap-3">
+              <Link href="/dashboard" className="bg-gray-900 text-white text-sm font-medium px-6 py-3 rounded-md hover:bg-gray-800 transition-colors">
+                Open dashboard &rarr;
+              </Link>
+              <Link href="/docs/architecture" className="border border-gray-300 text-gray-900 bg-transparent text-sm font-medium px-6 py-3 rounded-md hover:bg-gray-50 transition-colors">
+                View architecture
+              </Link>
+            </div>
+          </div>
+        </section>
+
+      </main>
     </div>
   );
 }
