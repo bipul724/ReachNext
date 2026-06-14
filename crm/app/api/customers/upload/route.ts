@@ -45,7 +45,8 @@ export async function POST(request: Request) {
     let successCount = 0;
     const errors: string[] = [];
 
-    // Parse Data Rows
+    // Step 1: Parse all data rows into memory
+    const parsedData = [];
     for (let i = 1; i < lines.length; i++) {
       const row = parseCSVRow(lines[i]);
       if (row.length < headers.length) continue; // skip incomplete rows
@@ -68,28 +69,46 @@ export async function POST(request: Request) {
         errors.push(`Row ${i + 1}: Missing email or name.`);
         continue;
       }
+      
+      // Keep track of original index for error reporting
+      parsedData.push({ originalIndex: i + 1, email, name, phone, city, tags });
+    }
 
-      try {
-        await prisma.customer.upsert({
-          where: { email },
-          update: {
-            name,
-            phone: phone || undefined,
-            city: city || undefined,
-            tags: tags.length > 0 ? tags : undefined,
-          },
-          create: {
-            name,
-            email,
-            phone,
-            city,
-            tags,
-          },
-        });
-        successCount++;
-      } catch (err: any) {
-        errors.push(`Row ${i + 1} (${email}): ${err.message}`);
-      }
+    // Step 2: Execute Upserts in concurrent chunks
+    const CHUNK_SIZE = 25;
+    for (let i = 0; i < parsedData.length; i += CHUNK_SIZE) {
+      const chunk = parsedData.slice(i, i + CHUNK_SIZE);
+      
+      const results = await Promise.allSettled(
+        chunk.map((data) =>
+          prisma.customer.upsert({
+            where: { email: data.email },
+            update: {
+              name: data.name,
+              phone: data.phone || undefined,
+              city: data.city || undefined,
+              tags: data.tags.length > 0 ? data.tags : undefined,
+            },
+            create: {
+              name: data.name,
+              email: data.email,
+              phone: data.phone,
+              city: data.city,
+              tags: data.tags,
+            },
+          })
+        )
+      );
+
+      // Analyze results to preserve exact successCount and errors behavior
+      results.forEach((res, idx) => {
+        if (res.status === "fulfilled") {
+          successCount++;
+        } else {
+          const rowData = chunk[idx];
+          errors.push(`Row ${rowData.originalIndex} (${rowData.email}): ${res.reason.message}`);
+        }
+      });
     }
 
     return NextResponse.json({
