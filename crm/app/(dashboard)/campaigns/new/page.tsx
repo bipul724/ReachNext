@@ -4,32 +4,27 @@ import type { AdaptiveRecommendation } from "../../../../ai/adaptive-recommendat
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
 import { Input } from "../../../../components/ui/input";
 import { Button } from "../../../../components/ui/button";
 import AgentThoughtsTimeline from "../../../../components/agent-thoughts-timeline";
-import { Badge } from "../../../../components/ui/badge";
 import {
   Sparkles,
   ArrowLeft,
   Loader2,
   Users,
   TrendingUp,
-  Mail,
   MessageSquare,
   MessageCircle,
   Clock,
   Gift,
   Play,
   ArrowRight,
-  ShieldCheck,
   CheckCircle2,
   AlertCircle,
   Brain,
-  BarChart3,
-  Zap,
   Activity,
   AlertTriangle,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -44,42 +39,24 @@ const EXAMPLE_GOALS = [
 
 function CampaignWorkspaceSkeleton() {
   return (
-    <div className="grid gap-6 lg:grid-cols-12 animate-in fade-in duration-500">
-      {/* LEFT PANEL: CAMPAIGN COPILOT */}
-      <div className="lg:col-span-4 space-y-6 flex flex-col h-full">
-        <Card className="flex-1 flex flex-col h-[calc(100vh-140px)] min-h-[600px] border-primary/20 shadow-md">
-          <CardHeader className="border-b border-border/40 pb-4">
-            <div className="h-6 w-1/2 bg-muted rounded animate-pulse" />
-            <div className="h-4 w-3/4 bg-muted rounded animate-pulse mt-2" />
-          </CardHeader>
-          <CardContent className="flex-1 p-4 space-y-4">
-            <div className="flex justify-end"><div className="h-10 w-3/4 bg-muted rounded-lg animate-pulse" /></div>
-            <div className="flex justify-start"><div className="h-16 w-3/4 bg-muted rounded-lg animate-pulse" /></div>
-            <div className="flex justify-end"><div className="h-12 w-3/4 bg-muted rounded-lg animate-pulse" /></div>
-          </CardContent>
-          <div className="p-4 border-t border-border/40 bg-muted/10">
-            <div className="h-10 w-full bg-muted rounded animate-pulse" />
-          </div>
-        </Card>
+    <div className="space-y-4 animate-in fade-in duration-500">
+      <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-4">
+        <div className="h-8 w-[250px] bg-muted rounded animate-pulse" />
+        <div className="h-10 w-full bg-muted rounded animate-pulse" />
       </div>
 
-      {/* RIGHT PANEL: LIVE WORKSPACE PREVIEW */}
-      <div className="lg:col-span-8 space-y-6">
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Left Column in Right Panel */}
-          <div className="space-y-6">
-            <Card><CardContent className="h-32 bg-muted animate-pulse rounded-lg mt-6" /></Card>
-            <Card><CardContent className="h-40 bg-muted animate-pulse rounded-lg mt-6" /></Card>
-            <Card><CardContent className="h-48 bg-muted animate-pulse rounded-lg mt-6" /></Card>
-          </div>
-          {/* Right Column in Right Panel */}
-          <div className="space-y-6">
-            <Card><CardContent className="h-48 bg-muted animate-pulse rounded-lg mt-6" /></Card>
-            <Card><CardContent className="h-64 bg-muted animate-pulse rounded-lg mt-6" /></Card>
-            <Card><CardContent className="h-24 bg-muted animate-pulse rounded-lg mt-6" /></Card>
-          </div>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-card border border-border rounded-xl p-4"><div className="h-40 bg-muted animate-pulse rounded-lg" /></div>
+        <div className="bg-card border border-border rounded-xl p-4"><div className="h-40 bg-muted animate-pulse rounded-lg" /></div>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-card border border-border rounded-xl p-4"><div className="h-48 bg-muted animate-pulse rounded-lg" /></div>
+        <div className="bg-card border border-border rounded-xl p-4"><div className="h-48 bg-muted animate-pulse rounded-lg" /></div>
+      </div>
+      
+      <div className="bg-card border border-border rounded-xl p-4"><div className="h-64 bg-muted animate-pulse rounded-lg" /></div>
+      <div className="bg-card border border-border rounded-xl p-4"><div className="h-12 bg-muted animate-pulse rounded-lg" /></div>
     </div>
   );
 }
@@ -276,9 +253,9 @@ function NewCampaignContent() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-4 max-w-7xl mx-auto pb-12">
       <div>
-        <Link href="/campaigns" className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground">
+        <Link href="/campaigns" className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" />
           Back to campaigns list
         </Link>
@@ -287,502 +264,402 @@ function NewCampaignContent() {
       {isRestoring && <CampaignWorkspaceSkeleton />}
 
       {!isRestoring && !isGenerating && !workspace && !clarificationState && !confirmationState && (
-        <Card className="border-primary/15 bg-radial-[circle_at_right] from-primary/5 via-transparent to-transparent max-w-4xl mx-auto">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Sparkles className="h-5.5 w-5.5 text-primary" />
-              Campaign Autopilot Workspace
-            </CardTitle>
-            <CardDescription>
-              Input your marketing goal in plain English. The CRM agent pipeline will construct the segment filters, sizing, channel strategy, and promos automatically.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2.5">
-              <textarea
-                className="w-full h-32 rounded-lg border border-input bg-transparent px-4 py-3 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring leading-relaxed"
-                placeholder="What is your business objective? e.g., Increase repeat purchases among footwear buyers who have not purchased in the last 45 days..."
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
-              />
-              <Button
-                onClick={() => handleGenerateAutopilot(goal)}
-                disabled={!goal.trim()}
-                className="w-full font-bold h-10 gap-2 shadow-md"
-              >
-                <Sparkles className="h-4.5 w-4.5" />
-                Generate Autopilot Campaign Plan
-              </Button>
-            </div>
+        <div className="bg-card text-card-foreground border border-border rounded-xl p-4 flex flex-col gap-4 max-w-4xl mx-auto">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-muted-foreground" />
+            <span className="font-sans font-medium text-sm">Campaign Autopilot Workspace</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Input your marketing goal in plain English. The CRM agent pipeline will construct the segment filters, sizing, channel strategy, and promos automatically.
+          </p>
+          <div className="flex flex-col gap-3">
+            <textarea
+              className="w-full h-32 rounded-lg border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              placeholder="What is your business objective? e.g., Increase repeat purchases among footwear buyers who have not purchased in the last 45 days..."
+              value={goal}
+              onChange={(e) => setGoal(e.target.value)}
+            />
+            <Button
+              onClick={() => handleGenerateAutopilot(goal)}
+              disabled={!goal.trim()}
+              className="w-full rounded-lg gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              Generate Autopilot Campaign Plan
+            </Button>
+          </div>
 
-            <div className="space-y-3 pt-4 border-t border-border/60">
-              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Example goals to test:</span>
-              <div className="grid gap-2">
-                {EXAMPLE_GOALS.map((ex) => (
-                  <button
-                    key={ex}
-                    onClick={() => {
-                      setGoal(ex);
-                      handleGenerateAutopilot(ex);
-                    }}
-                    className="text-left text-xs bg-muted/30 hover:bg-muted/70 p-3 rounded-lg border border-border/40 text-foreground transition-all duration-200 flex items-center justify-between group"
-                  >
-                    <span>{ex}</span>
-                    <ArrowRight className="h-3.5 w-3.5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </button>
-                ))}
-              </div>
+          <div className="flex flex-col gap-3 pt-4 border-t border-border">
+            <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Example goals to test</span>
+            <div className="grid gap-2">
+              {EXAMPLE_GOALS.map((ex) => (
+                <button
+                  key={ex}
+                  onClick={() => {
+                    setGoal(ex);
+                    handleGenerateAutopilot(ex);
+                  }}
+                  className="text-left text-sm bg-muted/50 hover:bg-muted p-3 rounded-lg border text-foreground transition-all flex items-center justify-between group"
+                >
+                  <span>{ex}</span>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+              ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {!isRestoring && isGenerating && (
-        <Card className="p-8 text-center space-y-6 animate-pulse max-w-4xl mx-auto">
+        <div className="bg-card text-card-foreground border border-border rounded-xl p-8 text-center flex flex-col gap-6 animate-pulse max-w-4xl mx-auto">
           <div className="flex justify-center">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
-          <div className="max-w-md mx-auto space-y-2">
-            <h3 className="font-bold text-lg text-foreground">Coordinating AI Agents</h3>
-            <p className="text-xs text-muted-foreground">The CRM orchestrator is building your campaign draft.</p>
+          <div className="flex flex-col gap-1">
+            <span className="font-sans font-medium text-sm">Coordinating AI Agents</span>
+            <span className="text-sm text-muted-foreground">The CRM orchestrator is building your campaign draft.</span>
           </div>
-          <div className="max-w-lg mx-auto text-left border border-border rounded-lg p-4 bg-muted/20 text-xs space-y-3">
+          <div className="flex flex-col gap-3 text-left bg-muted/30 border border-border rounded-lg p-4 max-w-lg mx-auto w-full">
             {loadingSteps.map((step, idx) => {
               const isDone = idx < loadingStep;
               const isCurrent = idx === loadingStep;
               return (
                 <div
                   key={idx}
-                  className={`flex items-start gap-2.5 transition-all duration-300 ${
-                    isDone ? "text-emerald-600 dark:text-emerald-400 font-semibold" : isCurrent ? "text-foreground font-bold" : "text-muted-foreground/50"
+                  className={`flex items-start gap-2.5 transition-all text-sm ${
+                    isDone ? "text-green-600 dark:text-green-400" : isCurrent ? "text-foreground" : "text-muted-foreground/50"
                   }`}
                 >
                   {isDone ? (
                     <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
                   ) : isCurrent ? (
-                    <Loader2 className="h-4 w-4 animate-spin shrink-0 mt-0.5 text-primary" />
+                    <Loader2 className="h-4 w-4 animate-spin shrink-0 mt-0.5" />
                   ) : (
-                    <div className="h-4 w-4 rounded-full border border-border/50 shrink-0 mt-0.5" />
+                    <div className="h-4 w-4 rounded-full border border-current shrink-0 mt-0.5" />
                   )}
                   <span>{step}</span>
                 </div>
               );
             })}
           </div>
-        </Card>
+        </div>
       )}
 
       {!isRestoring && clarificationState && (
-        <Card className="border-destructive/20 bg-destructive/5 animate-in fade-in slide-in-from-bottom-6 duration-500 max-w-4xl mx-auto">
-          <CardHeader className="pb-3 text-center">
-            <CardTitle className="text-xl font-bold text-destructive flex items-center justify-center gap-2">
-              <AlertTriangle className="h-6 w-6" />
-              Goal Unclear
-            </CardTitle>
-            <CardDescription className="text-base text-foreground mt-2">{clarificationState.message}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-3 max-w-lg mx-auto">
-              <span className="text-sm font-semibold text-muted-foreground block text-center">Try a prompt like:</span>
-              <div className="grid gap-2">
-                {clarificationState.suggestions.map((s: string) => (
-                  <button
-                    key={s}
-                    onClick={() => {
-                      setGoal(s);
-                      setClarificationState(null);
-                    }}
-                    className="text-left text-sm bg-background hover:bg-muted/50 p-3 rounded-lg border border-border/60 text-foreground transition-all duration-200"
-                  >
-                    • {s}
-                  </button>
-                ))}
-              </div>
+        <div className="bg-card text-card-foreground border border-red-500/20 rounded-xl p-4 flex flex-col gap-4 max-w-4xl mx-auto">
+          <div className="flex flex-col items-center gap-2 text-center pt-2">
+            <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+            <span className="font-sans font-medium text-sm text-red-600 dark:text-red-400">Goal Unclear</span>
+            <span className="text-sm text-foreground">{clarificationState.message}</span>
+          </div>
+          <div className="flex flex-col gap-3 max-w-lg mx-auto w-full pt-4">
+            <span className="text-[11px] uppercase tracking-wide text-muted-foreground text-center">Try a prompt like</span>
+            <div className="grid gap-2">
+              {clarificationState.suggestions.map((s: string) => (
+                <button
+                  key={s}
+                  onClick={() => {
+                    setGoal(s);
+                    setClarificationState(null);
+                  }}
+                  className="text-left text-sm bg-muted/50 hover:bg-muted p-3 rounded-lg border transition-all"
+                >
+                  • {s}
+                </button>
+              ))}
             </div>
-            <div className="pt-4 flex justify-center border-t border-border/40">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setClarificationState(null);
-                  setGoal("");
-                }}
-              >
-                Clear & Start Over
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="flex justify-center pt-4 border-t border-border">
+            <Button variant="outline" className="rounded-lg" onClick={() => { setClarificationState(null); setGoal(""); }}>
+              Clear & Start Over
+            </Button>
+          </div>
+        </div>
       )}
 
       {!isRestoring && confirmationState && (
-        <Card className="border-amber-500/30 bg-amber-50/10 dark:bg-amber-950/10 animate-in fade-in slide-in-from-bottom-6 duration-500 max-w-4xl mx-auto">
-          <CardHeader className="pb-3 text-center">
-            <CardTitle className="text-xl font-bold flex items-center justify-center gap-2">
-              <AlertCircle className="h-6 w-6 text-amber-500" />
-              Did you mean:
-            </CardTitle>
-            <div className="mt-4 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20 max-w-xl mx-auto">
-              <p className="text-lg font-bold text-amber-700 dark:text-amber-400">"{confirmationState.inferredObjective}"</p>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6 text-center max-w-2xl mx-auto">
-            <div className="space-y-2 text-sm text-muted-foreground bg-muted/20 p-4 rounded-lg">
-              <p><strong className="text-foreground">Why we asked:</strong> {confirmationState.explanation}</p>
-              <p className="text-amber-600 dark:text-amber-400 font-semibold">{confirmationState.warning}</p>
-            </div>
-            <div className="flex items-center justify-center gap-4 pt-4">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setConfirmationState(null);
-                }}
-              >
-                Cancel & Edit Prompt
-              </Button>
-              <Button
-                onClick={() => {
-                  setGoal(confirmationState.inferredObjective);
-                  handleGenerateAutopilot(confirmationState.inferredObjective, true); 
-                }}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-2"
-              >
-                <CheckCircle2 className="h-4 w-4" />
-                Confirm & Generate Campaign
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="bg-card text-card-foreground border border-amber-500/20 rounded-xl p-4 flex flex-col gap-4 max-w-4xl mx-auto">
+          <div className="flex flex-col items-center gap-2 text-center pt-2">
+            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            <span className="font-sans font-medium text-sm text-amber-600 dark:text-amber-400">Did you mean:</span>
+          </div>
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 text-center max-w-xl mx-auto w-full">
+            <span className="font-sans font-medium text-sm text-amber-700 dark:text-amber-400">"{confirmationState.inferredObjective}"</span>
+          </div>
+          <div className="bg-muted/50 rounded-lg p-4 border text-sm max-w-2xl mx-auto w-full flex flex-col gap-2">
+            <p><span className="text-[11px] uppercase tracking-wide text-muted-foreground">Why we asked:</span> {confirmationState.explanation}</p>
+            <p className="text-amber-700 dark:text-amber-400">{confirmationState.warning}</p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <Button variant="outline" className="w-full sm:w-auto rounded-lg" onClick={() => setConfirmationState(null)}>
+              Cancel & Edit Prompt
+            </Button>
+            <Button
+              onClick={() => {
+                setGoal(confirmationState.inferredObjective);
+                handleGenerateAutopilot(confirmationState.inferredObjective, true); 
+              }}
+              className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white dark:bg-green-700 dark:hover:bg-green-800 rounded-lg gap-2"
+            >
+              <CheckCircle2 className="h-4 w-4" />
+              Confirm & Generate Campaign
+            </Button>
+          </div>
+        </div>
       )}
 
       {!isRestoring && workspace && (
-        <div className="grid gap-6 lg:grid-cols-12 animate-in fade-in slide-in-from-bottom-6 duration-500">
-          
-          {/* LEFT PANEL: CAMPAIGN COPILOT */}
-          <div className="lg:col-span-4 space-y-6 flex flex-col h-full">
-            <Card className="flex-1 flex flex-col h-[calc(100vh-140px)] min-h-[600px] border-primary/20 shadow-md sticky top-6">
-              <CardHeader className="border-b border-border/40 pb-4">
-                <CardTitle className="text-base font-bold flex items-center gap-2">
-                  <Sparkles className="h-4.5 w-4.5 text-primary" />
-                  Campaign Copilot
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  Iteratively refine your draft campaign using natural language before launching.
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
-                {messages.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center space-y-3 opacity-60">
-                    <MessageSquare className="h-8 w-8 text-muted-foreground" />
-                    <p className="text-xs max-w-[200px]">
-                      Chat with your AI marketing teammate to switch channels, adjust offers, or rewrite the copy.
-                    </p>
-                  </div>
-                ) : (
-                  messages.map((msg, i) => (
-                    <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[85%] rounded-lg p-3 text-xs leading-relaxed ${
-                        msg.role === "user" 
-                          ? "bg-primary text-primary-foreground" 
-                          : "bg-muted/50 border border-border/50 text-foreground"
-                      }`}>
-                        {msg.text}
-                      </div>
+        <>
+          {/* Campaign Copilot */}
+          <div className="bg-card text-card-foreground border border-border rounded-xl p-4 flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-full flex items-center justify-center shrink-0 bg-green-500/10 text-green-600 dark:text-green-400">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-sans font-medium text-sm">Campaign Copilot</span>
+                <span className="text-xs text-muted-foreground">Refine your draft campaign using natural language before launching</span>
+              </div>
+            </div>
+            <form onSubmit={(e) => { e.preventDefault(); handleRefine(); }} className="flex gap-3">
+              <Input 
+                value={refinementInput}
+                onChange={e => setRefinementInput(e.target.value)}
+                disabled={isRefining}
+                placeholder="e.g. Switch to SMS, make it more urgent..."
+                className="flex-1 min-w-0 bg-background"
+              />
+              <Button type="submit" variant="outline" disabled={isRefining || !refinementInput.trim()} className="shrink-0 gap-2">
+                {isRefining ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                Refine
+              </Button>
+            </form>
+
+            {messages.length > 0 && (
+              <div className="max-h-[160px] overflow-y-auto space-y-3 pr-2 scrollbar-thin mt-2">
+                {messages.map((msg, i) => (
+                  <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[85%] rounded-xl p-3 text-sm leading-relaxed border ${
+                      msg.role === "user" 
+                        ? "bg-primary text-primary-foreground border-primary" 
+                        : "bg-muted/30 border-border text-foreground"
+                    }`}>
+                      {msg.text}
                     </div>
-                  ))
-                )}
-                
+                  </div>
+                ))}
                 {isRefining && (
                   <div className="flex justify-start">
-                    <div className="bg-muted/50 border border-border/50 rounded-lg p-3 flex gap-2 items-center text-xs text-muted-foreground">
-                      <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                    <div className="bg-muted/30 border border-border rounded-xl p-3 flex items-center gap-2 text-sm text-muted-foreground">
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                       Applying changes...
                     </div>
                   </div>
                 )}
                 <div ref={chatEndRef} />
-              </CardContent>
-              
-              <div className="p-4 border-t border-border/40 bg-muted/10">
-                <form onSubmit={(e) => { e.preventDefault(); handleRefine(); }} className="flex gap-2">
-                  <Input 
-                    value={refinementInput}
-                    onChange={e => setRefinementInput(e.target.value)}
-                    disabled={isRefining}
-                    placeholder="e.g. Switch to SMS, make it more urgent..."
-                    className="text-xs h-10"
-                  />
-                  <Button type="submit" disabled={isRefining || !refinementInput.trim()} size="icon" className="shrink-0 h-10 w-10">
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </form>
               </div>
-            </Card>
+            )}
           </div>
 
-          {/* RIGHT PANEL: LIVE WORKSPACE PREVIEW */}
-          <div className="lg:col-span-8 space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              {/* Left Column in Right Panel */}
-              <div className="space-y-6">
-                
-                {/* Opportunity sizing */}
-                <Card className="border-primary/10">
-                  <CardHeader className="bg-primary/5 pb-3">
-                    <CardTitle className="text-base font-bold flex items-center justify-between">
-                      <span>Opportunity Sizing</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-6 space-y-4">
-                    <div className="grid gap-4 sm:grid-cols-3">
-                      <div className="bg-muted/20 p-3 rounded-lg border border-border/40 text-center">
-                        <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Shoppers</span>
-                        <div className="text-2xl font-bold mt-1 text-foreground flex items-center justify-center gap-1">
-                          <Users className="h-5 w-5 text-muted-foreground" />
-                          {workspace.customerCount}
-                        </div>
-                      </div>
-                      <div className="bg-muted/20 p-3 rounded-lg border border-border/40 text-center">
-                        <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">shopper AOV</span>
-                        <div className="text-2xl font-bold mt-1 text-foreground">
-                          ₹{workspace.aov.toFixed(0)}
-                        </div>
-                      </div>
-                      <div className="bg-muted/20 p-3 rounded-lg border border-border/40 text-center">
-                        <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">potential</span>
-                        <div className="text-xl font-bold mt-1 text-emerald-600 dark:text-emerald-400">
-                          ₹{workspace.potentialRevenue.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="rounded-lg bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-100 dark:border-emerald-900/30 p-4 text-xs leading-relaxed space-y-1">
-                      <span className="font-bold text-emerald-800 dark:text-emerald-300 block">Explainer:</span>
-                      <p className="text-emerald-700 dark:text-emerald-400">{workspace.opportunityReasoning}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Target Audience details */}
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base font-bold flex items-center justify-between">
-                      <span>Target Audience</span>
-                      <Badge variant="outline" className="max-w-[150px] truncate" title={workspace.segmentName}>{workspace.segmentName}</Badge>
-                    </CardTitle>
-                    <CardDescription>{workspace.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="rounded-lg border border-border/80 bg-muted/10 p-4 text-xs space-y-2">
-                      <span className="font-semibold text-muted-foreground uppercase tracking-wider">Segment Logic:</span>
-                      <p className="font-mono bg-muted/60 p-2.5 rounded text-[11px] overflow-x-auto">
-                        {JSON.stringify(workspace.explainAudience, null, 2)}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Adaptive Recommendation Engine */}
-                {workspace.adaptiveInsights && (
-                  <Card className="border-violet-500/20 bg-gradient-to-br from-violet-50/50 via-transparent to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/10">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base font-bold flex items-center gap-2">
-                        <Brain className="h-4.5 w-4.5 text-violet-600 dark:text-violet-400" />
-                        Adaptive Intelligence
-                      </CardTitle>
-                      <CardDescription>Learning from past campaigns</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        <div className="rounded-full bg-violet-100 p-2 dark:bg-violet-900/50 mt-0.5">
-                          <Activity className="h-4 w-4 text-violet-700 dark:text-violet-300" />
-                        </div>
-                        <div className="space-y-1 text-sm">
-                          <p className="font-medium leading-relaxed text-violet-900 dark:text-violet-100">
-                            {workspace.adaptiveInsights.learning}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3 pt-2">
-                        <div className="rounded-lg border border-violet-200/50 bg-white/50 p-3 dark:border-violet-800/30 dark:bg-black/20">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Confidence</span>
-                          <div className="mt-1 flex items-center gap-1.5 font-bold text-violet-700 dark:text-violet-400">
-                            <TrendingUp className="h-4 w-4" />
-                            {workspace.adaptiveInsights.confidenceScore}%
-                          </div>
-                        </div>
-                        <div className="rounded-lg border border-violet-200/50 bg-white/50 p-3 dark:border-violet-800/30 dark:bg-black/20">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Match Basis</span>
-                          <div className="mt-1 font-bold text-foreground">
-                            {workspace.adaptiveInsights.similarCampaignsAnalyzed} campaigns
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Strategy recommendations */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base font-bold">Marketing Strategy</CardTitle>
-                    <CardDescription>Decisions generated by AI strategy engine</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4 text-xs">
-                    <div className="flex items-start gap-3 border-b border-border/40 pb-3">
-                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                        workspace.channel === "whatsapp"
-                          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400"
-                          : "bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400"
-                      }`}>
-                        {workspace.channel === "email" ? (
-                          <Mail className="h-4.5 w-4.5" />
-                        ) : workspace.channel === "whatsapp" ? (
-                          <MessageCircle className="h-4.5 w-4.5" />
-                        ) : (
-                          <MessageSquare className="h-4.5 w-4.5" />
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">Channel Selected</span>
-                        <span className="font-bold text-foreground text-sm uppercase">{workspace.channel}</span>
-                        <p className="text-muted-foreground mt-1 leading-relaxed text-[11px]">{workspace.explainChannel}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3 border-b border-border/40 pb-3">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-700 dark:bg-orange-950/20 dark:text-orange-400">
-                        <Gift className="h-4.5 w-4.5" />
-                      </div>
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">Offer</span>
-                        <span className="font-bold text-foreground text-sm">{workspace.offer}</span>
-                        <p className="text-muted-foreground mt-1 leading-relaxed text-[11px]">{workspace.explainOffer}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-purple-700 dark:bg-purple-950/20 dark:text-purple-400">
-                        <Clock className="h-4.5 w-4.5" />
-                      </div>
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">Timing</span>
-                        <span className="font-bold text-foreground text-sm">{workspace.timing}</span>
-                        <p className="text-muted-foreground mt-1 leading-relaxed text-[11px]">{workspace.explainTiming}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
+          {/* Row 1: Sizing + Message */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+            
+            {/* Opportunity Sizing */}
+            <div className="bg-card text-card-foreground border border-border rounded-xl p-4 flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span className="font-sans font-medium text-sm">Opportunity Sizing</span>
               </div>
-
-              {/* Right Column in Right Panel */}
-              <div className="space-y-6">
-                
-                {/* Content preview */}
-                <Card className="border-primary/20">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base font-bold flex items-center justify-between">
-                      <span>Message Draft</span>
-                      <Badge variant="secondary" className="uppercase font-bold text-[9px]">
-                        {workspace.channel}
-                      </Badge>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {workspace.subject && (
-                      <div className="space-y-1">
-                        <span className="text-xs font-semibold text-muted-foreground">Subject Line:</span>
-                        <div className="rounded-md border border-border/80 p-2.5 text-xs font-medium bg-muted/20">
-                          {workspace.subject}
-                        </div>
-                      </div>
-                    )}
-                    <div className="space-y-1">
-                      <span className="text-xs font-semibold text-muted-foreground">Body:</span>
-                      <div className="rounded-md border border-border/80 p-4 text-sm font-medium bg-muted/20 leading-relaxed font-sans whitespace-pre-wrap">
-                        {workspace.body}
-                      </div>
-                    </div>
-
-                    <div className="rounded-lg bg-orange-50/50 dark:bg-orange-950/10 border border-orange-100 dark:border-orange-900/30 p-4 text-xs leading-relaxed space-y-1">
-                      <span className="font-bold text-orange-800 dark:text-orange-300 block">Copy Explainer:</span>
-                      <p className="text-orange-700 dark:text-orange-400">{workspace.explainContent}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Agent thoughts timeline */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base font-bold flex items-center gap-1.5">
-                      <Sparkles className="h-4.5 w-4.5 text-primary" />
-                      Agent Timeline
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <AgentThoughtsTimeline thoughts={workspace.agentThoughts} />
-                  </CardContent>
-                </Card>
-
-                {/* Launch Controller */}
-                {workspace.status === "failed" ? (
-                  <Card className="border-destructive/20 bg-destructive/10 dark:bg-destructive/950/10">
-                    <CardHeader className="pb-3 text-center">
-                      <CardTitle className="text-base font-bold text-destructive flex items-center justify-center gap-1.5">
-                        <AlertCircle className="h-5 w-5" />
-                        Launch Blocked
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-xs text-muted-foreground text-center leading-relaxed">
-                        Sizing failed to find matching customers. You cannot launch a campaign to 0 recipients.
-                      </p>
-                      <Button
-                        disabled
-                        className="w-full bg-muted text-muted-foreground font-bold h-11 gap-2 cursor-not-allowed border border-border/60"
-                      >
-                        Launch Campaign
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <Card className="border-emerald-500/20 bg-emerald-50/10 dark:bg-emerald-950/5 shadow-md sticky bottom-6">
-                    <CardContent className="pt-6 space-y-4">
-                      <Button
-                        onClick={handleLaunchCampaign}
-                        disabled={isLaunching}
-                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 gap-2 shadow-md text-base"
-                      >
-                        {isLaunching ? (
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                        ) : (
-                          <Play className="h-5 w-5 fill-white" />
-                        )}
-                        Launch Campaign
-                      </Button>
-                      
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          setWorkspace(null);
-                          setAdaptiveInsights(null);
-                          setGoal("");
-                          setMessages([]);
-                        }}
-                        className="w-full text-xs text-muted-foreground hover:bg-emerald-100 dark:hover:bg-emerald-900/20"
-                        disabled={isLaunching}
-                      >
-                        Draft Another Campaign
-                      </Button>
-                    </CardContent>
-                  </Card>
-                )}
-
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-muted rounded-lg border border-border p-3 flex flex-col gap-1">
+                  <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Shoppers</span>
+                  <span className="font-sans font-medium text-base">{workspace.customerCount}</span>
+                </div>
+                <div className="bg-muted rounded-lg border border-border p-3 flex flex-col gap-1">
+                  <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Shopper AOV</span>
+                  <span className="font-sans font-medium text-base">₹{workspace.aov.toFixed(0)}</span>
+                </div>
+                <div className="bg-muted rounded-lg border border-border p-3 flex flex-col gap-1">
+                  <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Potential</span>
+                  <span className="font-sans font-medium text-base text-green-600 dark:text-green-400">₹{workspace.potentialRevenue.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</span>
+                </div>
+              </div>
+              <div className="bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-400 rounded-lg p-3 text-sm mt-auto">
+                <span className="text-[11px] uppercase tracking-wide block mb-1">Explainer</span>
+                {workspace.opportunityReasoning}
               </div>
             </div>
+
+            {/* Message Draft */}
+            <div className="bg-card text-card-foreground border border-border rounded-xl p-4 flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-sans font-medium text-sm">Message Draft</span>
+                </div>
+                <span className="inline-flex items-center rounded-md bg-green-500/10 px-2.5 py-0.5 text-[11px] font-medium text-green-700 dark:text-green-400 ring-1 ring-inset ring-green-500/20 uppercase tracking-wide">
+                  {workspace.channel}
+                </span>
+              </div>
+              <div className="flex flex-col gap-1.5 flex-1">
+                <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Body</span>
+                <div className="bg-muted rounded-lg border border-border p-4 text-sm whitespace-pre-wrap flex-1 text-foreground leading-relaxed">
+                  {workspace.subject ? <><span className="font-semibold block mb-2">{workspace.subject}</span>{workspace.body}</> : workspace.body}
+                </div>
+              </div>
+              <div className="bg-blue-500/10 border border-blue-500/20 text-blue-700 dark:text-blue-400 rounded-lg p-3 text-sm mt-1">
+                <span className="text-[11px] uppercase tracking-wide block mb-1">Copy Explainer</span>
+                {workspace.explainContent}
+              </div>
+            </div>
+
           </div>
-        </div>
+
+          {/* Row 2: Audience + Strategy */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+            
+            {/* Target Audience + Adaptive Intelligence */}
+            <div className="bg-card text-card-foreground border border-border rounded-xl p-4 flex flex-col gap-6">
+              
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-sans font-medium text-sm">Target Audience</span>
+                  </div>
+                  <span className="inline-flex items-center rounded-md bg-blue-500/10 px-2.5 py-0.5 text-[11px] font-medium text-blue-700 dark:text-blue-400 ring-1 ring-inset ring-blue-500/20 truncate" title={workspace.segmentName}>
+                    {workspace.segmentName}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Segment Logic</span>
+                  <div className="bg-muted rounded-lg border border-border p-3 text-sm text-foreground italic leading-relaxed">
+                    "{typeof workspace.explainAudience === 'object' ? JSON.stringify(workspace.explainAudience) : workspace.explainAudience}"
+                  </div>
+                </div>
+              </div>
+
+              {workspace.adaptiveInsights && (
+                <div className="flex flex-col gap-4 pt-4 border-t border-border">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Brain className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <span className="font-sans font-medium text-sm">Adaptive Intelligence <span className="text-muted-foreground font-normal whitespace-nowrap">— Learning from past campaigns</span></span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-muted rounded-lg border border-border p-3 flex flex-col gap-1">
+                      <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Confidence</span>
+                      <div className="flex items-center gap-1.5 font-sans font-medium text-sm text-green-600 dark:text-green-400">
+                        <span className="h-2 w-2 rounded-full bg-green-500 shrink-0"></span>
+                        {workspace.adaptiveInsights.confidenceScore}%
+                      </div>
+                    </div>
+                    <div className="bg-muted rounded-lg border border-border p-3 flex flex-col gap-1">
+                      <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Match Basis</span>
+                      <div className="flex items-center gap-1.5 font-sans font-medium text-sm text-foreground">
+                        <Activity className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                        {workspace.adaptiveInsights.similarCampaignsAnalyzed} Campaigns
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Marketing Strategy */}
+            <div className="bg-card text-card-foreground border border-border rounded-xl p-4 flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-sans font-medium text-sm">Marketing Strategy</span>
+                </div>
+                <span className="text-[11px] text-muted-foreground">By AI strategy engine</span>
+              </div>
+              
+              <div className="flex flex-col gap-3">
+                <div className="flex items-start gap-3 bg-muted rounded-lg p-3">
+                  <div className="h-8 w-8 rounded-full flex items-center justify-center shrink-0 bg-green-500/10 text-green-600 dark:text-green-400">
+                    <MessageSquare className="h-4 w-4" />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Channel</span>
+                    <span className="font-sans font-medium text-sm text-foreground capitalize">{workspace.channel}</span>
+                    <span className="text-sm text-muted-foreground leading-relaxed">{workspace.explainChannel}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 bg-muted rounded-lg p-3">
+                  <div className="h-8 w-8 rounded-full flex items-center justify-center shrink-0 bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                    <Gift className="h-4 w-4" />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Offer</span>
+                    <span className="font-sans font-medium text-sm text-foreground">{workspace.offer}</span>
+                    <span className="text-sm text-muted-foreground leading-relaxed">{workspace.explainOffer}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 bg-muted rounded-lg p-3">
+                  <div className="h-8 w-8 rounded-full flex items-center justify-center shrink-0 bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                    <Clock className="h-4 w-4" />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Timing</span>
+                    <span className="font-sans font-medium text-sm text-foreground">{workspace.timing}</span>
+                    <span className="text-sm text-muted-foreground leading-relaxed">{workspace.explainTiming}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Row 3: Agent Timeline */}
+          <div className="bg-card text-card-foreground border border-border rounded-xl p-4 flex flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <Activity className="h-4 w-4 text-muted-foreground" />
+              <span className="font-sans font-medium text-sm">Agent Timeline</span>
+            </div>
+            <AgentThoughtsTimeline thoughts={workspace.agentThoughts} />
+          </div>
+
+          {/* Row 4: Actions */}
+          {workspace.status === "failed" ? (
+            <div className="bg-card text-card-foreground border border-red-500/20 rounded-xl p-4 flex flex-col items-center gap-3">
+               <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                 <AlertCircle className="h-4 w-4" />
+                 <span className="font-sans font-medium text-sm">Launch Blocked</span>
+               </div>
+               <span className="text-sm text-muted-foreground">Sizing failed to find matching customers. You cannot launch a campaign to 0 recipients.</span>
+               <Button disabled variant="outline" className="w-full sm:w-auto px-6 rounded-lg">Launch Campaign</Button>
+            </div>
+          ) : (
+            <div className="bg-card text-card-foreground border border-border rounded-xl p-4 flex flex-col sm:flex-row gap-3">
+              <Button
+                onClick={handleLaunchCampaign}
+                disabled={isLaunching}
+                className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg h-10 gap-2 font-medium"
+              >
+                {isLaunching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4 fill-current" />}
+                Launch campaign
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setWorkspace(null);
+                  setAdaptiveInsights(null);
+                  setGoal("");
+                  setMessages([]);
+                }}
+                className="w-full sm:w-auto px-6 rounded-lg h-10 font-medium"
+                disabled={isLaunching}
+              >
+                Draft another campaign
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

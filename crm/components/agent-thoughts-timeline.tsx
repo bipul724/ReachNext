@@ -5,10 +5,8 @@ import {
   Sparkles,
   Brain,
   TrendingUp,
-  Mail,
   MessageSquare,
   AlertCircle,
-  CheckCircle2,
   Clock,
   RefreshCw,
 } from "lucide-react";
@@ -32,7 +30,7 @@ export default function AgentThoughtsTimeline({ thoughts }: AgentThoughtsTimelin
 
   if (!parsedThoughts || parsedThoughts.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed p-6 text-center text-xs text-muted-foreground bg-card/45">
+      <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground bg-muted/20">
         No thinking logs recorded for this campaign.
       </div>
     );
@@ -46,96 +44,91 @@ export default function AgentThoughtsTimeline({ thoughts }: AgentThoughtsTimelin
     if (s.includes("correction") || s.includes("retry")) {
       return {
         icon: RefreshCw,
-        bgColor: "bg-amber-50 dark:bg-amber-950/20",
-        textColor: "text-amber-700 dark:text-amber-400",
-        borderColor: "border-amber-200 dark:border-amber-900/30",
+        colorClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
         label: "Self-Correction Loop",
       };
     }
     if (s.includes("failed") || s.includes("exhausted")) {
       return {
         icon: AlertCircle,
-        bgColor: "bg-red-50 dark:bg-red-950/20",
-        textColor: "text-red-700 dark:text-red-400",
-        borderColor: "border-red-200 dark:border-red-900/30",
+        colorClass: "bg-red-500/10 text-red-600 dark:text-red-400",
         label: "Execution Terminated",
       };
     }
     if (a.includes("segment")) {
       return {
         icon: Brain,
-        bgColor: "bg-blue-50 dark:bg-blue-950/20",
-        textColor: "text-blue-700 dark:text-blue-400",
-        borderColor: "border-blue-200 dark:border-blue-900/30",
+        colorClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
         label: "Segmentation Agent",
       };
     }
     if (a.includes("opportunity") || a.includes("sizing")) {
       return {
         icon: TrendingUp,
-        bgColor: "bg-emerald-50 dark:bg-emerald-950/20",
-        textColor: "text-emerald-700 dark:text-emerald-400",
-        borderColor: "border-emerald-200 dark:border-emerald-900/30",
+        colorClass: "bg-green-500/10 text-green-600 dark:text-green-400",
         label: "Opportunity Agent",
+      };
+    }
+    if (a.includes("adaptive")) {
+      return {
+        icon: Brain,
+        colorClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+        label: "Adaptive Recommendation Engine",
       };
     }
     if (a.includes("strategy")) {
       return {
         icon: Sparkles,
-        bgColor: "bg-purple-50 dark:bg-purple-950/20",
-        textColor: "text-purple-700 dark:text-purple-400",
-        borderColor: "border-purple-200 dark:border-purple-900/30",
+        colorClass: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
         label: "Strategy Agent",
       };
     }
     if (a.includes("content") || a.includes("copy")) {
       return {
         icon: MessageSquare,
-        bgColor: "bg-orange-50 dark:bg-orange-950/20",
-        textColor: "text-orange-700 dark:text-orange-400",
-        borderColor: "border-orange-200 dark:border-orange-900/30",
+        colorClass: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
         label: "Content Copywriter Agent",
       };
     }
 
     return {
       icon: Clock,
-      bgColor: "bg-muted",
-      textColor: "text-muted-foreground",
-      borderColor: "border-border",
+      colorClass: "bg-muted text-muted-foreground",
       label: agent || "Agent System",
     };
   };
 
   return (
-    <div className="relative pl-6 border-l border-border/80 space-y-8 py-2">
+    <div className="flex flex-col">
       {parsedThoughts.map((thought, index) => {
         const config = getStepConfig(thought.step, thought.agent);
         const Icon = config.icon;
 
         return (
-          <div key={index} className="relative group animate-in fade-in duration-300">
-            {/* Dot/Icon indicator on the left line */}
-            <span className={`absolute -left-[38px] top-1 flex h-6 w-6 items-center justify-center rounded-full border shadow-sm ${config.bgColor} ${config.borderColor} ${config.textColor}`}>
-              <Icon className="h-3.5 w-3.5" />
-            </span>
+          <div key={index} className="flex gap-4 py-4 border-b border-border last:border-0 last:pb-0 first:pt-0">
+            {/* Avatar Icon */}
+            <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${config.colorClass}`}>
+              <Icon className="h-4 w-4" />
+            </div>
 
-            {/* Content card */}
-            <div className={`rounded-xl border p-4 bg-card/65 shadow-sm transition-all duration-200 hover:shadow-md ${config.borderColor}`}>
-              <div className="flex items-center justify-between gap-4 border-b border-border/40 pb-2 mb-2.5">
-                <span className={`text-xs font-bold uppercase tracking-wider ${config.textColor}`}>
+            {/* Content Area */}
+            <div className="flex-1 space-y-1.5 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
+                <span className="font-sans font-medium text-sm text-foreground uppercase tracking-wide">
                   {config.label}
                 </span>
-                <span className="text-[10px] text-muted-foreground font-mono">
-                  {thought.timestamp ? new Date(thought.timestamp).toLocaleTimeString() : `Step ${index + 1}`}
+                <span className="text-xs text-muted-foreground shrink-0 sm:text-right">
+                  {thought.timestamp ? new Date(thought.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : `Step ${index + 1}`}
                 </span>
               </div>
-              <p className="text-xs font-medium leading-relaxed text-foreground whitespace-pre-line">
+              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
                 {thought.reasoning}
               </p>
               {thought.step && (
-                <div className="mt-2 text-[10px] font-mono text-muted-foreground uppercase">
-                  Action: {thought.step}
+                <div className="pt-1.5">
+                  <span className="inline-flex items-center rounded-full bg-muted text-muted-foreground px-2 py-0.5 text-[10px] uppercase font-bold tracking-wide">
+                    {thought.step}
+                  </span>
                 </div>
               )}
             </div>
