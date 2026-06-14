@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useCustomers } from "../../../hooks/use-customers";
 import { useDebounce } from "../../../hooks/use-debounce";
 import {
@@ -34,8 +34,14 @@ import {
   Loader2,
   FileSpreadsheet,
   Users,
+  FileUp,
+  AlertTriangle,
+  AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
+import Papa from "papaparse";
+
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
 
 export default function Customers() {
   const [page, setPage] = useState(1);
@@ -46,7 +52,48 @@ export default function Customers() {
   const [isUploading, setIsUploading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  // File Upload State
+  const [isDragging, setIsDragging] = useState(false);
+  const [fileProgress, setFileProgress] = useState<number | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
+  const [showPreviewDialog, setShowPreviewDialog] = useState(false);
+  const [previewData, setPreviewData] = useState<{
+    headers: string[];
+    rows: string[][];
+    rowCount: number;
+    errors: any[];
+  } | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const parserRef = useRef<any>(null);
+
   const { data, isLoading, mutate } = useCustomers(page, debouncedSearch);
+
+  const resetUploadState = () => {
+    parserRef.current?.abort();
+    parserRef.current = null;
+    setPendingFile(null);
+    setFileProgress(null);
+    setPreviewData(null);
+    setShowUnsavedDialog(false);
+    setShowPreviewDialog(false);
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      // Abort parser if component unmounts
+      parserRef.current?.abort();
+    };
+  }, []);
+
+  const handleModalClose = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (!open) {
+      resetUploadState();
+    }
+  };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -88,7 +135,7 @@ export default function Customers() {
       }
 
       setCsvText("");
-      setIsDialogOpen(false);
+      handleModalClose(false);
       mutate(); // Refresh the table list
     } catch (err: any) {
       toast.error("CSV Upload failed", {
@@ -99,7 +146,125 @@ export default function Customers() {
     }
   };
 
-  // Helper template headers for paste guidance
+  // Drag and drop handlers
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) processFileSelection(file);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) processFileSelection(file);
+    if (e.target) e.target.value = ""; // reset input
+  };
+
+  const processFileSelection = (file: File) => {
+    if (file.type !== "text/csv" && !file.name.toLowerCase().endsWith(".csv")) {
+      toast.error("Please upload a valid .csv file.");
+      return;
+    }
+    if (file.size === 0) {
+      toast.error("This CSV file is empty.");
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("CSV files larger than 25 MB are not supported.");
+      return;
+    }
+
+    if (csvText.trim().length > 0) {
+      setPendingFile(file);
+      setShowUnsavedDialog(true);
+    } else {
+      parseAndPreviewFile(file);
+    }
+  };
+
+  const parseAndPreviewFile = (file: File) => {
+    setFileProgress(0);
+    setPendingFile(file);
+    
+    let rowCount = 0;
+    const sampleRows: string[][] = [];
+    const errors: any[] = [];
+    let headers: string[] = [];
+
+    Papa.parse(file, {
+      worker: true,
+      header: false,
+      skipEmptyLines: false,
+      step: (results, parser) => {
+        parserRef.current = parser;
+        rowCount++;
+        
+        const progress = Math.round(((results.meta.cursor || 0) / file.size) * 100);
+        setFileProgress(Math.min(progress, 100));
+
+        if (rowCount === 1) {
+          headers = results.data as string[];
+        } else if (rowCount <= 4) {
+          sampleRows.push(results.data as string[]);
+        }
+        
+        if (results.errors.length > 0) {
+           errors.push(...results.errors);
+        }
+      },
+      complete: () => {
+        parserRef.current = null;
+        setFileProgress(null);
+        setPreviewData({ headers, rows: sampleRows, rowCount, errors });
+        setShowPreviewDialog(true);
+      },
+      error: (err) => {
+        parserRef.current = null;
+        setFileProgress(null);
+        toast.error(`Error reading CSV file: ${err.message}`);
+      }
+    });
+  };
+
+  const confirmUnsavedData = () => {
+    setShowUnsavedDialog(false);
+    if (pendingFile) parseAndPreviewFile(pendingFile);
+  };
+
+  const cancelUnsavedData = () => {
+    setShowUnsavedDialog(false);
+    setPendingFile(null);
+  };
+
+  const commitFile = async () => {
+    if (!pendingFile) return;
+    setShowPreviewDialog(false);
+    
+    try {
+      const text = await pendingFile.text();
+      setCsvText(text);
+      toast.success(`Loaded ${pendingFile.name}`);
+      // Release memory
+      setPreviewData(null);
+      setPendingFile(null);
+    } catch (err) {
+      toast.error("Failed to extract raw text from file.");
+    }
+  };
+
   const customersTemplate = "name,email,phone,city,tags\n\"Ravi Kumar\",\"ravi@gmail.com\",\"9876543210\",\"Delhi\",\"vip;coffee-lover\"\n\"Asha Patel\",\"asha@gmail.com\",\"\",\"Mumbai\",\"new-customer\"";
   const ordersTemplate = "email,totalAmount,storeLocation\n\"ravi@gmail.com\",1250,\"Delhi Cafe\"\n\"asha@gmail.com\",450,\"online\"";
 
@@ -120,25 +285,25 @@ export default function Customers() {
         </div>
 
         {/* CSV Upload Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={handleModalClose}>
           <DialogTrigger render={
             <Button variant="outline" className="gap-2">
               <Upload className="h-4.5 w-4.5" />
               Ingest CSV Data
             </Button>
           } />
-          <DialogContent className="max-w-xl">
+          <DialogContent className="sm:max-w-xl max-w-xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <FileSpreadsheet className="h-5 w-5 text-primary" />
                 Ingest CSV Dataset
               </DialogTitle>
               <DialogDescription>
-                Paste your spreadsheet contents below to dynamically populate your ReachNext database.
+                Upload a CSV file or paste your spreadsheet contents dynamically.
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-4 my-2">
+            <div className="space-y-5 my-2">
               {/* Type Select buttons */}
               <div className="flex gap-2">
                 <Button
@@ -167,10 +332,61 @@ export default function Customers() {
                 </Button>
               </div>
 
+              {/* Drag and Drop Zone */}
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer ${
+                  isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50"
+                }`}
+                onClick={() => fileInputRef.current?.click()}
+                role="button"
+                tabIndex={0}
+                aria-label="Drag and drop CSV file here or click to select"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click(); }}
+              >
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  className="hidden" 
+                  accept=".csv" 
+                  onChange={handleFileSelect} 
+                />
+                
+                {fileProgress !== null ? (
+                  <div className="flex flex-col items-center gap-3 w-full max-w-xs">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <div className="text-sm font-medium">Reading CSV... {fileProgress}%</div>
+                    <div className="w-full bg-muted rounded-full h-1.5 mt-1 overflow-hidden">
+                      <div className="bg-primary h-full transition-all duration-300" style={{ width: `${fileProgress}%` }} />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <FileUp className="h-8 w-8 text-muted-foreground mb-3" />
+                    <p className="text-sm font-medium mb-1">Drag & drop CSV here</p>
+                    <p className="text-xs text-muted-foreground mb-4">or click to browse files (Max 25MB)</p>
+                    <Button type="button" variant="secondary" size="sm" className="pointer-events-none">
+                      Choose CSV File
+                    </Button>
+                  </>
+                )}
+              </div>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-muted-foreground/20" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground font-semibold">Or paste manually</span>
+                </div>
+              </div>
+
               {/* Paste textarea */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs text-muted-foreground font-medium">
-                  <span>Paste raw CSV rows (including header):</span>
+                  <span>Raw CSV contents:</span>
                   <button
                     type="button"
                     onClick={() => setCsvText(csvType === "customers" ? customersTemplate : ordersTemplate)}
@@ -192,20 +408,125 @@ export default function Customers() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setIsDialogOpen(false)}
-                disabled={isUploading}
+                onClick={() => handleModalClose(false)}
+                disabled={isUploading || fileProgress !== null}
               >
                 Cancel
               </Button>
               <Button
                 size="sm"
                 onClick={handleUploadCSV}
-                disabled={isUploading || !csvText.trim()}
+                disabled={isUploading || fileProgress !== null || !csvText.trim()}
                 className="gap-2"
               >
                 {isUploading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 Upload dataset
               </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Unsaved Data Confirmation Dialog */}
+        <Dialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-amber-500" />
+                Unsaved CSV Data
+              </DialogTitle>
+              <DialogDescription>
+                Uploading another file will replace your current textarea contents.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="mt-4">
+              <Button variant="outline" size="sm" onClick={cancelUnsavedData}>Cancel</Button>
+              <Button variant="destructive" size="sm" onClick={confirmUnsavedData}>Replace Data</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Import Preview Dialog */}
+        <Dialog open={showPreviewDialog} onOpenChange={setShowPreviewDialog}>
+          <DialogContent className="sm:max-w-2xl max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <FileSpreadsheet className="h-5 w-5 text-primary" />
+                Import Preview
+              </DialogTitle>
+              <DialogDescription>
+                Review the parsed structure of your uploaded CSV file before importing.
+              </DialogDescription>
+            </DialogHeader>
+
+            {previewData && (
+              <div className="space-y-6 my-2 w-full min-w-0">
+                <div className="grid grid-cols-3 gap-4 text-sm bg-muted/40 p-4 rounded-lg w-full min-w-0">
+                  <div className="min-w-0">
+                    <div className="text-muted-foreground text-xs uppercase font-semibold mb-1">Detected File</div>
+                    <div className="font-medium truncate" title={pendingFile?.name}>{pendingFile?.name}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground text-xs uppercase font-semibold mb-1">Total Rows</div>
+                    <div className="font-medium">{previewData.rowCount.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground text-xs uppercase font-semibold mb-1">Columns</div>
+                    <div className="font-medium">{previewData.headers?.length || 0}</div>
+                  </div>
+                </div>
+
+                {previewData.errors.length > 0 && (
+                  <div role="alert" className="bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-200 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 font-semibold mb-2">
+                      <AlertCircle className="h-4 w-4" />
+                      We detected formatting issues in this CSV.
+                    </div>
+                    <div className="text-xs space-y-1 mb-3 max-h-24 overflow-y-auto">
+                      {previewData.errors.slice(0, 5).map((e, i) => (
+                        <div key={i}>Row {e.row}: {e.message}</div>
+                      ))}
+                      {previewData.errors.length > 5 && (
+                        <div className="font-medium italic">...and {previewData.errors.length - 5} more errors.</div>
+                      )}
+                    </div>
+                    <div className="text-sm font-medium">You can continue importing, but some records may fail on the backend.</div>
+                  </div>
+                )}
+
+                <div className="w-full min-w-0">
+                  <h4 className="text-sm font-semibold mb-3">First 3 rows preview</h4>
+                  <div className="rounded-md border border-border w-full overflow-x-auto">
+                    <Table>
+                      <TableHeader className="bg-muted/30">
+                        <TableRow>
+                          {previewData.headers?.map((h, i) => (
+                            <TableHead key={i} className="text-xs font-semibold whitespace-nowrap">{h}</TableHead>
+                          ))}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {previewData.rows.map((row, i) => (
+                          <TableRow key={i}>
+                            {row.map((cell, j) => (
+                              <TableCell key={j} className="text-xs whitespace-nowrap truncate max-w-[200px]" title={cell}>
+                                {cell}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button variant="outline" size="sm" onClick={() => {
+                setShowPreviewDialog(false);
+                resetUploadState();
+              }}>Cancel</Button>
+              <Button size="sm" onClick={commitFile}>Use This CSV</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

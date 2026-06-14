@@ -74,7 +74,7 @@ export default function MarketingLandingPage() {
           </nav>
 
           <div>
-            <Link href="/dashboard" className="bg-gray-900 text-white text-xs font-medium px-4 py-1.5 rounded-md hover:bg-gray-800 transition-colors">
+            <Link href="/dashboard" className="bg-gray-900 text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-gray-800 transition-colors">
               Open dashboard &rarr;
             </Link>
           </div>
@@ -278,62 +278,62 @@ export default function MarketingLandingPage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200 border border-gray-200 rounded-xl overflow-hidden bg-white">
-            <div className="p-6 flex flex-col gap-3">
+            <div className="p-6 flex flex-col gap-4">
               <Brain className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-sm font-semibold text-gray-900 mb-1">AI campaign agent</div>
-                <div className="text-xs text-gray-500 leading-6">
+                <div className="text-base font-semibold text-gray-900 mb-2">AI campaign agent</div>
+                <div className="text-sm text-gray-500 leading-relaxed">
                   Natural language &rarr; segment rules &rarr; personalized copy &rarr; launch. One flow via agent-orchestrator.
                 </div>
               </div>
             </div>
             
-            <div className="p-6 flex flex-col gap-3">
+            <div className="p-6 flex flex-col gap-4">
               <ArrowLeftRight className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-sm font-semibold text-gray-900 mb-1">Async delivery loop</div>
-                <div className="text-xs text-gray-500 leading-6">
+                <div className="text-base font-semibold text-gray-900 mb-2">Async delivery loop</div>
+                <div className="text-sm text-gray-500 leading-relaxed">
                   CRM dispatches to channel simulator; webhooks call back and update each message through 7 states.
                 </div>
               </div>
             </div>
 
-            <div className="p-6 flex flex-col gap-3">
+            <div className="p-6 flex flex-col gap-4">
               <Telescope className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-sm font-semibold text-gray-900 mb-1">Opportunity copilot</div>
-                <div className="text-xs text-gray-500 leading-6">
+                <div className="text-base font-semibold text-gray-900 mb-2">Opportunity copilot</div>
+                <div className="text-sm text-gray-500 leading-relaxed">
                   Scans customer base for dormant high-value segments. Surfaces recovery potential with confidence scores.
                 </div>
               </div>
             </div>
             
             {/* Break for desktop grid, but divide-y handles rows. We need border-t on the second row. */}
-            <div className="p-6 flex flex-col gap-3 border-t border-gray-200 md:col-start-1">
+            <div className="p-6 flex flex-col gap-4 border-t border-gray-200 md:col-start-1">
               <Play className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-sm font-semibold text-gray-900 mb-1">Campaign replay</div>
-                <div className="text-xs text-gray-500 leading-6">
+                <div className="text-base font-semibold text-gray-900 mb-2">Campaign replay</div>
+                <div className="text-sm text-gray-500 leading-relaxed">
                   Scrub back through a campaign&apos;s delivery timeline. Watch every message state transition in sequence.
                 </div>
               </div>
             </div>
 
-            <div className="p-6 flex flex-col gap-3 border-t border-gray-200">
+            <div className="p-6 flex flex-col gap-4 border-t border-gray-200">
               <GitCompare className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-sm font-semibold text-gray-900 mb-1">AI campaign compare</div>
-                <div className="text-xs text-gray-500 leading-6">
+                <div className="text-base font-semibold text-gray-900 mb-2">AI campaign compare</div>
+                <div className="text-sm text-gray-500 leading-relaxed">
                   Select two campaigns for AI-powered diff — which segment, channel, and copy combination won.
                 </div>
               </div>
             </div>
 
-            <div className="p-6 flex flex-col gap-3 border-t border-gray-200">
+            <div className="p-6 flex flex-col gap-4 border-t border-gray-200">
               <SlidersHorizontal className="w-5 h-5 text-gray-900" />
               <div>
-                <div className="text-sm font-semibold text-gray-900 mb-1">Segment engine</div>
-                <div className="text-xs text-gray-500 leading-6">
+                <div className="text-base font-semibold text-gray-900 mb-2">Segment engine</div>
+                <div className="text-sm text-gray-500 leading-relaxed">
                   Rule-based or natural language. Filter by spend, recency, city, tags — or just describe who you want.
                 </div>
               </div>
@@ -342,46 +342,46 @@ export default function MarketingLandingPage() {
         </section>
 
         {/* SECTION 5 — REVENUE OPPORTUNITY COPILOT */}
-        <section className="border-t border-gray-200 px-6 py-8">
-          <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+        <section className="border-t border-gray-200 px-6 py-20">
+          <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
             {/* LEFT */}
             <div>
-              <div className="inline-block bg-emerald-50 text-emerald-700 text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded mb-4">
+              <div className="inline-block bg-emerald-50 text-emerald-700 text-[11px] uppercase font-bold tracking-wider px-3 py-1.5 rounded mb-6">
                 Revenue Opportunity Copilot
               </div>
-              <h2 className={`${playfair.className} text-4xl lg:text-5xl font-black leading-tight text-gray-900 mb-4`}>
+              <h2 className={`${playfair.className} text-5xl lg:text-6xl font-black leading-tight text-gray-900 mb-6`}>
                 It finds the money<br />
                 <span className="italic text-emerald-700">already in your data.</span>
               </h2>
-              <p className="text-sm text-gray-500 leading-relaxed max-w-sm">
+              <p className="text-base text-gray-500 leading-relaxed max-w-md">
                 The adaptive recommendation engine scans your customer base for high-confidence recovery opportunities — dormant premium buyers, lapsing segments, untouched high-spenders — before you think to look.
               </p>
             </div>
 
             {/* RIGHT */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-5">
-              <div className="flex justify-between items-start mb-4">
-                <div className="bg-emerald-50 text-emerald-700 text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded">
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8">
+              <div className="flex justify-between items-start mb-6">
+                <div className="bg-emerald-50 text-emerald-700 text-[11px] uppercase font-bold tracking-wider px-2 py-1 rounded">
                   High Confidence
                 </div>
                 <div className="text-right">
-                  <div className="text-[9px] uppercase tracking-wider text-gray-500 mb-0.5">Potential recovery</div>
-                  <div className={`${playfair.className} text-xl font-bold text-gray-900`}>₹12.5L</div>
+                  <div className="text-[11px] uppercase tracking-wider text-gray-500 mb-1">Potential recovery</div>
+                  <div className={`${playfair.className} text-3xl font-bold text-gray-900`}>₹12.5L</div>
                 </div>
               </div>
               
-              <h3 className="text-sm font-bold text-gray-900 mb-1">Win back churning premium customers</h3>
-              <p className="text-sm text-gray-500 leading-relaxed mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Win back churning premium customers</h3>
+              <p className="text-base text-gray-500 leading-relaxed mb-8">
                 142 premium customers haven&apos;t ordered in 45+ days. A personalized offer is highly likely to convert.
               </p>
 
-              <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2 overflow-hidden">
+              <div className="w-full bg-gray-200 rounded-full h-2 mb-3 overflow-hidden">
                 <div 
-                  className="bg-emerald-500 h-1.5 rounded-full transition-all duration-[1500ms] ease-out" 
+                  className="bg-emerald-500 h-2 rounded-full transition-all duration-[1500ms] ease-out" 
                   style={{ width: `${progressWidth}%` }}
                 />
               </div>
-              <div className="flex justify-between items-center text-[9px]">
+              <div className="flex justify-between items-center text-xs">
                 <span className="text-gray-500">Confidence score</span>
                 <span className="text-emerald-700 font-bold">87%</span>
               </div>
