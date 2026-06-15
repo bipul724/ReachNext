@@ -10,10 +10,17 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const campaign = await CampaignService.getById(id);
+    let campaign = await CampaignService.getById(id);
 
     if (!campaign) {
       return NextResponse.json({ error: "Campaign not found" }, { status: 404 });
+    }
+
+    // For active campaigns, sync stats live before returning so the frontend always gets fresh data.
+    // This is necessary because Vercel serverless can't reliably run the debounced queueSyncStats
+    // (in-memory Sets + setTimeout are lost between invocations).
+    if (campaign.status === "sent" || campaign.status === "sending") {
+      campaign = await CampaignService.syncStats(id);
     }
 
     return NextResponse.json(campaign);

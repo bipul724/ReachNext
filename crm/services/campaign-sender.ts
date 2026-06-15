@@ -8,7 +8,12 @@ const CHANNEL_SERVICE_URL = process.env.CHANNEL_SERVICE_URL || "http://localhost
 const CRM_WEBHOOK_URL = process.env.CRM_WEBHOOK_URL || "http://localhost:3000/api/webhooks/receipt";
 
 export const CampaignSender = {
-  async launch(campaignId: string): Promise<{ success: boolean; sentCount: number }> {
+  /**
+   * Prepare a campaign for launch: validate, create communications, update status.
+   * Returns the communications list for dispatch. This is the fast, synchronous part.
+   * The caller is responsible for dispatching via `dispatchToChannelService` (e.g., using `after()`).
+   */
+  async prepare(campaignId: string): Promise<{ success: boolean; sentCount: number; communications: any[] }> {
     // 1. Get campaign and segment details
     const campaign = await prisma.campaign.findUnique({
       where: { id: campaignId },
@@ -48,7 +53,7 @@ export const CampaignSender = {
             completedAt: new Date(),
           },
         });
-        return { success: true, sentCount: 0 };
+        return { success: true, sentCount: 0, communications: [] };
       }
 
       // 3. Generate personalized messages and prepare communications list
@@ -80,10 +85,7 @@ export const CampaignSender = {
         };
       });
 
-      // 4. Bulk insert communications (extremely fast)
-      // Note: prisma.communication.createMany doesn't return created IDs in all databases, 
-      // but PostgreSQL supports createMany. However, we'll retrieve communications in next steps
-      // or map them. To be safe across databases, we can use createMany, and then query the created entries.
+      // 4. Bulk insert communications
       await prisma.communication.createMany({
         data: communicationsData,
       });
@@ -111,24 +113,13 @@ export const CampaignSender = {
         },
       });
 
-      // 6. Dispatch messages to the channel service in the background (fire-and-forget)
-      // This allows the API to respond instantly while messages are delivered asynchronously
-      this.dispatchToChannelService(communications).catch(async (err) => {
-        console.error(`[CampaignSender] Background dispatch failed for campaign "${campaignId}":`, err);
-        await prisma.campaign.update({
-          where: { id: campaignId },
-          data: { status: "failed" },
-        }).catch(() => {}); // swallow update error to not mask the original
-      });
-
-      return { success: true, sentCount };
+      return { success: true, sentCount, communications };
     } catch (error) {
-      console.error(`Error launching campaign "${campaignId}":`, error);
-      // Mark campaign as failed so the user knows dispatch didn't work
+      console.error(`Error preparing campaign "${campaignId}":`, error);
       await prisma.campaign.update({
         where: { id: campaignId },
         data: { status: "failed" },
-      }).catch(() => {}); // swallow update error to not mask the original
+      }).catch(() => {});
       throw error;
     }
   },

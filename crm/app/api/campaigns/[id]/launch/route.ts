@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { CampaignSender } from "@/services/campaign-sender";
+import { prisma } from "@/lib/prisma";
 
 interface RouteParams {
   params: Promise<{
@@ -11,8 +12,24 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
 
-    // Launch campaign (resolves segment, personalises, creates logs, and dispatches in background)
-    const result = await CampaignSender.launch(id);
+    // Prepare campaign: validate, create communications, update status (fast)
+    const result = await CampaignSender.prepare(id);
+
+    // Schedule the slow dispatch to run in the background after the response is sent.
+    // `after()` is Vercel-aware and keeps the serverless function alive until completion.
+    if (result.communications.length > 0) {
+      after(async () => {
+        try {
+          await CampaignSender.dispatchToChannelService(result.communications);
+        } catch (err) {
+          console.error(`[Launch] Background dispatch failed for campaign "${id}":`, err);
+          await prisma.campaign.update({
+            where: { id },
+            data: { status: "failed" },
+          }).catch(() => {});
+        }
+      });
+    }
 
     return NextResponse.json({
       success: true,
