@@ -101,22 +101,24 @@ export const CampaignSender = {
         },
       });
 
-      // 5. Update Campaign with total recipients (keep status as "sending" during dispatch)
+      // 5. Update Campaign with total recipients and mark as "sent" immediately
       await prisma.campaign.update({
         where: { id: campaignId },
         data: {
+          status: "sent",
           totalRecipients: sentCount,
           sentAt: new Date(),
         },
       });
 
-      // 6. Dispatch messages to the channel service (awaited, not fire-and-forget)
-      await this.dispatchToChannelService(communications);
-
-      // 7. Mark campaign as "sent" only after dispatch completes successfully
-      await prisma.campaign.update({
-        where: { id: campaignId },
-        data: { status: "sent" },
+      // 6. Dispatch messages to the channel service in the background (fire-and-forget)
+      // This allows the API to respond instantly while messages are delivered asynchronously
+      this.dispatchToChannelService(communications).catch(async (err) => {
+        console.error(`[CampaignSender] Background dispatch failed for campaign "${campaignId}":`, err);
+        await prisma.campaign.update({
+          where: { id: campaignId },
+          data: { status: "failed" },
+        }).catch(() => {}); // swallow update error to not mask the original
       });
 
       return { success: true, sentCount };
