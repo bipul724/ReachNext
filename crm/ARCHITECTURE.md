@@ -1,6 +1,6 @@
 # Architecture Overview
 
-ReachNext is built on a decoupled, monorepo architecture. The core application (CRM) handles the heavy lifting of data management and AI personalization, while message delivery is offloaded to an external service, communicating entirely via HTTP and Webhooks.
+ReachNext is built on a decoupled, monorepo architecture. The core application (CRM) handles the heavy lifting of data management and AI personalization via a sophisticated multi-agent system, while message delivery is offloaded to an external service, communicating entirely via HTTP and Webhooks.
 
 ---
 
@@ -8,9 +8,9 @@ ReachNext is built on a decoupled, monorepo architecture. The core application (
 
 ### The CRM (Next.js)
 The core application is a full-stack Next.js 15 application utilizing the App Router. 
-- **Frontend Layer**: Built with React 19, Tailwind CSS v4, and Shadcn UI components. It provides the dashboard for segment building and campaign drafting.
+- **Frontend Layer**: Built with React 19, Tailwind CSS v4, and Shadcn UI components. It provides the dashboard for interacting with the AI autopilot, reviewing generated campaigns, and tracking performance.
 - **Backend Layer**: Consists of Next.js API Routes. It handles direct communication with the PostgreSQL database via Prisma ORM.
-- **AI Integration**: The backend directly interfaces with Groq and Google Gemini to offload complex natural language processing tasks, such as generating segment insights and writing personalized message copy in bulk.
+- **AI Integration (Agent Orchestrator)**: The backend uses a complex `AgentOrchestrator` that chains multiple LLM agents (powered by Groq and Google Gemini) to autonomously handle intent validation, segmentation, database opportunity sizing, strategy recommendation, and content generation.
 
 ### The Channel Service (Express)
 A completely separate Node.js/Express application that acts as an external SMS/Email provider simulator.
@@ -20,22 +20,53 @@ A completely separate Node.js/Express application that acts as an external SMS/E
 
 ---
 
+## Multi-Agent Architecture (Agent Orchestrator)
+
+The CRM utilizes an autonomous `AgentOrchestrator` to generate marketing campaigns from natural language. When a user inputs a goal, the following agents are triggered in sequence:
+
+1. **Intent Validation Agent**: Analyzes the natural language goal to determine the user's intent and confidence score. If confidence is low, it asks for clarification.
+2. **Segmentation Agent**: Translates the normalized goal into specific database query rules (e.g., "last order > 45 days ago").
+3. **Opportunity Sizing & Self-Correction (Database)**: Runs the segmentation rules against the live database. If 0 customers match, a **Self-Correction Loop** automatically relaxes the most restrictive filters (by querying database aggregates) until a valid audience is found.
+4. **Adaptive Recommendation Engine**: Analyzes historical campaigns to recommend the best channel, timing, and offer based on past performance.
+5. **Strategy Agent**: Formulates a concrete strategy (Channel, Offer, Timing) utilizing insights from the Adaptive Recommendation Engine and database sizing.
+6. **Content Agent**: Generates a personalized message template (Subject and Body) tailored to the target segment and strategy.
+
+---
+
 ## Execution Flow
 
-When a user launches a campaign, the system executes the following sequence:
+When a user initiates an AI campaign, the system executes the following sequence:
 
 ```mermaid
 sequenceDiagram
     participant User
     participant CRM (Next.js)
+    participant Orchestrator (Agent)
     participant Database (PostgreSQL)
     participant AI (Groq/Gemini)
     participant ChannelService (Express)
 
-    User->>CRM: Create Segment & Launch Campaign
+    User->>CRM: Enter Campaign Goal (Natural Language)
+    CRM->>Orchestrator: generateCampaign(goal)
+    
+    Orchestrator->>AI: Intent Validation
+    Orchestrator->>AI: Segmentation Agent (Returns Rules)
+    Orchestrator->>Database: Opportunity Sizing (Count & AOV)
+    
+    opt If 0 Customers Match
+        Orchestrator->>AI: Self-Correction Loop (Relax Filters)
+        Orchestrator->>Database: Re-evaluate Opportunity Sizing
+    end
+    
+    Orchestrator->>Database: Fetch Adaptive Recommendations
+    Orchestrator->>AI: Strategy Agent (Channel, Offer, Timing)
+    Orchestrator->>AI: Content Agent (Subject, Body)
+    
+    Orchestrator-->>CRM: Return Draft Campaign Workspace
+    User->>CRM: Review & Launch Campaign
+    
     CRM->>Database: Fetch Segmented Customers
-    CRM->>AI: Send batch customer data & template
-    AI-->>CRM: Return highly personalized messages
+    CRM->>AI: Batch Personalize Messages
     CRM->>Database: Bulk insert Communications (Status: queued)
     
     loop Every 20 Messages
@@ -45,9 +76,7 @@ sequenceDiagram
 
     Note over ChannelService: Simulates Network/User Delay
     
-    ChannelService->>CRM: POST /api/webhooks/receipt (Status: delivered)
-    CRM->>Database: Update Communication & Campaign Stats
-    ChannelService->>CRM: POST /api/webhooks/receipt (Status: opened)
+    ChannelService->>CRM: POST /api/webhooks/receipt (Status: delivered/opened/clicked)
     CRM->>Database: Update Communication & Campaign Stats
 ```
 
@@ -60,11 +89,12 @@ The codebase is organized into two independent projects that run concurrently du
 ```text
 xeno-mini-crm/
 ├── crm/                     # The core Next.js Application
+│   ├── ai/                  # AI agents, schemas, and logic
 │   ├── app/                 # Frontend UI & API Routes (Next.js App Router)
 │   ├── components/          # Shadcn UI & React Components
-│   ├── lib/                 # AI integrations (Groq/Gemini) & Utilities
+│   ├── lib/                 # Shared utilities, Prisma instance, and AI setup
 │   ├── prisma/              # PostgreSQL Schema & Seed Scripts
-│   └── services/            # Core business logic (CampaignSender, SegmentEngine)
+│   └── services/            # Core business logic (AgentOrchestrator, CampaignSender, etc.)
 │
 ├── channel-service/         # The mock delivery microservice
 │   └── src/                 # Express.js server & webhook simulation logic
@@ -90,8 +120,9 @@ xeno-mini-crm/
 *   **ORM**: Prisma
 
 ### Database
-*   **Engine**: PostgreSQL (accessed via the `pg` driver)
+*   **Engine**: PostgreSQL (accessed via the `@prisma/adapter-pg` / `pg` driver)
 
 ### Artificial Intelligence
-*   **Primary API**: Groq API (fast inference for personalization)
-*   **Secondary API**: Google Gemini API (via `@google/generative-ai`)
+*   **Primary API**: Groq API (fast inference for personalization and orchestration)
+*   **Secondary API**: Google Gemini API (via `@google/generative-ai` for specialized analysis)
+*   **Validation**: Zod (for structured AI outputs)
